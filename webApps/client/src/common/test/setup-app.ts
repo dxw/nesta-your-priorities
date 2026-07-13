@@ -2,7 +2,6 @@ import { YpServerApi } from '../YpServerApi.js';
 import { YpAppGlobals } from '../../yp-app/YpAppGlobals.js';
 import { YpAppUser } from '../../yp-app/YpAppUser.js';
 import i18next from 'i18next';
-import HttpApi from 'i18next-http-backend';
 import { html } from 'lit';
 import fetchMock from 'fetch-mock';
 
@@ -13,11 +12,14 @@ export class YpTestHelpers {
     window.serverApi = new YpServerApi();
     window.appGlobals = new YpAppGlobals(window.serverApi);
     window.appUser = new YpAppUser(window.serverApi);
-    const localesFolder = typeof __LOCALES_DIR__ !== 'undefined' ? __LOCALES_DIR__ : 'locales';
-    await i18next.use(HttpApi).init({
+    await i18next.init({
       lng: 'en',
       fallbackLng: 'en',
-      backend: { loadPath: `/${localesFolder}/{{lng}}/{{ns}}.json` },
+      resources: {
+        en: {
+          translation: {},
+        },
+      },
     });
 
     window.appGlobals.locale = 'en';
