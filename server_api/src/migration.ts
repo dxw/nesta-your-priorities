@@ -103,7 +103,7 @@ const migrations: LocalMigration[] = [
     name: "domains.user_id",
     isNeeded: async (client) => {
       if (!(await tableExists(client, "domains"))) {
-        throw new Error('Cannot migrate: table "domains" does not exist');
+        return false; // table will be created by sequelize.sync() with the column already present
       }
 
       return !(await columnExists(client, "domains", "user_id"));
@@ -118,7 +118,7 @@ const migrations: LocalMigration[] = [
     name: "domains.only_admins_can_create_communities",
     isNeeded: async (client) => {
       if (!(await tableExists(client, "domains"))) {
-        throw new Error('Cannot migrate: table "domains" does not exist');
+        return false; // table will be created by sequelize.sync() with the column already present
       }
 
       return !(await columnExists(
@@ -137,7 +137,7 @@ const migrations: LocalMigration[] = [
     name: "groups.private_access_configuration",
     isNeeded: async (client) => {
       if (!(await tableExists(client, "groups"))) {
-        throw new Error('Cannot migrate: table "groups" does not exist');
+        return false; // table will be created by sequelize.sync() with the column already present
       }
 
       const hasColumn = await columnExists(
