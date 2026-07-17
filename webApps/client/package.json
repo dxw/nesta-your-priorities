@@ -101,14 +101,15 @@
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "fetch-mock": "^10.0.7",
-    "mocha": "^11.7.6",
     "glob": "^7.2.0",
     "koa-proxies": "^0.12.4",
     "lit-analyzer": "^2.0.3",
+    "mocha": "^11.7.6",
     "rimraf": "^5.0.7",
     "rollup": "^4.18.0",
     "rollup-plugin-copy": "^3.5.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "yargs": "^18.0.0"
   },
   "scripts": {
     "copyInLocalAgents": "cp -R ../../../policy-synth/agents/ts-out/* ./node_modules/@policysynth/agents/;cp ../../../policy-synth/agents/src/*.d.ts ./node_modules/@policysynth/agents/;",
