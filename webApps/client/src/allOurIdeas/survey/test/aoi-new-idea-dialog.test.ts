@@ -7,6 +7,24 @@ import { YpTestHelpers } from '../../../common/test/setup-app.js';
 describe('AoiNewIdeaDialog', () => {
   let element: AoiNewIdeaDialog;
   let fetchMock: any;
+  const mockEarl = {
+    configuration: {
+      allowAnswersNotForVoting: false,
+    },
+  } as AoiEarlData;
+
+  const mockGroup = {
+    id: 1,
+    language: 'en',
+    configuration: {
+      theme: {},
+    },
+  } as unknown as YpGroupData;
+
+  const mockQuestion = {
+    id: 1,
+    name: 'What should we improve first?',
+  } as AoiQuestionData;
 
   before(async () => {
     fetchMock = YpTestHelpers.getFetchMock();
@@ -15,8 +33,12 @@ describe('AoiNewIdeaDialog', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
-      <aoi-new-idea-dialog></aoi-new-idea-dialog>
+      <aoi-new-idea-dialog
+        .groupId=${1}
+        .earl=${mockEarl}
+        .group=${mockGroup}
+        .question=${mockQuestion}
+      ></aoi-new-idea-dialog>
     `);
 
     await aTimeout(100);
