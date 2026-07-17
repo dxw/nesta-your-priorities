@@ -909,7 +909,18 @@ export class YpApp extends YpBaseElement {
   }
 
   renderPage() {
+    const websiteDisabled = false;
     let pageHtml;
+
+    if (websiteDisabled) {
+      return cache(html`
+        <div style="padding: 24px; max-width: 760px; margin: 0 auto;">
+          <h1>Turned Off</h1>
+          <p>This website isn't available.</p>
+        </div>
+      `);
+    }
+
     if (this.page) {
       switch (this.page) {
         case "domain":
@@ -960,6 +971,25 @@ export class YpApp extends YpBaseElement {
               .currentPage="${this.page}"
               .subRoute="${this.subRoute}"
             ></yp-post>
+          `);
+          break;
+        case "inbound":
+          pageHtml = cache(html`
+            <div style="padding: 24px; max-width: 760px; margin: 0 auto;">
+              <h1>Inbound</h1>
+              <p>This is a static page served from the client app.</p>
+              <p>Visit /inbound to see it.</p>
+              <p><a href="/group/1/">Add your suggestions</a></p>
+            </div>
+          `);
+          break;
+        case "outbound":
+          pageHtml = cache(html`
+            <div style="padding: 24px; max-width: 760px; margin: 0 auto;">
+              <h1>Outbound</h1>
+              <p>This is a static page served from the client app.</p>
+              <p>Visit /outbound to see it.</p>
+            </div>
           `);
           break;
         default:
