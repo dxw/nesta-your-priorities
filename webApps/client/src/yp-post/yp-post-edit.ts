@@ -1478,6 +1478,26 @@ export class YpPostEdit extends YpEditBase {
       <div class="topHeader">
         ${this.editHeaderText ? this.editHeaderText : ""}
       </div>
+      <div class="layout">
+<h2>Before you send in your idea, here's what counts.</h2>
+<h3>What ideas will make the cut?</h3>
+<ul>
+<li><b>Practical</b> - a solution, not just a complaint</li>
+<li><b>Do-able</b> - it must be something that could realistically change</li>
+<li><b>Relatively inexpensive</b> - if it requires too much money they won’t do it</li>
+<li><b>A widespread issue</b> - whether it could help millions of people a little, or thousands of people a lot</li>
+<li>And crucially… <b>hard to disagree with</b> - the kind of thing that 80% of people, whatever their politics, would say “yeah, that makes sense”.</li>
+</ul>
+
+<h3>What we’ll say no to:</h3>
+<ul>
+<li><b>Too local</b> - a drinking water fountain in your local park won't cut it</li>
+<li><b>Overly political</b> - no party lines, and no dog whistles</li>
+<li><b>Illegal</b> - breaks the law, criminal or otherwise.</li>
+<li><b>Harmful</b> - nothing that harms people or animals.</li>
+</ul>
+      </div>
+      
     `;
   }
 
