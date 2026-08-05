@@ -1298,6 +1298,7 @@ export class YpPostEdit extends YpEditBase {
   }
 
   renderMediaAndLocation(): TemplateResult | undefined | {} {
+    if (this._mediaPageHidden && this.locationHidden) {return html``};
     return html`
       <div class="layout vertical mediaAndLocation">
         <div>${this.renderLocationTab()}</div>
