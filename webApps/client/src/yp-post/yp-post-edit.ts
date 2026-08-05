@@ -1496,6 +1496,7 @@ export class YpPostEdit extends YpEditBase {
 <li><b>Illegal</b> - breaks the law, criminal or otherwise.</li>
 <li><b>Harmful</b> - nothing that harms people or animals.</li>
 </ul>
+<p>&nbsp;</p>
       </div>
       
     `;
