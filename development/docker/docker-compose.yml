@@ -168,20 +168,20 @@ services:
      - minio
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc config host add --quiet --api s3v4 local http://minio:9012 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      /usr/bin/mc alias set local http://minio:9012 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
       /usr/bin/mc mb --quiet local/${S3_AUDIO_UPLOAD_BUCKET}/;
       /usr/bin/mc mb --quiet local/${S3_AUDIO_PUBLIC_BUCKET}/;
-      /usr/bin/mc policy set public local/${S3_AUDIO_PUBLIC_BUCKET};
+      /usr/bin/mc anonymous set download local/${S3_AUDIO_PUBLIC_BUCKET};
       /usr/bin/mc mb --quiet local/${S3_VIDEO_UPLOAD_BUCKET}/;
       /usr/bin/mc mb --quiet local/${S3_VIDEO_PUBLIC_BUCKET}/;
-      /usr/bin/mc policy set public local/${S3_VIDEO_PUBLIC_BUCKET};
+      /usr/bin/mc anonymous set download local/${S3_VIDEO_PUBLIC_BUCKET};
       /usr/bin/mc mb --quiet local/${S3_VIDEO_THUMBNAIL_BUCKET}/;
-      /usr/bin/mc policy set public local/${S3_VIDEO_THUMBNAIL_BUCKET};
+      /usr/bin/mc anonymous set download local/${S3_VIDEO_THUMBNAIL_BUCKET};
       /usr/bin/mc mb --quiet local/${S3_ATTACHMENTS_BUCKET}/;
-      /usr/bin/mc policy set public local/${S3_ATTACHMENTS_BUCKET};
+      /usr/bin/mc anonymous set download local/${S3_ATTACHMENTS_BUCKET};
       /usr/bin/mc mb --quiet local/${S3_REPORTS_BUCKET}/;
       /usr/bin/mc mb --quiet local/${S3_BUCKET}/;
-      /usr/bin/mc policy set public local/${S3_BUCKET};
+      /usr/bin/mc anonymous set download local/${S3_BUCKET};
       "
 
   mail:
