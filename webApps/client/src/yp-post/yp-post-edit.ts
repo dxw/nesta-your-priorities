@@ -785,6 +785,21 @@ export class YpPostEdit extends YpEditBase {
         charCounter
       >
       </md-outlined-text-field>
+
+
+      <label>
+  <md-checkbox id="agreeMedia" name="agreeMedia"></md-checkbox>
+  Yes, I'd consider talking to the media about my idea.
+
+</label>
+
+      <label>
+  <md-checkbox id="agreeEmail" name="agreeEmail"></md-checkbox>
+Keep me posted on how the Small Ideas campaign's going.
+
+</label>
+
+
     `;
   }
 
