@@ -1626,11 +1626,11 @@ var updatePostData = function (req, post) {
         : null
     );
     post.set(
-      "data.contact.agreeEmail",
-      req.body.contactAgreemedia
+      "data.contact.agreeMedia",
+      req.body.contactAgreeMedia
     );
     post.set(
-      "data.contact.agreemedia",
+      "data.contact.agreeEmail",
       req.body.contactAgreeEmail
     );
     alert(req.body)
