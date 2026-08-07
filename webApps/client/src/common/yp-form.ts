@@ -238,6 +238,7 @@ export class YpForm extends YpBaseElement {
         valid = !!validatable.reportValidity() && valid;
       }
     }
+    console.log(`yp-form: validate() returning ${valid} for ${elements.length} elements`)
     return valid;
   }
 

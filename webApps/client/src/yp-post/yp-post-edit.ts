@@ -53,6 +53,8 @@ export class YpPostEdit extends YpEditBase {
   @property({ type: String })
   action = "/posts";
 
+  private submitActionBase = "/posts";
+
   @property({ type: Boolean })
   newPost = false;
 
@@ -785,6 +787,22 @@ export class YpPostEdit extends YpEditBase {
         charCounter
       >
       </md-outlined-text-field>
+
+
+      <label>
+  <md-checkbox id="agreeMedia" name="agreeMedia"></md-checkbox>
+  Yes, I'd consider talking to the media about my idea.
+
+</label>
+
+      <label>
+  <md-checkbox id="agreeEmail" name="agreeEmail"></md-checkbox>
+Keep me posted on how the Small Ideas campaign's going.
+
+</label>
+By submitting this form, you agree to our  <a href="https://www.nesta.org.uk/privacy/">Privacy Policy</a>.
+
+
     `;
   }
 
@@ -1389,21 +1407,22 @@ export class YpPostEdit extends YpEditBase {
     </md-filled-tonal-icon-button>`;
   }
 
-  async submit(validate = true) {
-    this.submitDisabled = true;
+  private _buildSubmitAction() {
+    let action = this.submitActionBase || "/posts";
+
     if (this.params && this.params.communityId) {
-      this.action = this.action + "/" + this.params.communityId;
+      action = action + "/" + this.params.communityId;
     } else if (this.params && this.params.groupId) {
-      this.action = this.action + "/" + this.params.groupId;
+      action = action + "/" + this.params.groupId;
     } else if (this.params && this.params.organizationId) {
-      this.action = this.action + "/" + this.params.organizationId;
+      action = action + "/" + this.params.organizationId;
     } else if (this.params && this.params.userImages && this.params.postId) {
-      this.action = this.action + "/" + this.params.postId + "/user_images";
+      action = action + "/" + this.params.postId + "/user_images";
     } else if (this.params && this.params.statusChange && this.params.postId) {
-      this.action = this.action + "/" + this.params.postId + "/status_change";
+      action = action + "/" + this.params.postId + "/status_change";
     } else if (this.params && this.params.postId && this.params.imageId) {
-      this.action =
-        this.action +
+      action =
+        action +
         "/" +
         this.params.postId +
         "/" +
@@ -1416,17 +1435,23 @@ export class YpPostEdit extends YpEditBase {
       this.params.disableStatusEmails === true &&
       this.params.postId
     ) {
-      this.action =
-        this.action + "/" + this.params.postId + "/status_change_no_emails";
+      action = action + "/" + this.params.postId + "/status_change_no_emails";
     } else if (this.params && this.params.postId) {
-      this.action = this.action + "/" + this.params.postId;
+      action = action + "/" + this.params.postId;
     } else if (this.params && this.params.userId) {
-      this.action = this.action + "/" + this.params.userId;
+      action = action + "/" + this.params.userId;
     } else if (this.params && this.params.domainId) {
-      this.action = this.action + "/" + this.params.domainId;
+      action = action + "/" + this.params.domainId;
     } else if (this.params && this.params.categoryId) {
-      this.action = this.action + "/" + this.params.categoryId;
+      action = action + "/" + this.params.categoryId;
     }
+
+    return action;
+  }
+
+  async submit(validate = true) {
+    this.submitDisabled = true;
+    this.action = this._buildSubmitAction();
 
     this.requestUpdate();
 
@@ -1446,9 +1471,11 @@ export class YpPostEdit extends YpEditBase {
       (this.$$("#spinner") as Progress).hidden = false;
     } else {
       this.submitDisabled = false;
+
+      const error = this.t("form.invalid");
+      this._showErrorDialog(error);
       this.fire("yp-form-invalid");
-      //const error = this.t("form.invalid");
-      //this._showErrorDialog(error);
+      
     }
   }
 
@@ -1660,6 +1687,7 @@ export class YpPostEdit extends YpEditBase {
   //TODO: Investigate if any are missing .html version of listeners
   override connectedCallback() {
     super.connectedCallback();
+    this.submitActionBase = this.action || "/posts";
     this.addListener("yp-form-invalid", this._formInvalid);
     this.addListener(
       "yp-answer-content-changed-debounced",
@@ -1983,7 +2011,9 @@ export class YpPostEdit extends YpEditBase {
   }
 
   async customSubmit() {
+    console.log("in");
     if (this.submitDisabled) {
+      console.log("A");
       return;
     }
     this.submitDisabled = true;
@@ -1998,6 +2028,7 @@ export class YpPostEdit extends YpEditBase {
     if (hasStructuredQuestions && !this.customValidation()) {
       this.submitDisabled = false;
       this.fire("yp-form-invalid");
+      console.log("B");
       return;
     }
 
@@ -2007,15 +2038,18 @@ export class YpPostEdit extends YpEditBase {
       this.group.configuration.structuredQuestionsJson
     ) {
       await this._submitWithStructuredQuestionsJson();
+      console.log("C");
       return;
     }
 
     if (this.structuredQuestions && this.structuredQuestions.length > 0) {
       await this._submitWithStructuredQuestionsString();
+      console.log("D");
       return;
     }
 
     this.validationErrorMessage = undefined;
+    console.log("E");
     this.submit();
   }
 

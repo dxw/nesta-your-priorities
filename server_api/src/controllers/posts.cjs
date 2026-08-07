@@ -1625,6 +1625,18 @@ var updatePostData = function (req, post) {
         ? req.body.contactAddress
         : null
     );
+    post.set(
+      "data.contact.agreeMedia",
+      req.body.contactAgreeMedia
+    );
+    post.set(
+      "data.contact.agreeEmail",
+      req.body.contactAgreeEmail
+    );
+    alert(req.body)
+    
+
+
   }
 
   if (req.body.uploadedDocumentUrl && req.body.uploadedDocumentUrl != "") {
