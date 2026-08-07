@@ -800,6 +800,7 @@ export class YpPostEdit extends YpEditBase {
 Keep me posted on how the Small Ideas campaign's going.
 
 </label>
+By submitting this form, you agree to our  <a href="https://www.nesta.org.uk/privacy/">Privacy Policy</a>.
 
 
     `;
