@@ -880,6 +880,7 @@ export class YpApp extends YpBaseElement {
           .disableArrowBasedTopNavigation}"
         ?hideBreadcrumbs="${!titleString || titleString == ""}"
         ?hidden="${this.appMode !== "main" ||
+        !this.page ||
         window.appGlobals.domain?.configuration.hideAppBarIfWelcomeHtml}"
       >
         <div slot="navigation">${this.renderNavigation()}</div>
@@ -896,6 +897,7 @@ export class YpApp extends YpBaseElement {
         class="mainPage"
         ?agentBundle="${this.page === "agent_bundle" ||
         window.appGlobals.originalQueryParameters.forAgentBundle}"
+        ?isLandingPage="${!this.page}"
         ?hidden="${this.appMode !== "main"}"
       >
         ${this.renderPage()}
