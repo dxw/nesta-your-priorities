@@ -1597,9 +1597,7 @@ var updatePostData = function (req, post) {
   }
 
   if (
-    req.body.contactName ||
-    req.body.contactEmail ||
-    req.body.contacTelephone
+    1 == 1
   ) {
     post.set(
       "data.contact.name",
@@ -1625,6 +1623,17 @@ var updatePostData = function (req, post) {
         ? req.body.contactAddress
         : null
     );
+    post.set(
+      "data.contact.agreeMedia",
+      req.body.agreeMedia == "on"
+    );
+    post.set(
+      "data.contact.agreeEmail",
+      req.body.agreeEmail == "on"
+    );
+    
+
+
   }
 
   if (req.body.uploadedDocumentUrl && req.body.uploadedDocumentUrl != "") {
