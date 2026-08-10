@@ -117,7 +117,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .intro h1 {
           margin: 0 0 24px;
-          font-size: clamp(2.25rem, 5vw, 3.25rem);
+          font-size: clamp(2rem, 6vw, 5.5rem);
           font-weight: 800;
           line-height: 1.05;
           letter-spacing: -0.01em;
