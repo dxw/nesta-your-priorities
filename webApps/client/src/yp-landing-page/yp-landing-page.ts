@@ -108,7 +108,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .eyebrow {
           margin: 0 0 16px;
-          color: var(--yp-landing-accent-color, #e0218a);
+          color: var(--yp-landing-accent-color, #c81c7c);
           font-size: 0.8125rem;
           font-weight: 700;
           letter-spacing: 0.12em;
@@ -202,7 +202,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--yp-landing-accent-color, #e0218a);
+          background: var(--yp-landing-accent-color, #c81c7c);
           color: #fff;
           cursor: pointer;
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
