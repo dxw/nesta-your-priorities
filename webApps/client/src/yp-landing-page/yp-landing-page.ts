@@ -1,8 +1,9 @@
 import { html, css } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import { YpBaseElement } from "../common/yp-base-element.js";
 import { YpNavHelpers } from "../common/YpNavHelpers.js";
+import { YpHardShadowStyles } from "../common/YpHardShadowStyles.js";
 
 import "@material/web/button/filled-button.js";
 import "@material/web/button/text-button.js";
@@ -11,13 +12,28 @@ type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
 
 @customElement("yp-landing-page")
 export class YpLandingPage extends YpBaseElement {
+  @state()
+  private videoPlaying = false;
+
   static override get styles() {
     return [
       super.styles,
+      YpHardShadowStyles,
       css`
         :host {
           display: block;
           width: 100%;
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+        }
+
+        .logoPlaceholder,
+        .navLinks md-text-button,
+        .eyebrow,
+        .intro h1,
+        h2,
+        .shareIdeaButton,
+        .videoPlaceholderLabel {
+          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
         }
 
         .nav {
@@ -26,12 +42,45 @@ export class YpLandingPage extends YpBaseElement {
           z-index: 5;
           display: flex;
           align-items: center;
-          justify-content: center;
-          gap: 8px;
+          justify-content: space-between;
+          gap: 16px;
           flex-wrap: wrap;
-          padding: 12px 16px;
-          background-color: var(--md-sys-color-surface);
-          border-bottom: 1px solid var(--md-sys-color-outline-variant);
+          padding: 16px 32px;
+          background-color: var(--yp-landing-nav-background-color, #16233c);
+        }
+
+        .logoPlaceholder {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          height: 40px;
+          padding: 0 16px;
+          border: 1px dashed rgba(255, 255, 255, 0.5);
+          border-radius: 4px;
+          color: #fff;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          opacity: 0.85;
+        }
+
+        .navLinks {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          flex-wrap: wrap;
+        }
+
+        .navLinks md-text-button {
+          --md-text-button-label-text-color: #fff;
+          --md-text-button-hover-label-text-color: #fff;
+          --md-text-button-focus-label-text-color: #fff;
+          --md-text-button-pressed-label-text-color: #fff;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
         }
 
         section {
@@ -43,14 +92,126 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .intro {
-          text-align: center;
-          padding-top: 64px;
+          max-width: none;
+          margin: 0;
+          padding: 0;
+          scroll-margin-top: 0;
         }
 
-        h1 {
-          font-size: 2.25rem;
-          margin: 0 0 24px 0;
+        .introCopy {
+          box-sizing: border-box;
+          max-width: 720px;
+          margin: 0 auto;
+          padding: 64px 24px 48px;
+          text-align: center;
+        }
+
+        .eyebrow {
+          margin: 0 0 16px;
+          color: var(--yp-landing-accent-color, #e0218a);
+          font-size: 0.8125rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
+        .intro h1 {
+          margin: 0 0 24px;
+          font-size: clamp(2.25rem, 5vw, 3.25rem);
+          font-weight: 800;
+          line-height: 1.05;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
           color: var(--md-sys-color-on-surface);
+        }
+
+        .quote {
+          max-width: 620px;
+          margin: 0 auto 20px;
+          font-size: 1.0625rem;
+          font-style: italic;
+          line-height: 1.6;
+          color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .attribution {
+          margin: 0 0 32px;
+          font-size: 0.875rem;
+          color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .attribution strong {
+          color: var(--md-sys-color-on-surface);
+        }
+
+        .shareIdeaButton {
+          font: inherit;
+          background: var(--md-sys-color-surface, #fff);
+          color: var(--md-sys-color-on-surface);
+          padding: 12px 28px;
+          font-size: 0.8125rem;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .shareIdeaButton:hover {
+          transform: translate(2px, 2px);
+          box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e0218a);
+        }
+
+        .shareIdeaButton:active {
+          transform: translate(4px, 4px);
+          box-shadow: 2px 2px 0 0 var(--yp-hard-shadow-color, #e0218a);
+        }
+
+        .videoPlaceholder {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(180deg, #12161f, #05070c);
+        }
+
+        .videoPlaceholder video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .videoPlaceholderLabel {
+          position: absolute;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          color: rgba(255, 255, 255, 0.4);
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .playButton {
+          width: 64px;
+          height: 64px;
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-accent-color, #e0218a);
+          color: #fff;
+          cursor: pointer;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .playButton svg {
+          width: 22px;
+          height: 22px;
+          margin-left: 2px;
         }
 
         h2 {
@@ -71,12 +232,16 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         @media (max-width: 600px) {
+          .nav {
+            padding: 12px 16px;
+          }
+
           section {
             padding: 32px 16px;
           }
 
-          .intro {
-            padding-top: 32px;
+          .introCopy {
+            padding: 40px 16px 32px;
           }
         }
       `,
@@ -97,19 +262,64 @@ export class YpLandingPage extends YpBaseElement {
     YpNavHelpers.redirectTo(domainId ? `/domain/${domainId}` : "/domain");
   }
 
+  _playVideo() {
+    window.appGlobals.activity("click", "landingPageVideoPlay");
+    this.videoPlaying = true;
+    this.updateComplete.then(() => {
+      const video = this.$$("#introVideo") as HTMLVideoElement | null;
+      if (video && video.currentSrc) {
+        video.play().catch(() => {});
+      }
+    });
+  }
+
   renderNav() {
     return html`
       <nav class="nav" aria-label="Landing page sections">
-        <md-text-button @click="${() => this._scrollToSection("get-involved")}">
-          Get Involved
-        </md-text-button>
-        <md-text-button @click="${() => this._scrollToSection("about-us")}">
-          About Us
-        </md-text-button>
-        <md-text-button @click="${() => this._scrollToSection("faqs")}">
-          FAQs
-        </md-text-button>
+        <div class="logoPlaceholder" aria-label="Site logo placeholder">
+          Logo
+        </div>
+        <div class="navLinks">
+          <md-text-button
+            @click="${() => this._scrollToSection("get-involved")}"
+          >
+            Get Involved
+          </md-text-button>
+          <md-text-button @click="${() => this._scrollToSection("about-us")}">
+            About Us
+          </md-text-button>
+          <md-text-button @click="${() => this._scrollToSection("faqs")}">
+            FAQs
+          </md-text-button>
+        </div>
       </nav>
+    `;
+  }
+
+  renderIntroVideo() {
+    return html`
+      <div class="videoPlaceholder">
+        <video
+          id="introVideo"
+          preload="none"
+          playsinline
+          ?hidden="${!this.videoPlaying}"
+        ></video>
+        ${!this.videoPlaying
+          ? html`
+              <div class="videoPlaceholderLabel">Video placeholder</div>
+              <button
+                class="playButton"
+                aria-label="Play video"
+                @click="${this._playVideo}"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M8 5v14l11-7z" />
+                </svg>
+              </button>
+            `
+          : ""}
+      </div>
     `;
   }
 
@@ -118,17 +328,28 @@ export class YpLandingPage extends YpBaseElement {
       ${this.renderNav()}
 
       <section class="intro" id="intro">
-        <p>
-          Welcome to Your Priorities, the place where communities come
-          together to share ideas, discuss the challenges that matter to
-          them, and help shape decisions that affect their everyday lives.
-        </p>
-        <p>
-          Whether you're here to make your voice heard, learn what others in
-          your community are thinking, or just see what's going on, we're
-          glad you've stopped by. Use the navigation above to jump straight
-          to what interests you.
-        </p>
+        <div class="introCopy">
+          <p class="eyebrow">The Institute for Small Ideas</p>
+          <h1>Getting government to fix the small stuff</h1>
+          <p class="quote">
+            &ldquo;I think small ideas to fix life's frustrations deserve the
+            same serious policy concentration as the big ones because if we
+            get it right, they add up &ndash; and bit by bit, we can make
+            day-to-day life better for everyone.&rdquo;
+          </p>
+          <p class="attribution">
+            <strong>Martin Lewis</strong>
+            &nbsp;|&nbsp; Money Saving Expert, Chair of the Institute for
+            Small Ideas
+          </p>
+          <button
+            class="shareIdeaButton yp-hard-shadow-box"
+            @click="${this._goToMainSite}"
+          >
+            Share your idea
+          </button>
+        </div>
+        ${this.renderIntroVideo()}
       </section>
 
       <section id="get-involved">
