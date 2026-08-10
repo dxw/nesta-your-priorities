@@ -48,6 +48,7 @@ import "../yp-dialog-container/yp-app-dialogs.js";
 import "../yp-collection/yp-domain.js";
 import "../yp-collection/yp-community.js";
 import "../yp-collection/yp-group.js";
+import "../yp-landing-page/yp-landing-page.js";
 
 import "./yp-app-nav-drawer.js";
 import "./yp-agent-bundle-top-bar.js";
@@ -997,7 +998,9 @@ export class YpApp extends YpBaseElement {
           break;
       }
     } else {
-      pageHtml = nothing;
+      pageHtml = cache(html`
+        <yp-landing-page id="landingPage"></yp-landing-page>
+      `);
     }
 
     return pageHtml;
