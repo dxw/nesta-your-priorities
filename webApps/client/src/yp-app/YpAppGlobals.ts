@@ -117,7 +117,7 @@ export class YpAppGlobals extends YpCodeBase {
   defaultTheme = {
     variant: "monochrome" as MaterialDynamicVariants,
     neutralColor: "ffffff",
-    primaryColor: "ffdc2f",
+    primaryColor: "e144dc",
     tertiaryColor: "1e90ff",
     oneColorScheme: "tonal" as MaterialColorScheme,
     secondaryColor: "121212",
