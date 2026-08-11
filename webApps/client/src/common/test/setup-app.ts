@@ -191,6 +191,8 @@ export class YpTestHelpers {
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
         rel="stylesheet"
       />
+      <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
 
       <base href="/" />
 
@@ -199,6 +201,15 @@ export class YpTestHelpers {
         body {
           margin: 0;
           padding: 0;
+          font-family: Atkinson Hyperlegible, serif;
+        }
+
+          :root {
+            --md-ref-typeface-brand: Bebas Neue, serif;
+            --md-ref-typeface-plain: Bebas Neue, serif;
+
+            --md-sys-typescale-headline-font: "Bebas Neue";
+            --md-sys-typescale-title-font: "Bebas Neue";
         }
       </style>
     `;

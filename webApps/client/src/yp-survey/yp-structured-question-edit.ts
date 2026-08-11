@@ -222,7 +222,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
           padding-bottom: 0;
           margin-bottom: 0px;
           font-weight: 500;
-          font-family: var(--md-ref-typeface-brand);
+          font-family: "Bebas Neue";
         }
 
         .longQuestion[use-small-font] {

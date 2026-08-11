@@ -408,7 +408,7 @@ export class YpPostEdit extends YpEditBase {
         .topHeader {
           font-size: 36px;
           font-weight: 700;
-          font-family: var(--md-ref-typeface-brand);
+          font-family: "Bebas Neue";
           margin-bottom: 32px;
           margin-top: 32px;
         }
