@@ -1,0 +1,19 @@
+.git
+.gitattributes
+.gitignore
+**/node_modules
+
+# Build artefacts that are regenerated inside the image.
+# NB: do NOT ignore server_api/webAppsDist and do NOT use a blanket **/dist --
+# the old Polymer client (old/client/build/bundled), the Land Use Game
+# (land_use_game/dist) and the promotion apps are committed there and are still
+# served by app.ts. Only the Lit client bundle is rebuilt.
+server_api/dist
+server_api/ts-out
+webApps/client/dist
+
+# Stale/unused deployment tooling: node:14 Dockerfiles and compose files.
+deployment
+development
+
+*.md
