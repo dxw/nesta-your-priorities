@@ -6,7 +6,6 @@ import HttpApi from "i18next-http-backend";
 declare let __LOCALES_DIR__: string;
 
 import { YpServerApi } from "../common/YpServerApi.js";
-import { YpNavHelpers } from "../common/YpNavHelpers.js";
 import { YpCodeBase } from "../common/YpCodeBaseclass.js";
 import { YpRecommendations } from "./YpRecommendations.js";
 import { YpCache } from "./YpCache.js";
@@ -21,8 +20,6 @@ export class YpAppGlobals extends YpCodeBase {
   resetSeenWelcome = false;
 
   disableWelcome = false;
-
-  skipRedirect = false;
 
   activityHost = "";
 
@@ -494,38 +491,6 @@ export class YpAppGlobals extends YpCodeBase {
         results.domain.hasLlm !== undefined ? results.domain.hasLlm : false;
       this._domainChanged(this.domain);
       this.setupMyDomains();
-
-      if (!this.skipRedirect) {
-        if (window.location.pathname == "/") {
-          if (
-            results.community &&
-            results.community.configuration &&
-            results.community.configuration.redirectToGroupId
-          ) {
-            YpNavHelpers.redirectTo(
-              "/group/" + results.community.configuration.redirectToGroupId
-            );
-          } else if (
-            results.community &&
-            !results.community.is_community_folder
-          ) {
-            YpNavHelpers.redirectTo("/community/" + results.community.id);
-          } else if (
-            results.community &&
-            results.community.is_community_folder
-          ) {
-            YpNavHelpers.redirectTo(
-              "/community_folder/" + results.community.id
-            );
-          } else {
-            YpNavHelpers.redirectTo("/domain/" + this.domain.id);
-            this.fireGlobal("yp-change-header", {
-              headerTitle: this.domain.domain_name,
-              headerDescription: this.domain.description,
-            });
-          }
-        }
-      }
     }
     this.fireGlobal("yp-boot-from-server");
   }

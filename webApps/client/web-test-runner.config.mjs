@@ -11,6 +11,18 @@ export default {
   },
   preserveSymlinks: true,
   files: 'src/**/*.test.ts',
+  // fetch-mock's browser build pulls in `globrex`, which reads `process.platform`.
+  // Shim a minimal `process` global before any test module loads.
+  testRunnerHtml: (testFramework) => `
+    <html>
+      <body>
+        <script>
+          window.process = window.process || { env: {}, platform: 'browser' };
+        </script>
+        <script type="module" src="${testFramework}"></script>
+      </body>
+    </html>
+  `,
   plugins: [
     commonjs({
       include: [
@@ -19,6 +31,7 @@ export default {
         '**/node_modules/is-subset/**',
         '**/node_modules/i18next-http-backend/**',
         '**/node_modules/fetch-mock/**',
+        '**/node_modules/globrex/**',
         '**/node_modules/lodash.isequal/**',
         '**/node_modules/ms/**',
         '**/node_modules/path-to-regexp/**',

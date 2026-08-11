@@ -5,8 +5,6 @@ import i18next from 'i18next';
 import { html } from 'lit';
 import fetchMock from 'fetch-mock';
 
-declare let __LOCALES_DIR__: string;
-
 export class YpTestHelpers {
   static async setupApp() {
     window.serverApi = new YpServerApi();
