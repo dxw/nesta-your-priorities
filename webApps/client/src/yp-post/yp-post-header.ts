@@ -108,9 +108,8 @@ export class YpPostHeader extends YpPostBaseWithAnswers(
         }
 
         .postName {
-          font-family: var(
-            --md-ref-typeface-brand
-          ); /*var(--md-sys-typescale-title-medium-font);*/
+          font-family:
+            Bebas Neue;
           font-size: var(--md-sys-typescale-title-medium-size, 36px);
           font-weight: var(--md-sys-typescale-title-medium-weight, 700);
           line-height: var(--md-sys-typescale-title-medium-line-height, 48px);

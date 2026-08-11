@@ -2,22 +2,22 @@ import { YpServerApi } from '../YpServerApi.js';
 import { YpAppGlobals } from '../../yp-app/YpAppGlobals.js';
 import { YpAppUser } from '../../yp-app/YpAppUser.js';
 import i18next from 'i18next';
-import HttpApi from 'i18next-http-backend';
 import { html } from 'lit';
 import fetchMock from 'fetch-mock';
-
-declare let __LOCALES_DIR__: string;
 
 export class YpTestHelpers {
   static async setupApp() {
     window.serverApi = new YpServerApi();
     window.appGlobals = new YpAppGlobals(window.serverApi);
     window.appUser = new YpAppUser(window.serverApi);
-    const localesFolder = typeof __LOCALES_DIR__ !== 'undefined' ? __LOCALES_DIR__ : 'locales';
-    await i18next.use(HttpApi).init({
+    await i18next.init({
       lng: 'en',
       fallbackLng: 'en',
-      backend: { loadPath: `/${localesFolder}/{{lng}}/{{ns}}.json` },
+      resources: {
+        en: {
+          translation: {},
+        },
+      },
     });
 
     window.appGlobals.locale = 'en';
@@ -191,6 +191,8 @@ export class YpTestHelpers {
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
         rel="stylesheet"
       />
+      <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
 
       <base href="/" />
 
@@ -199,6 +201,15 @@ export class YpTestHelpers {
         body {
           margin: 0;
           padding: 0;
+          font-family: Atkinson Hyperlegible, serif;
+        }
+
+          :root {
+            --md-ref-typeface-brand: Bebas Neue, serif;
+            --md-ref-typeface-plain: Bebas Neue, serif;
+
+            --md-sys-typescale-headline-font: "Bebas Neue";
+            --md-sys-typescale-title-font: "Bebas Neue";
         }
       </style>
     `;

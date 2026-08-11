@@ -408,7 +408,7 @@ export class YpPostEdit extends YpEditBase {
         .topHeader {
           font-size: 36px;
           font-weight: 700;
-          font-family: var(--md-ref-typeface-brand);
+          font-family: "Bebas Neue";
           margin-bottom: 32px;
           margin-top: 32px;
         }
@@ -1298,6 +1298,7 @@ export class YpPostEdit extends YpEditBase {
   }
 
   renderMediaAndLocation(): TemplateResult | undefined | {} {
+    if (this._mediaPageHidden && this.locationHidden) {return html``};
     return html`
       <div class="layout vertical mediaAndLocation">
         <div>${this.renderLocationTab()}</div>
@@ -1490,6 +1491,7 @@ export class YpPostEdit extends YpEditBase {
 <li><b>Illegal</b> - breaks the law, criminal or otherwise.</li>
 <li><b>Harmful</b> - nothing that harms people or animals.</li>
 </ul>
+<p>&nbsp;</p>
       </div>
       
     `;
@@ -1506,14 +1508,18 @@ export class YpPostEdit extends YpEditBase {
             ${
               this.group && this.post
                 ? html`
+                
                     <div class="layout vertical outerFrameContainer">
+                    
                       <div class="frameContainer">
+                      
                         ${this.renderHeader()}
                         <div
                           class="layout horizontal wrap"
                           ?no-title="${this.group.configuration
                             .hideNameInputAndReplaceWith}"
                         >
+                          
                           ${this.renderDescriptionInputs()}
                           ${this.renderMediaAndLocation()}
                         </div>
