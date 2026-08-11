@@ -187,6 +187,15 @@ export const SMALL_IDEA_CONTENT: {
   ],
 };
 
+export const MARTIN_CONTENT = {
+  heading: "Martin explains why small ideas matter",
+  paragraphs: [
+    "“I think small ideas to fix life’s frustrations deserve the same serious policy concentration as the big ones because if we get it right, they add up – and bit by bit we can make day-to-day life better for everyone.",
+    "Yet when governments get elected, they often have the big things they want to change so they can leave a legacy. Growth, taxes, the NHS, defence. All that’s important, but often controversial, and sometimes risks the next government unwinding it. Yet small, less controversial, changes can have a quick direct impact on people’s lives, but they are sometimes hard to get through the government as they’re not ‘big enough’. That needs to change and we need your help to do it.",
+    "While I’ve always focused on the world of money, this is about more than that, whether it’s health, your community, transport, education or something else. What are your small ideas to improve our country at speed, in a way that everyone will agree with? It could be a small change that helps millions, or a change that only helps thousands but has a big impact.”",
+  ],
+};
+
 export const ABOUT_US_CONTENT = {
   heading: "About Us",
   paragraphs: [

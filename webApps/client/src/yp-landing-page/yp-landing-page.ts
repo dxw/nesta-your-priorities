@@ -17,6 +17,7 @@ import {
   HOW_IT_WORKS_CONTENT,
   KIND_OF_THING_CONTENT,
   SMALL_IDEA_CONTENT,
+  MARTIN_CONTENT,
   ABOUT_US_CONTENT,
   FAQS_CONTENT,
 } from "./yp-landing-page-content.js";
@@ -494,6 +495,49 @@ export class YpLandingPage extends YpBaseElement {
           pointer-events: none;
         }
 
+        .martinSection {
+          background-color: var(--yp-landing-nav-background-color, #2e4057);
+          padding: 64px 24px;
+        }
+
+        .martinSection h2,
+        .martinSection p {
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .martinGrid {
+          display: grid;
+          grid-template-columns: 1.2fr 1fr;
+          gap: 48px;
+          align-items: center;
+        }
+
+        .martinCopy p {
+          font-style: italic;
+          line-height: 1.6;
+        }
+
+        .martinImage {
+          width: 100%;
+          aspect-ratio: 4 / 5;
+          overflow: hidden;
+          border-radius: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-video-background-color, #191923);
+          color: rgba(237, 239, 242, 0.6);
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .martinImage img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -509,8 +553,14 @@ export class YpLandingPage extends YpBaseElement {
 
           .getInvolvedDark,
           .smallIdeaSection,
-          .kindOfThingSection {
+          .kindOfThingSection,
+          .martinSection {
             padding: 40px 16px;
+          }
+
+          .martinGrid {
+            grid-template-columns: 1fr;
+            gap: 24px;
           }
 
           .carouselViewport {
@@ -813,6 +863,20 @@ export class YpLandingPage extends YpBaseElement {
                   </div>
                 `
               )}
+            </div>
+          </div>
+        </div>
+
+        <div class="martinSection">
+          <div class="sectionInner martinGrid">
+            <div class="martinCopy">
+              <h2 class="bigHeading">${MARTIN_CONTENT.heading}</h2>
+              ${MARTIN_CONTENT.paragraphs.map(
+                (paragraph) => html`<p>${paragraph}</p>`
+              )}
+            </div>
+            <div class="martinImage" aria-hidden="true">
+              ${IMAGE_PLACEHOLDER_LABEL}
             </div>
           </div>
         </div>
