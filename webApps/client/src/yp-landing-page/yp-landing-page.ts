@@ -4,74 +4,24 @@ import { customElement, state } from "lit/decorators.js";
 import { YpBaseElement } from "../common/yp-base-element.js";
 import { YpNavHelpers } from "../common/YpNavHelpers.js";
 import { YpHardShadowStyles } from "../common/YpHardShadowStyles.js";
+import {
+  YpLandingSectionId,
+  LOGO_PLACEHOLDER_LABEL,
+  VIDEO_PLACEHOLDER_LABEL,
+  IMAGE_PLACEHOLDER_LABEL,
+  SHARE_IDEA_BUTTON_LABEL,
+  CAROUSEL_REGION_LABEL,
+  NAV_LINKS,
+  INTRO_CONTENT,
+  GET_INVOLVED_CONTENT,
+  HOW_IT_WORKS_CONTENT,
+  KIND_OF_THING_CONTENT,
+  SMALL_IDEA_CONTENT,
+  ABOUT_US_CONTENT,
+  FAQS_CONTENT,
+} from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
-
-type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
-
-const HOW_IT_WORKS_STEPS = [
-  {
-    title: "01: Send us your idea",
-    description:
-      "Small, do-able, non-political - the stuff that'd actually make life better.",
-  },
-  {
-    title: "02: Our policy advisers narrow the list of ideas",
-    description:
-      "They'll sift through your ideas to select the ones that meet the criteria.",
-  },
-  {
-    title: "03: You get to weigh in",
-    description: "We publish the long-list for your feedback.",
-  },
-  {
-    title: "04: Our panel, chaired by Martin, picks the final ones",
-    description: "The cross-party panel choose which ideas go forward.",
-  },
-  {
-    title: "05: We campaign to make them happen",
-    description:
-      "Government, opposition, regulators, whoever needs to hear it.",
-  },
-];
-
-const EXAMPLE_IDEAS = [
-  {
-    title: "Universal allergy symbols",
-    description:
-      "One standard allergy symbol system, on every menu, everywhere - because working out if a dish is safe should be simple.",
-  },
-  {
-    title: "Non-branded school uniform",
-    description:
-      "Every state-funded school to allow non-branded uniform and PE kits to reduce costs.",
-  },
-  {
-    title: "Real-time sewage alerts",
-    description:
-      "Real-time sewage alerts visible at every beach (not just the ones water companies choose to monitor). We should know before we get in!",
-  },
-  {
-    title: "Consistent council forms",
-    description:
-      "Severe Mental Impairment council tax relief is the same wherever you live, so why does each council use a different form with different requirements? One form, everywhere.",
-  },
-  {
-    title: "Fairer car parking charges",
-    description:
-      "Payment meters should let you pay only for the time you're actually parked - not a guess made before you get out of the car.",
-  },
-  {
-    title: "Easy-to-understand care home costs",
-    description:
-      "There should be a standard format for care home costs to make comparing easier.",
-  },
-  {
-    title: "Clearer naming of childcare schemes",
-    description:
-      "“Tax-Free Childcare” isn't free, and it's not about tax. Call it what it is - the Working Families Childcare Top-Up - so people actually understand what they're entitled to.",
-  },
-];
 
 @customElement("yp-landing-page")
 export class YpLandingPage extends YpBaseElement {
@@ -673,20 +623,18 @@ export class YpLandingPage extends YpBaseElement {
     return html`
       <nav class="nav" aria-label="Landing page sections">
         <div class="logoPlaceholder" aria-label="Site logo placeholder">
-          Logo
+          ${LOGO_PLACEHOLDER_LABEL}
         </div>
         <div class="navLinks">
-          <md-text-button
-            @click="${() => this._scrollToSection("get-involved")}"
-          >
-            Get Involved
-          </md-text-button>
-          <md-text-button @click="${() => this._scrollToSection("about-us")}">
-            About Us
-          </md-text-button>
-          <md-text-button @click="${() => this._scrollToSection("faqs")}">
-            FAQs
-          </md-text-button>
+          ${NAV_LINKS.map(
+            (link) => html`
+              <md-text-button
+                @click="${() => this._scrollToSection(link.id)}"
+              >
+                ${link.label}
+              </md-text-button>
+            `
+          )}
         </div>
       </nav>
     `;
@@ -703,7 +651,9 @@ export class YpLandingPage extends YpBaseElement {
         ></video>
         ${!this.videoPlaying
           ? html`
-              <div class="videoPlaceholderLabel">Video placeholder</div>
+              <div class="videoPlaceholderLabel">
+                ${VIDEO_PLACEHOLDER_LABEL}
+              </div>
               <button
                 class="playButton"
                 aria-label="Play video"
@@ -726,24 +676,18 @@ export class YpLandingPage extends YpBaseElement {
 
         <section class="intro" id="intro">
           <div class="introCopy">
-            <p class="eyebrow">The Institute for Small Ideas</p>
-            <h1>Getting government to fix the small stuff</h1>
-            <p class="quote">
-              &ldquo;I think small ideas to fix life's frustrations deserve
-              the same serious policy concentration as the big ones because
-              if we get it right, they add up &ndash; and bit by bit, we can
-              make day-to-day life better for everyone.&rdquo;
-            </p>
+            <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
+            <h1>${INTRO_CONTENT.heading}</h1>
+            <p class="quote">${INTRO_CONTENT.quote}</p>
             <p class="attribution">
-              <strong>Martin Lewis</strong>
-              &nbsp;|&nbsp; Money Saving Expert, Chair of the Institute for
-              Small Ideas
+              <strong>${INTRO_CONTENT.attributionName}</strong>
+              &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
             </p>
             <button
               class="shareIdeaButton yp-hard-shadow-box"
               @click="${this._shareYourIdea}"
             >
-              Share your idea
+              ${SHARE_IDEA_BUTTON_LABEL}
             </button>
           </div>
         </section>
@@ -754,33 +698,23 @@ export class YpLandingPage extends YpBaseElement {
       <section id="get-involved">
         <div class="getInvolvedDark">
           <div class="sectionInner">
-            <h2 class="bigHeading">Get Involved</h2>
-            <p class="eyebrow">Change starts with your small idea.</p>
-            <p>
-              Ever thought, &ldquo;why don&rsquo;t they just fix it?&rdquo;
-              This is the place for you. We want your ideas for practical,
-              non-controversial ways to improve the UK.
-            </p>
-            <p>
-              What are the small things that matter to you? Health, schools,
-              transport, business, housing, policing, justice, tech,
-              shopping, money &ndash; or something else entirely?
-            </p>
-            <p>
-              We&rsquo;ll take the best ideas, turn them into professional
-              policy, and push them under the noses of the people who can
-              make them happen.
-            </p>
+            <h2 class="bigHeading">${GET_INVOLVED_CONTENT.heading}</h2>
+            <p class="eyebrow">${GET_INVOLVED_CONTENT.eyebrow}</p>
+            ${GET_INVOLVED_CONTENT.paragraphs.map(
+              (paragraph) => html`<p>${paragraph}</p>`
+            )}
             <button
               class="shareIdeaButton yp-hard-shadow-box"
               @click="${this._goToMainSite}"
             >
-              Share your idea
+              ${SHARE_IDEA_BUTTON_LABEL}
             </button>
 
-            <h2 class="bigHeading howItWorksHeading">How it works</h2>
+            <h2 class="bigHeading howItWorksHeading">
+              ${HOW_IT_WORKS_CONTENT.heading}
+            </h2>
             <div class="howItWorksGrid">
-              ${HOW_IT_WORKS_STEPS.map(
+              ${HOW_IT_WORKS_CONTENT.steps.map(
                 (step) => html`
                   <div class="howItWorksCard yp-hard-shadow-box">
                     <h3>${step.title}</h3>
@@ -794,33 +728,23 @@ export class YpLandingPage extends YpBaseElement {
 
         <div class="kindOfThingSection">
           <div class="sectionInner">
-            <h2 class="bigHeading">The kind of thing we mean</h2>
-            <p>
-              Think about something that happened to you or someone you care
-              about &ndash; or something that should exist, but doesn&rsquo;t.
-              Was there a rule that made no sense, or something that
-              should&rsquo;ve been simple, and wasn&rsquo;t, or a gap no-one
-              filled? Health, community, education, transport, money, the
-              environment, or anything else &ndash; if it&rsquo;s real to
-              you, it counts.
-            </p>
-            <p>
-              Here&rsquo;s a few, some that&rsquo;ve been campaigned on
-              already, some not, we want yours&hellip;
-            </p>
+            <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
+            ${KIND_OF_THING_CONTENT.paragraphs.map(
+              (paragraph) => html`<p>${paragraph}</p>`
+            )}
             <div
               class="carouselViewport"
               role="region"
-              aria-label="Examples of small ideas"
+              aria-label="${CAROUSEL_REGION_LABEL}"
               tabindex="0"
               @scroll="${this._updateCarouselThumb}"
             >
               <div class="carouselTrack">
-                ${EXAMPLE_IDEAS.map(
+                ${KIND_OF_THING_CONTENT.examples.map(
                   (idea) => html`
                     <div class="carouselCard">
                       <div class="carouselCardImage" aria-hidden="true">
-                        Image placeholder
+                        ${IMAGE_PLACEHOLDER_LABEL}
                       </div>
                       <div class="carouselCardBody yp-hard-shadow-box">
                         <h3>${idea.title}</h3>
@@ -852,109 +776,52 @@ export class YpLandingPage extends YpBaseElement {
           <div class="sectionInner">
             <div class="smallIdeaHeader">
               <div>
-                <h2 class="bigHeading">What is a small idea?</h2>
-                <p class="leadIn">
-                  A small idea is a practical fix for something that affects
-                  everyday life.
-                </p>
+                <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
+                <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
               </div>
               <button
                 class="shareIdeaButton yp-hard-shadow-box"
                 @click="${this._goToMainSite}"
               >
-                Share your idea
+                ${SHARE_IDEA_BUTTON_LABEL}
               </button>
             </div>
             <div class="criteriaGrid">
-              <div class="criteriaBox">
-                <h3>What ideas will make the cut?</h3>
-                <ul>
-                  <li>
-                    <strong>Practical</strong> &ndash; a solution, not just a
-                    complaint
-                  </li>
-                  <li>
-                    <strong>Do-able</strong> &ndash; it must be something
-                    that could realistically change
-                  </li>
-                  <li>
-                    <strong>Relatively inexpensive</strong> &ndash; if it
-                    costs too much, government, regulators, or councils
-                    won&rsquo;t do it
-                  </li>
-                  <li>
-                    <strong>A widespread issue</strong> &ndash; whether it
-                    could help millions of people a little, or thousands of
-                    people a lot
-                  </li>
-                  <li>
-                    <strong
-                      >And crucially&hellip; hard to disagree with</strong
-                    >
-                    &ndash; the kind of thing that 80% of people, whatever
-                    their politics, would say &ldquo;yeah, that makes
-                    sense&rdquo;.
-                  </li>
-                </ul>
-              </div>
-              <div class="criteriaBox">
-                <h3>What we&rsquo;ll say no to:</h3>
-                <ul>
-                  <li>
-                    <strong>Too local</strong> &ndash; a drinking water
-                    fountain in your local park won&rsquo;t cut it
-                  </li>
-                  <li>
-                    <strong>Overly political</strong> &ndash; no party
-                    lines, and no dog whistles
-                  </li>
-                  <li>
-                    <strong>Illegal</strong> &ndash; breaks the law,
-                    criminal or otherwise.
-                  </li>
-                  <li>
-                    <strong>Harmful</strong> &ndash; nothing that harms
-                    people or animals.
-                  </li>
-                </ul>
-              </div>
+              ${SMALL_IDEA_CONTENT.criteria.map(
+                (group) => html`
+                  <div class="criteriaBox">
+                    <h3>${group.heading}</h3>
+                    <ul>
+                      ${group.items.map(
+                        (item) => html`
+                          <li>
+                            <strong>${item.lead}</strong> &ndash; ${item.text}
+                          </li>
+                        `
+                      )}
+                    </ul>
+                  </div>
+                `
+              )}
             </div>
           </div>
         </div>
       </section>
 
       <section id="about-us">
-        <h2>About Us</h2>
-        <p>
-          Your Priorities is a citizen participation platform that helps
-          communities and organisations gather ideas, prioritise them
-          together, and turn discussion into action.
-        </p>
-        <p>
-          Our goal is to make it as easy as possible for anyone to take
-          part in shaping the decisions that affect them, and for
-          organisations to listen at scale.
-        </p>
+        <h2>${ABOUT_US_CONTENT.heading}</h2>
+        ${ABOUT_US_CONTENT.paragraphs.map(
+          (paragraph) => html`<p>${paragraph}</p>`
+        )}
       </section>
 
       <section id="faqs">
-        <h2>FAQs</h2>
-        <p>
-          <strong>Do I need an account to take part?</strong>
-          You can browse most content without one, but you'll need to
-          register to submit ideas, comment, or rate other people's
-          contributions.
-        </p>
-        <p>
-          <strong>Is my information kept private?</strong>
-          We only use your information to run the platform and never sell
-          it to third parties. See our privacy policy for full details.
-        </p>
-        <p>
-          <strong>Who can I contact if I have questions?</strong>
-          You'll find contact details for the team running this community
-          in the footer of the site.
-        </p>
+        <h2>${FAQS_CONTENT.heading}</h2>
+        ${FAQS_CONTENT.items.map(
+          (item) => html`
+            <p><strong>${item.question}</strong> ${item.answer}</p>
+          `
+        )}
       </section>
     `;
   }
