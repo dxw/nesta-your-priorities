@@ -415,6 +415,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .carouselTrack {
           display: flex;
+          align-items: stretch;
           gap: 24px;
           width: max-content;
         }
@@ -423,6 +424,8 @@ export class YpLandingPage extends YpBaseElement {
           flex: 0 0 auto;
           width: clamp(220px, 26vw, 280px);
           scroll-snap-align: start;
+          display: flex;
+          flex-direction: column;
         }
 
         .carouselCardImage {
@@ -446,6 +449,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .carouselCardBody {
+          flex: 1;
           background: var(--yp-landing-surface-color, #edeff2);
           padding: 20px;
         }
@@ -512,6 +516,12 @@ export class YpLandingPage extends YpBaseElement {
           .carouselViewport {
             margin: 0 -16px;
             padding: 0 16px 8px;
+            scroll-snap-type: x mandatory;
+          }
+
+          .carouselCard {
+            width: calc(100vw - 32px);
+            scroll-snap-align: center;
           }
         }
       `,
