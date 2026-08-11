@@ -23,17 +23,22 @@ export class YpLandingPage extends YpBaseElement {
         :host {
           display: block;
           width: 100%;
+          background-color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-heading-text-color, #191923);
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
 
         .logoPlaceholder,
-        .navLinks md-text-button,
-        .eyebrow,
         .intro h1,
         h2,
         .shareIdeaButton,
         .videoPlaceholderLabel {
           font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
+        }
+
+        .navLinks md-text-button,
+        .eyebrow {
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
 
         .nav {
@@ -46,7 +51,7 @@ export class YpLandingPage extends YpBaseElement {
           gap: 16px;
           flex-wrap: wrap;
           padding: 16px 32px;
-          background-color: var(--yp-landing-nav-background-color, #16233c);
+          background-color: var(--yp-landing-nav-background-color, #2e4057);
         }
 
         .logoPlaceholder {
@@ -55,9 +60,9 @@ export class YpLandingPage extends YpBaseElement {
           justify-content: center;
           height: 40px;
           padding: 0 16px;
-          border: 1px dashed rgba(255, 255, 255, 0.5);
+          border: 1px dashed rgba(237, 239, 242, 0.5);
           border-radius: 4px;
-          color: #fff;
+          color: #edeff2;
           font-size: 0.75rem;
           font-weight: 600;
           letter-spacing: 0.08em;
@@ -73,13 +78,14 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .navLinks md-text-button {
-          --md-text-button-label-text-color: #fff;
-          --md-text-button-hover-label-text-color: #fff;
-          --md-text-button-focus-label-text-color: #fff;
-          --md-text-button-pressed-label-text-color: #fff;
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 0.08em;
+          --md-text-button-label-text-color: #edeff2;
+          --md-text-button-hover-label-text-color: #edeff2;
+          --md-text-button-focus-label-text-color: #edeff2;
+          --md-text-button-pressed-label-text-color: #edeff2;
+          font-size: clamp(0.75rem, 1vw, 0.875rem);
+          font-weight: 700;
+          line-height: 1;
+          letter-spacing: normal;
           text-transform: uppercase;
         }
 
@@ -91,7 +97,17 @@ export class YpLandingPage extends YpBaseElement {
           scroll-margin-top: 64px;
         }
 
+        .hero {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+        }
+
         .intro {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           max-width: none;
           margin: 0;
           padding: 0;
@@ -100,6 +116,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .introCopy {
           box-sizing: border-box;
+          width: 100%;
           max-width: 720px;
           margin: 0 auto;
           padding: 64px 24px 48px;
@@ -108,21 +125,22 @@ export class YpLandingPage extends YpBaseElement {
 
         .eyebrow {
           margin: 0 0 16px;
-          color: var(--yp-landing-accent-color, #c81c7c);
-          font-size: 0.8125rem;
+          color: var(--yp-landing-accent-text-color, #c82cc3);
+          font-size: clamp(0.75rem, 1vw, 0.875rem);
           font-weight: 700;
-          letter-spacing: 0.12em;
+          line-height: 1;
+          letter-spacing: normal;
           text-transform: uppercase;
         }
 
         .intro h1 {
           margin: 0 0 24px;
           font-size: clamp(2rem, 6vw, 5.5rem);
-          font-weight: 800;
+          font-weight: 400;
           line-height: 1.05;
           letter-spacing: -0.01em;
           text-transform: uppercase;
-          color: var(--md-sys-color-on-surface);
+          color: var(--yp-landing-heading-text-color, #191923);
         }
 
         .quote {
@@ -131,27 +149,28 @@ export class YpLandingPage extends YpBaseElement {
           font-size: 1.0625rem;
           font-style: italic;
           line-height: 1.6;
-          color: var(--md-sys-color-on-surface-variant);
+          color: var(--yp-landing-body-text-color, #2e4057);
         }
 
         .attribution {
           margin: 0 0 32px;
           font-size: 0.875rem;
-          color: var(--md-sys-color-on-surface-variant);
+          color: var(--yp-landing-body-text-color, #2e4057);
         }
 
         .attribution strong {
-          color: var(--md-sys-color-on-surface);
+          color: var(--yp-landing-heading-text-color, #191923);
         }
 
         .shareIdeaButton {
-          font: inherit;
-          background: var(--md-sys-color-surface, #fff);
-          color: var(--md-sys-color-on-surface);
+          background: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-heading-text-color, #191923);
           padding: 12px 28px;
-          font-size: 0.8125rem;
-          font-weight: 700;
-          letter-spacing: 0.06em;
+          font-size: clamp(1rem, 1.4vw, 1.25rem);
+          font-weight: 400;
+          line-height: 1;
+          letter-spacing: normal;
+          text-align: center;
           text-transform: uppercase;
           cursor: pointer;
           transition: transform 0.1s ease, box-shadow 0.1s ease;
@@ -159,12 +178,12 @@ export class YpLandingPage extends YpBaseElement {
 
         .shareIdeaButton:hover {
           transform: translate(2px, 2px);
-          box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e0218a);
+          box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e144dc);
         }
 
         .shareIdeaButton:active {
           transform: translate(4px, 4px);
-          box-shadow: 2px 2px 0 0 var(--yp-hard-shadow-color, #e0218a);
+          box-shadow: 2px 2px 0 0 var(--yp-hard-shadow-color, #e144dc);
         }
 
         .videoPlaceholder {
@@ -174,7 +193,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(180deg, #12161f, #05070c);
+          background: var(--yp-landing-video-background-color, #191923);
         }
 
         .videoPlaceholder video {
@@ -188,7 +207,7 @@ export class YpLandingPage extends YpBaseElement {
           bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          color: rgba(255, 255, 255, 0.4);
+          color: rgba(237, 239, 242, 0.6);
           font-size: 0.75rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
@@ -202,10 +221,10 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--yp-landing-accent-color, #c81c7c);
-          color: #fff;
+          background: var(--yp-landing-accent-color, #e144dc);
+          color: #edeff2;
           cursor: pointer;
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+          box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
         }
 
         .playButton svg {
@@ -217,13 +236,13 @@ export class YpLandingPage extends YpBaseElement {
         h2 {
           font-size: 1.75rem;
           margin: 0 0 16px 0;
-          color: var(--md-sys-color-on-surface);
+          color: var(--yp-landing-heading-text-color, #191923);
         }
 
         p {
           font-size: 1rem;
           line-height: 1.6;
-          color: var(--md-sys-color-on-surface-variant);
+          color: var(--yp-landing-body-text-color, #2e4057);
           margin: 0 0 16px 0;
         }
 
@@ -325,32 +344,35 @@ export class YpLandingPage extends YpBaseElement {
 
   override render() {
     return html`
-      ${this.renderNav()}
+      <div class="hero">
+        ${this.renderNav()}
 
-      <section class="intro" id="intro">
-        <div class="introCopy">
-          <p class="eyebrow">The Institute for Small Ideas</p>
-          <h1>Getting government to fix the small stuff</h1>
-          <p class="quote">
-            &ldquo;I think small ideas to fix life's frustrations deserve the
-            same serious policy concentration as the big ones because if we
-            get it right, they add up &ndash; and bit by bit, we can make
-            day-to-day life better for everyone.&rdquo;
-          </p>
-          <p class="attribution">
-            <strong>Martin Lewis</strong>
-            &nbsp;|&nbsp; Money Saving Expert, Chair of the Institute for
-            Small Ideas
-          </p>
-          <button
-            class="shareIdeaButton yp-hard-shadow-box"
-            @click="${this._goToMainSite}"
-          >
-            Share your idea
-          </button>
-        </div>
-        ${this.renderIntroVideo()}
-      </section>
+        <section class="intro" id="intro">
+          <div class="introCopy">
+            <p class="eyebrow">The Institute for Small Ideas</p>
+            <h1>Getting government to fix the small stuff</h1>
+            <p class="quote">
+              &ldquo;I think small ideas to fix life's frustrations deserve
+              the same serious policy concentration as the big ones because
+              if we get it right, they add up &ndash; and bit by bit, we can
+              make day-to-day life better for everyone.&rdquo;
+            </p>
+            <p class="attribution">
+              <strong>Martin Lewis</strong>
+              &nbsp;|&nbsp; Money Saving Expert, Chair of the Institute for
+              Small Ideas
+            </p>
+            <button
+              class="shareIdeaButton yp-hard-shadow-box"
+              @click="${this._goToMainSite}"
+            >
+              Share your idea
+            </button>
+          </div>
+        </section>
+      </div>
+
+      ${this.renderIntroVideo()}
 
       <section id="get-involved">
         <h2>Get Involved</h2>
