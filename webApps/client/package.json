@@ -107,7 +107,8 @@
     "rimraf": "^5.0.7",
     "rollup": "^4.18.0",
     "rollup-plugin-copy": "^3.5.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "yargs": "^18.0.0"
   },
   "scripts": {
     "copyInLocalAgents": "cp -R ../../../policy-synth/agents/ts-out/* ./node_modules/@policysynth/agents/;cp ../../../policy-synth/agents/src/*.d.ts ./node_modules/@policysynth/agents/;",
@@ -132,6 +133,8 @@
     "test:watch": "wtr --watch",
     "test:prod": "MODE=prod wtr",
     "test:prod:watch": "MODE=prod wtr --watch",
+    "test:all": "wtr",
+    "test:all:coverage": "wtr --coverage",
     "checksize": "rollup -c ; cat my-element.bundled.js | gzip -9 | wc -c ; rm my-element.bundled.js"
   }
 }
