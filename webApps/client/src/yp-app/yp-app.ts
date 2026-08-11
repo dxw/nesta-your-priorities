@@ -48,6 +48,7 @@ import "../yp-dialog-container/yp-app-dialogs.js";
 import "../yp-collection/yp-domain.js";
 import "../yp-collection/yp-community.js";
 import "../yp-collection/yp-group.js";
+import "../yp-landing-page/yp-landing-page.js";
 
 import "./yp-app-nav-drawer.js";
 import "./yp-agent-bundle-top-bar.js";
@@ -879,6 +880,7 @@ export class YpApp extends YpBaseElement {
           .disableArrowBasedTopNavigation}"
         ?hideBreadcrumbs="${!titleString || titleString == ""}"
         ?hidden="${this.appMode !== "main" ||
+        !this.page ||
         window.appGlobals.domain?.configuration.hideAppBarIfWelcomeHtml}"
       >
         <div slot="navigation">${this.renderNavigation()}</div>
@@ -895,6 +897,7 @@ export class YpApp extends YpBaseElement {
         class="mainPage"
         ?agentBundle="${this.page === "agent_bundle" ||
         window.appGlobals.originalQueryParameters.forAgentBundle}"
+        ?isLandingPage="${!this.page}"
         ?hidden="${this.appMode !== "main"}"
       >
         ${this.renderPage()}
@@ -997,7 +1000,9 @@ export class YpApp extends YpBaseElement {
           break;
       }
     } else {
-      pageHtml = nothing;
+      pageHtml = cache(html`
+        <yp-landing-page id="landingPage"></yp-landing-page>
+      `);
     }
 
     return pageHtml;

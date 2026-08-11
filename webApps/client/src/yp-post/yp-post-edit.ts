@@ -1473,11 +1473,13 @@ export class YpPostEdit extends YpEditBase {
         ${this.renderClose()}
         <div class="flex"></div>
         <md-icon>lightbulb</md-icon>
+        
         <div class="flex"></div>
         ${this.wide ? this.renderSaveButton(true) : nothing}
       </div>
       <div class="topHeader">
         ${this.editHeaderText ? this.editHeaderText : ""}
+        
       </div>
       <div class="layout">
 <h2>Before you send in your idea, here's what counts.</h2>
@@ -1514,14 +1516,18 @@ export class YpPostEdit extends YpEditBase {
             ${
               this.group && this.post
                 ? html`
+                
                     <div class="layout vertical outerFrameContainer">
+                    
                       <div class="frameContainer">
+                      
                         ${this.renderHeader()}
                         <div
                           class="layout horizontal wrap"
                           ?no-title="${this.group.configuration
                             .hideNameInputAndReplaceWith}"
                         >
+                          
                           ${this.renderDescriptionInputs()}
                           ${this.renderMediaAndLocation()}
                         </div>

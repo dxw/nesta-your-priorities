@@ -149,6 +149,10 @@ export const YpAppStyles = css`
     margin-top: 0;
   }
 
+  .mainPage[isLandingPage] {
+    margin-top: 0;
+  }
+
   #helpIconButton {
     margin-right: 4px;
   }
