@@ -281,6 +281,11 @@ export class YpLandingPage extends YpBaseElement {
     YpNavHelpers.redirectTo(domainId ? `/domain/${domainId}` : "/domain");
   }
 
+  _shareYourIdea() {
+    window.appGlobals.activity("click", "landingPageShareYourIdea");
+    YpNavHelpers.redirectTo("/group/1/new_post");
+  }
+
   _playVideo() {
     window.appGlobals.activity("click", "landingPageVideoPlay");
     this.videoPlaying = true;
@@ -364,7 +369,7 @@ export class YpLandingPage extends YpBaseElement {
             </p>
             <button
               class="shareIdeaButton yp-hard-shadow-box"
-              @click="${this._goToMainSite}"
+              @click="${this._shareYourIdea}"
             >
               Share your idea
             </button>

@@ -90,6 +90,25 @@ describe('YpLandingPage', () => {
   });
 
   describe('"Share your idea" button', () => {
+    [YpTestHelpers.getDomain(), undefined].forEach((domain) => {
+      it(`redirects to /group/1/new_post regardless of domain (domain ${
+        domain ? 'loaded' : 'not loaded'
+      })`, () => {
+        window.appGlobals.domain = domain;
+
+        const button = element.shadowRoot!.querySelector(
+          '.shareIdeaButton'
+        ) as HTMLButtonElement;
+        expect(button, 'share idea button should exist').to.exist;
+
+        button.click();
+
+        expect(redirectedTo).to.deep.equal(['/group/1/new_post']);
+      });
+    });
+  });
+
+  describe('"Submit your ideas" button', () => {
     [1, 42].forEach((domainId) => {
       it(`redirects to /domain/${domainId} for the current domain`, async () => {
         window.appGlobals.domain = {
@@ -100,9 +119,9 @@ describe('YpLandingPage', () => {
         await aTimeout(50);
 
         const button = element.shadowRoot!.querySelector(
-          '.shareIdeaButton'
-        ) as HTMLButtonElement;
-        expect(button, 'share idea button should exist').to.exist;
+          '#get-involved md-filled-button'
+        ) as HTMLElement;
+        expect(button, 'submit your ideas button should exist').to.exist;
 
         button.click();
 
@@ -114,8 +133,8 @@ describe('YpLandingPage', () => {
       window.appGlobals.domain = undefined;
 
       const button = element.shadowRoot!.querySelector(
-        '.shareIdeaButton'
-      ) as HTMLButtonElement;
+        '#get-involved md-filled-button'
+      ) as HTMLElement;
       button.click();
 
       expect(redirectedTo).to.deep.equal(['/domain']);
