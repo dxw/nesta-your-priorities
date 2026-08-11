@@ -35,10 +35,58 @@ const HOW_IT_WORKS_STEPS = [
   },
 ];
 
+const EXAMPLE_IDEAS = [
+  {
+    title: "Universal allergy symbols",
+    description:
+      "One standard allergy symbol system, on every menu, everywhere - because working out if a dish is safe should be simple.",
+  },
+  {
+    title: "Non-branded school uniform",
+    description:
+      "Every state-funded school to allow non-branded uniform and PE kits to reduce costs.",
+  },
+  {
+    title: "Real-time sewage alerts",
+    description:
+      "Real-time sewage alerts visible at every beach (not just the ones water companies choose to monitor). We should know before we get in!",
+  },
+  {
+    title: "Consistent council forms",
+    description:
+      "Severe Mental Impairment council tax relief is the same wherever you live, so why does each council use a different form with different requirements? One form, everywhere.",
+  },
+  {
+    title: "Fairer car parking charges",
+    description:
+      "Payment meters should let you pay only for the time you're actually parked - not a guess made before you get out of the car.",
+  },
+  {
+    title: "Easy-to-understand care home costs",
+    description:
+      "There should be a standard format for care home costs to make comparing easier.",
+  },
+  {
+    title: "Clearer naming of childcare schemes",
+    description:
+      "“Tax-Free Childcare” isn't free, and it's not about tax. Call it what it is - the Working Families Childcare Top-Up - so people actually understand what they're entitled to.",
+  },
+];
+
 @customElement("yp-landing-page")
 export class YpLandingPage extends YpBaseElement {
   @state()
   private videoPlaying = false;
+
+  @state()
+  private carouselThumbWidthPercent = 100;
+
+  @state()
+  private carouselThumbLeftPercent = 0;
+
+  private carouselDragging = false;
+  private carouselDragStartX = 0;
+  private carouselDragStartScrollLeft = 0;
 
   static override get styles() {
     return [
@@ -59,7 +107,8 @@ export class YpLandingPage extends YpBaseElement {
         .shareIdeaButton,
         .videoPlaceholderLabel,
         .howItWorksCard h3,
-        .criteriaBox h3 {
+        .criteriaBox h3,
+        .carouselCardBody h3 {
           font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
         }
 
@@ -393,6 +442,104 @@ export class YpLandingPage extends YpBaseElement {
           margin-bottom: 0;
         }
 
+        .kindOfThingSection {
+          padding: 64px 24px;
+        }
+
+        .kindOfThingSection .bigHeading {
+          margin-bottom: 24px;
+        }
+
+        .carouselViewport {
+          margin: 0 -24px;
+          padding: 0 24px 8px;
+          overflow-x: auto;
+          scroll-snap-type: x proximity;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+
+        .carouselViewport::-webkit-scrollbar {
+          display: none;
+        }
+
+        .carouselTrack {
+          display: flex;
+          gap: 24px;
+          width: max-content;
+        }
+
+        .carouselCard {
+          flex: 0 0 auto;
+          width: clamp(220px, 26vw, 280px);
+          scroll-snap-align: start;
+        }
+
+        .carouselCardImage {
+          width: 100%;
+          height: 180px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-video-background-color, #191923);
+          color: rgba(237, 239, 242, 0.6);
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .carouselCardImage img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .carouselCardBody {
+          background: var(--yp-landing-surface-color, #edeff2);
+          padding: 20px;
+        }
+
+        .carouselCardBody h3 {
+          font-size: 1.25rem;
+          font-weight: 400;
+          line-height: 1.15;
+          text-transform: uppercase;
+          letter-spacing: -0.01em;
+          margin: 0 0 12px;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .carouselCardBody p {
+          font-size: 0.9375rem;
+          margin: 0;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .carouselScrollTrack {
+          position: relative;
+          margin-top: 16px;
+          height: 6px;
+          border-radius: 3px;
+          background: rgba(25, 25, 35, 0.15);
+          cursor: grab;
+          touch-action: none;
+        }
+
+        .carouselScrollTrack:active {
+          cursor: grabbing;
+        }
+
+        .carouselScrollThumb {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          border-radius: 3px;
+          background: var(--yp-landing-accent-color, #e144dc);
+          pointer-events: none;
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -407,8 +554,14 @@ export class YpLandingPage extends YpBaseElement {
           }
 
           .getInvolvedDark,
-          .smallIdeaSection {
+          .smallIdeaSection,
+          .kindOfThingSection {
             padding: 40px 16px;
+          }
+
+          .carouselViewport {
+            margin: 0 -16px;
+            padding: 0 16px 8px;
           }
         }
       `,
@@ -443,6 +596,77 @@ export class YpLandingPage extends YpBaseElement {
         video.play().catch(() => {});
       }
     });
+  }
+
+  override connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener("resize", this._updateCarouselThumb);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("resize", this._updateCarouselThumb);
+  }
+
+  override firstUpdated(changedProperties: Map<string, unknown>) {
+    super.firstUpdated(changedProperties);
+    this._updateCarouselThumb();
+  }
+
+  private _updateCarouselThumb = () => {
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    if (!viewport) return;
+    const { scrollWidth, clientWidth, scrollLeft } = viewport;
+    if (scrollWidth <= clientWidth) {
+      this.carouselThumbWidthPercent = 100;
+      this.carouselThumbLeftPercent = 0;
+      return;
+    }
+    this.carouselThumbWidthPercent = (clientWidth / scrollWidth) * 100;
+    const maxScrollLeft = scrollWidth - clientWidth;
+    this.carouselThumbLeftPercent =
+      (scrollLeft / maxScrollLeft) * (100 - this.carouselThumbWidthPercent);
+  };
+
+  _onCarouselTrackPointerDown(event: PointerEvent) {
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    if (!viewport) return;
+    this.carouselDragging = true;
+    this.carouselDragStartX = event.clientX;
+    this.carouselDragStartScrollLeft = viewport.scrollLeft;
+    (event.currentTarget as HTMLElement).setPointerCapture?.(
+      event.pointerId
+    );
+    event.preventDefault();
+  }
+
+  _onCarouselTrackPointerMove(event: PointerEvent) {
+    if (!this.carouselDragging) return;
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    const track = this.$$(".carouselScrollTrack") as HTMLElement | null;
+    if (!viewport || !track) return;
+    const scrollableWidth = viewport.scrollWidth - viewport.clientWidth;
+    if (scrollableWidth <= 0) return;
+    const thumbWidthPx =
+      (track.clientWidth * viewport.clientWidth) / viewport.scrollWidth;
+    const thumbTravelPx = track.clientWidth - thumbWidthPx;
+    if (thumbTravelPx <= 0) return;
+    const deltaX = event.clientX - this.carouselDragStartX;
+    const scrollDelta = (deltaX / thumbTravelPx) * scrollableWidth;
+    viewport.scrollLeft = Math.max(
+      0,
+      Math.min(
+        scrollableWidth,
+        this.carouselDragStartScrollLeft + scrollDelta
+      )
+    );
+  }
+
+  _onCarouselTrackPointerUp(event: PointerEvent) {
+    this.carouselDragging = false;
+    (event.currentTarget as HTMLElement).releasePointerCapture?.(
+      event.pointerId
+    );
   }
 
   renderNav() {
@@ -530,8 +754,8 @@ export class YpLandingPage extends YpBaseElement {
       <section id="get-involved">
         <div class="getInvolvedDark">
           <div class="sectionInner">
-            <p class="eyebrow">Change starts with your small idea.</p>
             <h2 class="bigHeading">Get Involved</h2>
+            <p class="eyebrow">Change starts with your small idea.</p>
             <p>
               Ever thought, &ldquo;why don&rsquo;t they just fix it?&rdquo;
               This is the place for you. We want your ideas for practical,
@@ -564,6 +788,62 @@ export class YpLandingPage extends YpBaseElement {
                   </div>
                 `
               )}
+            </div>
+          </div>
+        </div>
+
+        <div class="kindOfThingSection">
+          <div class="sectionInner">
+            <h2 class="bigHeading">The kind of thing we mean</h2>
+            <p>
+              Think about something that happened to you or someone you care
+              about &ndash; or something that should exist, but doesn&rsquo;t.
+              Was there a rule that made no sense, or something that
+              should&rsquo;ve been simple, and wasn&rsquo;t, or a gap no-one
+              filled? Health, community, education, transport, money, the
+              environment, or anything else &ndash; if it&rsquo;s real to
+              you, it counts.
+            </p>
+            <p>
+              Here&rsquo;s a few, some that&rsquo;ve been campaigned on
+              already, some not, we want yours&hellip;
+            </p>
+            <div
+              class="carouselViewport"
+              role="region"
+              aria-label="Examples of small ideas"
+              tabindex="0"
+              @scroll="${this._updateCarouselThumb}"
+            >
+              <div class="carouselTrack">
+                ${EXAMPLE_IDEAS.map(
+                  (idea) => html`
+                    <div class="carouselCard">
+                      <div class="carouselCardImage" aria-hidden="true">
+                        Image placeholder
+                      </div>
+                      <div class="carouselCardBody yp-hard-shadow-box">
+                        <h3>${idea.title}</h3>
+                        <p>${idea.description}</p>
+                      </div>
+                    </div>
+                  `
+                )}
+              </div>
+            </div>
+            <div
+              class="carouselScrollTrack"
+              aria-hidden="true"
+              @pointerdown="${this._onCarouselTrackPointerDown}"
+              @pointermove="${this._onCarouselTrackPointerMove}"
+              @pointerup="${this._onCarouselTrackPointerUp}"
+              @pointercancel="${this._onCarouselTrackPointerUp}"
+            >
+              <div
+                class="carouselScrollThumb"
+                style="width: ${this.carouselThumbWidthPercent}%; left: ${this
+                  .carouselThumbLeftPercent}%;"
+              ></div>
             </div>
           </div>
         </div>
