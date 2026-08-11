@@ -216,26 +216,46 @@ export const ABOUT_US_CONTENT: {
   ],
 };
 
+export const FAQ_ANSWER_PENDING_LABEL = "Answer coming soon.";
+
 export const FAQS_CONTENT: {
   heading: string;
   items: YpLandingPageFaqItem[];
 } = {
-  heading: "FAQs",
+  heading: "Frequently Asked Questions",
   items: [
     {
-      question: "Do I need an account to take part?",
+      question: "Will you tell me if my idea doesn't get taken forward?",
       answer:
-        "You can browse most content without one, but you'll need to register to submit ideas, comment, or rate other people's contributions.",
+        "We can't get back to everyone individually - we get a lot of ideas. But we'll publish the long-list and the final list publicly, so you'll always be able to see how far your idea got.",
     },
     {
-      question: "Is my information kept private?",
-      answer:
-        "We only use your information to run the platform and never sell it to third parties. See our privacy policy for full details.",
+      question: "Will you contact me about my idea?",
+      answer: "",
     },
     {
-      question: "Who can I contact if I have questions?",
-      answer:
-        "You'll find contact details for the team running this community in the footer of the site.",
+      question: "Do I need evidence or data to back up my idea?",
+      answer: "",
+    },
+    {
+      question: "Can I submit more than one idea?",
+      answer: "",
+    },
+    {
+      question: "Can organisations or charities submit ideas?",
+      answer: "",
+    },
+    {
+      question: "What if my idea overlaps with someone else's?",
+      answer: "",
+    },
+    {
+      question: "What will you do with the final list of ideas?",
+      answer: "",
+    },
+    {
+      question: "Is this anything to do with Money Saving Expert?",
+      answer: "",
     },
   ],
 };

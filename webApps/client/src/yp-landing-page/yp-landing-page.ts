@@ -21,6 +21,7 @@ import {
   MARTIN_CONTENT,
   ABOUT_US_CONTENT,
   FAQS_CONTENT,
+  FAQ_ANSWER_PENDING_LABEL,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -39,6 +40,9 @@ export class YpLandingPage extends YpBaseElement {
   private carouselDragging = false;
   private carouselDragStartX = 0;
   private carouselDragStartScrollLeft = 0;
+
+  @state()
+  private openFaqIndexes = new Set<number>();
 
   static override get styles() {
     return [
@@ -275,7 +279,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         #get-involved,
-        #about-us {
+        #about-us,
+        #faqs {
           max-width: none;
           margin: 0;
           padding: 0;
@@ -588,6 +593,59 @@ export class YpLandingPage extends YpBaseElement {
           text-align: right;
         }
 
+        .faqsSection {
+          background: var(--yp-landing-info-box-color, #8df6f9);
+          padding: 64px 24px;
+        }
+
+        .faqsSection .bigHeading {
+          text-align: center;
+        }
+
+        .faqList {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .faqItem {
+          background: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .faqQuestion {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 20px 24px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          text-align: left;
+          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
+          font-size: 1.125rem;
+          font-weight: 400;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .faqToggleIcon {
+          flex-shrink: 0;
+          font-size: 1.5rem;
+          line-height: 1;
+          color: var(--yp-landing-accent-color, #e144dc);
+        }
+
+        .faqAnswer {
+          margin: 0;
+          padding: 0 24px 20px;
+          font-size: 0.9375rem;
+          line-height: 1.6;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -605,7 +663,8 @@ export class YpLandingPage extends YpBaseElement {
           .smallIdeaSection,
           .kindOfThingSection,
           .martinSection,
-          .aboutUsSection {
+          .aboutUsSection,
+          .faqsSection {
             padding: 40px 16px;
           }
 
@@ -647,6 +706,17 @@ export class YpLandingPage extends YpBaseElement {
   _shareYourIdea() {
     window.appGlobals.activity("click", "landingPageShareYourIdea");
     YpNavHelpers.redirectTo("/group/1/new_post");
+  }
+
+  _toggleFaq(index: number) {
+    const openFaqIndexes = new Set(this.openFaqIndexes);
+    if (openFaqIndexes.has(index)) {
+      openFaqIndexes.delete(index);
+    } else {
+      openFaqIndexes.add(index);
+    }
+    this.openFaqIndexes = openFaqIndexes;
+    window.appGlobals.activity("click", "landingPageFaqToggle", `${index}`);
   }
 
   _playVideo() {
@@ -965,12 +1035,38 @@ export class YpLandingPage extends YpBaseElement {
       </section>
 
       <section id="faqs">
-        <h2>${FAQS_CONTENT.heading}</h2>
-        ${FAQS_CONTENT.items.map(
-          (item) => html`
-            <p><strong>${item.question}</strong> ${item.answer}</p>
-          `
-        )}
+        <div class="faqsSection">
+          <div class="sectionInner">
+            <h2 class="bigHeading">${FAQS_CONTENT.heading}</h2>
+            <div class="faqList">
+              ${FAQS_CONTENT.items.map((item, index) => {
+                const isOpen = this.openFaqIndexes.has(index);
+                return html`
+                  <div class="faqItem yp-hard-shadow-box">
+                    <button
+                      class="faqQuestion"
+                      aria-expanded="${isOpen}"
+                      aria-controls="faq-answer-${index}"
+                      @click="${() => this._toggleFaq(index)}"
+                    >
+                      <span>${item.question}</span>
+                      <span class="faqToggleIcon" aria-hidden="true">
+                        ${isOpen ? "−" : "+"}
+                      </span>
+                    </button>
+                    <p
+                      class="faqAnswer"
+                      id="faq-answer-${index}"
+                      ?hidden="${!isOpen}"
+                    >
+                      ${item.answer || FAQ_ANSWER_PENDING_LABEL}
+                    </p>
+                  </div>
+                `;
+              })}
+            </div>
+          </div>
+        </div>
       </section>
     `;
   }

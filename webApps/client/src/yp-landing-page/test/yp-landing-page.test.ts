@@ -8,7 +8,7 @@ import { YpNavHelpers } from '../../common/YpNavHelpers.js';
 const SECTIONS = [
   { id: 'get-involved', navLabel: 'Get Involved', heading: 'Get Involved' },
   { id: 'about-us', navLabel: 'About Us', heading: 'About Us' },
-  { id: 'faqs', navLabel: 'FAQs', heading: 'FAQs' },
+  { id: 'faqs', navLabel: 'FAQs', heading: 'Frequently Asked Questions' },
 ];
 
 describe('YpLandingPage', () => {
