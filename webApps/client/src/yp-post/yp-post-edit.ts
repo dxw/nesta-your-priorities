@@ -1469,19 +1469,11 @@ export class YpPostEdit extends YpEditBase {
 
   renderHeader() {
     return html`
-      <div class="layout horizontal actionBar">
-        ${this.renderClose()}
-        <div class="flex"></div>
-        <md-icon>lightbulb</md-icon>
-        
-        <div class="flex"></div>
-        ${this.wide ? this.renderSaveButton(true) : nothing}
-      </div>
       <div class="topHeader">
         ${this.editHeaderText ? this.editHeaderText : ""}
-        
-      </div>
+     </div>
       <div class="layout">
+
 <h2>Before you send in your idea, here's what counts.</h2>
 <h3>What ideas will make the cut?</h3>
 <ul>
