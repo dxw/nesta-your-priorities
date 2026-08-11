@@ -28,6 +28,7 @@ export interface YpLandingPageFaqItem {
 export const LOGO_PLACEHOLDER_LABEL = "Logo";
 export const VIDEO_PLACEHOLDER_LABEL = "Video placeholder";
 export const IMAGE_PLACEHOLDER_LABEL = "Image placeholder";
+export const LOGO_IMAGE_PLACEHOLDER_LABEL = "Logo placeholder";
 export const SHARE_IDEA_BUTTON_LABEL = "Share your idea";
 export const CAROUSEL_REGION_LABEL = "Examples of small ideas";
 
@@ -196,11 +197,22 @@ export const MARTIN_CONTENT = {
   ],
 };
 
-export const ABOUT_US_CONTENT = {
+export const ABOUT_US_CONTENT: {
+  heading: string;
+  paragraphs: string[];
+  ledByLabel: string;
+  leaders: string[];
+} = {
   heading: "About Us",
   paragraphs: [
-    "Your Priorities is a citizen participation platform that helps communities and organisations gather ideas, prioritise them together, and turn discussion into action.",
-    "Our goal is to make it as easy as possible for anyone to take part in shaping the decisions that affect them, and for organisations to listen at scale.",
+    "The Institute for Small Ideas is a non-partisan project. It was founded, and is funded in a personal capacity by Martin Lewis, Money Saving Expert, who is our Chair.",
+    "It’s run by two charities, Nesta’s Centre for Collective Intelligence and Involve. They organise the logistics of taking your ideas, sharpening them, and supporting Martin to get them in front of the people who can act. And because no one trusts an idea that only one side likes, we’ve got a cross-party panel of politicians and policy experts helping us work out which ideas can actually get support, and which are workable.",
+  ],
+  ledByLabel: "Led by:",
+  leaders: [
+    "Martin Lewis, Chair",
+    "Kathy Peach, Co-Director",
+    "Sue Tibbals, Co-Director",
   ],
 };
 

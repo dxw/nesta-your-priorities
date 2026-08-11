@@ -9,6 +9,7 @@ import {
   LOGO_PLACEHOLDER_LABEL,
   VIDEO_PLACEHOLDER_LABEL,
   IMAGE_PLACEHOLDER_LABEL,
+  LOGO_IMAGE_PLACEHOLDER_LABEL,
   SHARE_IDEA_BUTTON_LABEL,
   CAROUSEL_REGION_LABEL,
   NAV_LINKS,
@@ -273,7 +274,8 @@ export class YpLandingPage extends YpBaseElement {
           margin: 0 0 16px 0;
         }
 
-        #get-involved {
+        #get-involved,
+        #about-us {
           max-width: none;
           margin: 0;
           padding: 0;
@@ -538,6 +540,54 @@ export class YpLandingPage extends YpBaseElement {
           object-fit: cover;
         }
 
+        .aboutUsSection {
+          padding: 64px 24px;
+        }
+
+        .aboutUsGrid {
+          display: grid;
+          grid-template-columns: 1fr 1.2fr;
+          gap: 48px;
+          align-items: start;
+        }
+
+        .aboutUsLogo {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-video-background-color, #191923);
+          color: rgba(237, 239, 242, 0.6);
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .aboutUsLogo img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .aboutUsCopy p {
+          text-align: justify;
+        }
+
+        .aboutUsLeadershipList {
+          margin: 0 0 16px;
+          padding-left: 20px;
+        }
+
+        .aboutUsLeadershipList li {
+          line-height: 1.6;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .aboutUsActions {
+          text-align: right;
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -554,11 +604,13 @@ export class YpLandingPage extends YpBaseElement {
           .getInvolvedDark,
           .smallIdeaSection,
           .kindOfThingSection,
-          .martinSection {
+          .martinSection,
+          .aboutUsSection {
             padding: 40px 16px;
           }
 
-          .martinGrid {
+          .martinGrid,
+          .aboutUsGrid {
             grid-template-columns: 1fr;
             gap: 24px;
           }
@@ -883,10 +935,33 @@ export class YpLandingPage extends YpBaseElement {
       </section>
 
       <section id="about-us">
-        <h2>${ABOUT_US_CONTENT.heading}</h2>
-        ${ABOUT_US_CONTENT.paragraphs.map(
-          (paragraph) => html`<p>${paragraph}</p>`
-        )}
+        <div class="aboutUsSection">
+          <div class="sectionInner aboutUsGrid">
+            <div class="aboutUsLogo" aria-hidden="true">
+              ${LOGO_IMAGE_PLACEHOLDER_LABEL}
+            </div>
+            <div class="aboutUsCopy">
+              <h2 class="bigHeading">${ABOUT_US_CONTENT.heading}</h2>
+              ${ABOUT_US_CONTENT.paragraphs.map(
+                (paragraph) => html`<p>${paragraph}</p>`
+              )}
+              <p>${ABOUT_US_CONTENT.ledByLabel}</p>
+              <ul class="aboutUsLeadershipList">
+                ${ABOUT_US_CONTENT.leaders.map(
+                  (leader) => html`<li>${leader}</li>`
+                )}
+              </ul>
+              <div class="aboutUsActions">
+                <button
+                  class="shareIdeaButton yp-hard-shadow-box"
+                  @click="${this._goToMainSite}"
+                >
+                  ${SHARE_IDEA_BUTTON_LABEL}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="faqs">
