@@ -5,10 +5,35 @@ import { YpBaseElement } from "../common/yp-base-element.js";
 import { YpNavHelpers } from "../common/YpNavHelpers.js";
 import { YpHardShadowStyles } from "../common/YpHardShadowStyles.js";
 
-import "@material/web/button/filled-button.js";
 import "@material/web/button/text-button.js";
 
 type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
+
+const HOW_IT_WORKS_STEPS = [
+  {
+    title: "01: Send us your idea",
+    description:
+      "Small, do-able, non-political - the stuff that'd actually make life better.",
+  },
+  {
+    title: "02: Our policy advisers narrow the list of ideas",
+    description:
+      "They'll sift through your ideas to select the ones that meet the criteria.",
+  },
+  {
+    title: "03: You get to weigh in",
+    description: "We publish the long-list for your feedback.",
+  },
+  {
+    title: "04: Our panel, chaired by Martin, picks the final ones",
+    description: "The cross-party panel choose which ideas go forward.",
+  },
+  {
+    title: "05: We campaign to make them happen",
+    description:
+      "Government, opposition, regulators, whoever needs to hear it.",
+  },
+];
 
 @customElement("yp-landing-page")
 export class YpLandingPage extends YpBaseElement {
@@ -32,7 +57,9 @@ export class YpLandingPage extends YpBaseElement {
         .intro h1,
         h2,
         .shareIdeaButton,
-        .videoPlaceholderLabel {
+        .videoPlaceholderLabel,
+        .howItWorksCard h3,
+        .criteriaBox h3 {
           font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
         }
 
@@ -246,8 +273,124 @@ export class YpLandingPage extends YpBaseElement {
           margin: 0 0 16px 0;
         }
 
-        .getInvolvedActions {
+        #get-involved {
+          max-width: none;
+          margin: 0;
+          padding: 0;
+          text-align: left;
+        }
+
+        .sectionInner {
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+
+        .bigHeading {
+          font-size: clamp(2rem, 4vw, 2.75rem);
+          font-weight: 400;
+          line-height: 1.05;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+          margin: 0 0 16px;
+        }
+
+        .getInvolvedDark {
+          background-color: var(--yp-landing-nav-background-color, #2e4057);
+          padding: 64px 24px;
+        }
+
+        .getInvolvedDark h2,
+        .getInvolvedDark p {
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .getInvolvedDark .eyebrow {
+          color: var(--yp-landing-accent-color, #e144dc);
+        }
+
+        .howItWorksHeading {
+          margin-top: 48px;
+        }
+
+        .howItWorksGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          gap: 24px;
           margin-top: 24px;
+        }
+
+        .howItWorksCard {
+          background: var(--yp-landing-surface-color, #edeff2);
+          padding: 20px;
+        }
+
+        .howItWorksCard h3,
+        .criteriaBox h3 {
+          font-size: 1.25rem;
+          font-weight: 400;
+          line-height: 1.15;
+          text-transform: uppercase;
+          letter-spacing: -0.01em;
+          margin: 0 0 12px;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .howItWorksCard p {
+          font-size: 0.9375rem;
+          margin: 0;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .smallIdeaSection {
+          padding: 64px 24px;
+        }
+
+        .smallIdeaHeader {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 24px;
+          flex-wrap: wrap;
+          margin-bottom: 32px;
+        }
+
+        .smallIdeaHeader .bigHeading {
+          margin-bottom: 8px;
+        }
+
+        .leadIn {
+          max-width: 480px;
+          margin: 0;
+          color: var(--yp-landing-accent-text-color, #c82cc3);
+          font-weight: 700;
+          font-size: 1rem;
+        }
+
+        .criteriaGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 24px;
+        }
+
+        .criteriaBox {
+          background: var(--yp-landing-info-box-color, #8df6f9);
+          border-radius: 4px;
+          padding: 24px;
+        }
+
+        .criteriaBox ul {
+          margin: 0;
+          padding-left: 20px;
+        }
+
+        .criteriaBox li {
+          margin-bottom: 12px;
+          line-height: 1.5;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .criteriaBox li:last-child {
+          margin-bottom: 0;
         }
 
         @media (max-width: 600px) {
@@ -261,6 +404,11 @@ export class YpLandingPage extends YpBaseElement {
 
           .introCopy {
             padding: 40px 16px 32px;
+          }
+
+          .getInvolvedDark,
+          .smallIdeaSection {
+            padding: 40px 16px;
           }
         }
       `,
@@ -380,22 +528,118 @@ export class YpLandingPage extends YpBaseElement {
       ${this.renderIntroVideo()}
 
       <section id="get-involved">
-        <h2>Get Involved</h2>
-        <p>
-          There are lots of ways to take part. You can submit your own
-          ideas, comment on and rate ideas from other members of the
-          community, and follow discussions on the topics you care about
-          most.
-        </p>
-        <p>
-          Every contribution helps build a clearer picture of what matters
-          to the community, so decision makers can act on real, shared
-          priorities rather than guesswork.
-        </p>
-        <div class="getInvolvedActions">
-          <md-filled-button @click="${this._goToMainSite}">
-            Submit your ideas
-          </md-filled-button>
+        <div class="getInvolvedDark">
+          <div class="sectionInner">
+            <p class="eyebrow">Change starts with your small idea.</p>
+            <h2 class="bigHeading">Get Involved</h2>
+            <p>
+              Ever thought, &ldquo;why don&rsquo;t they just fix it?&rdquo;
+              This is the place for you. We want your ideas for practical,
+              non-controversial ways to improve the UK.
+            </p>
+            <p>
+              What are the small things that matter to you? Health, schools,
+              transport, business, housing, policing, justice, tech,
+              shopping, money &ndash; or something else entirely?
+            </p>
+            <p>
+              We&rsquo;ll take the best ideas, turn them into professional
+              policy, and push them under the noses of the people who can
+              make them happen.
+            </p>
+            <button
+              class="shareIdeaButton yp-hard-shadow-box"
+              @click="${this._goToMainSite}"
+            >
+              Share your idea
+            </button>
+
+            <h2 class="bigHeading howItWorksHeading">How it works</h2>
+            <div class="howItWorksGrid">
+              ${HOW_IT_WORKS_STEPS.map(
+                (step) => html`
+                  <div class="howItWorksCard yp-hard-shadow-box">
+                    <h3>${step.title}</h3>
+                    <p>${step.description}</p>
+                  </div>
+                `
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div class="smallIdeaSection">
+          <div class="sectionInner">
+            <div class="smallIdeaHeader">
+              <div>
+                <h2 class="bigHeading">What is a small idea?</h2>
+                <p class="leadIn">
+                  A small idea is a practical fix for something that affects
+                  everyday life.
+                </p>
+              </div>
+              <button
+                class="shareIdeaButton yp-hard-shadow-box"
+                @click="${this._goToMainSite}"
+              >
+                Share your idea
+              </button>
+            </div>
+            <div class="criteriaGrid">
+              <div class="criteriaBox">
+                <h3>What ideas will make the cut?</h3>
+                <ul>
+                  <li>
+                    <strong>Practical</strong> &ndash; a solution, not just a
+                    complaint
+                  </li>
+                  <li>
+                    <strong>Do-able</strong> &ndash; it must be something
+                    that could realistically change
+                  </li>
+                  <li>
+                    <strong>Relatively inexpensive</strong> &ndash; if it
+                    costs too much, government, regulators, or councils
+                    won&rsquo;t do it
+                  </li>
+                  <li>
+                    <strong>A widespread issue</strong> &ndash; whether it
+                    could help millions of people a little, or thousands of
+                    people a lot
+                  </li>
+                  <li>
+                    <strong
+                      >And crucially&hellip; hard to disagree with</strong
+                    >
+                    &ndash; the kind of thing that 80% of people, whatever
+                    their politics, would say &ldquo;yeah, that makes
+                    sense&rdquo;.
+                  </li>
+                </ul>
+              </div>
+              <div class="criteriaBox">
+                <h3>What we&rsquo;ll say no to:</h3>
+                <ul>
+                  <li>
+                    <strong>Too local</strong> &ndash; a drinking water
+                    fountain in your local park won&rsquo;t cut it
+                  </li>
+                  <li>
+                    <strong>Overly political</strong> &ndash; no party
+                    lines, and no dog whistles
+                  </li>
+                  <li>
+                    <strong>Illegal</strong> &ndash; breaks the law,
+                    criminal or otherwise.
+                  </li>
+                  <li>
+                    <strong>Harmful</strong> &ndash; nothing that harms
+                    people or animals.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
