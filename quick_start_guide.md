@@ -87,6 +87,8 @@ Optional full local stack:
 docker compose up db redis minio mc elasticsearch mail -d
 ```
 
+Minio provides a local S3, and mc configures it to have the right buckets (probably only needed once).
+
 ### Terminal 2: Backend API
 
 ```bash
