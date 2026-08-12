@@ -30,3 +30,56 @@ describe('YpPostEdit', () => {
     await expect(element).shadowDom.to.be.accessible();
   });
 });
+
+describe('YpPostEdit thank you screen', () => {
+  let element: YpPostEdit;
+
+  before(async () => {
+    await YpTestHelpers.setupApp();
+  });
+
+  beforeEach(async () => {
+    // Fixture intentionally omits YpTestHelpers.renderCommonHeader() so the
+    // fixture root is the <yp-post-edit> element itself, not one of the
+    // header's <link> tags.
+    element = await fixture(html`
+      <yp-post-edit
+        .group="${YpTestHelpers.getGroup()}"
+        .post="${YpTestHelpers.getPost()}"
+        newPost
+      ></yp-post-edit>
+    `);
+    await aTimeout(100);
+  });
+
+  it('shows a thank you message with actions after a new post submission', async () => {
+    element.submissionCompleted = true;
+    element.thankYouMessage = 'Thank you for adding content';
+    await element.updateComplete;
+
+    const thankYouMessage = element.shadowRoot!.querySelector('.thankYouMessage');
+    expect(thankYouMessage).to.exist;
+    expect(thankYouMessage!.textContent).to.contain('Thank you for adding content');
+
+    const buttons = element.shadowRoot!.querySelectorAll(
+      '.thankYouActions md-filled-button, .thankYouActions md-outlined-button'
+    );
+    expect(buttons.length).to.equal(2);
+
+    await expect(element).shadowDom.to.be.accessible();
+  });
+
+  it('returns to the form when submitting another idea, without leftover content', async () => {
+    element.submissionCompleted = true;
+    element.thankYouMessage = 'Thank you for adding content';
+    element.post = { ...YpTestHelpers.getPost(), name: 'Submitted idea name' };
+    await element.updateComplete;
+
+    (element as any)._submitAnotherIdea();
+    await element.updateComplete;
+
+    expect(element.submissionCompleted).to.be.false;
+    expect(element.shadowRoot!.querySelector('.thankYouMessage')).to.not.exist;
+    expect(element.post?.name).to.equal('');
+  });
+});
