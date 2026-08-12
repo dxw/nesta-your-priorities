@@ -79,8 +79,8 @@ export const HOW_IT_WORKS_CONTENT: {
       description: "We publish the long-list for your feedback.",
     },
     {
-      title: "04: Our panel, chaired by Martin, picks the final ones",
-      description: "The cross-party panel choose which ideas go forward.",
+      title: "04: Our cross-party panel, chaired by Martin, picks the final ones",
+      description: "They choose which ideas go forward.",
     },
     {
       title: "05: We campaign to make them happen",
@@ -208,11 +208,11 @@ export const ABOUT_US_CONTENT: {
     "The Institute for Small Ideas is a non-partisan project. It was founded, and is funded in a personal capacity by Martin Lewis, Money Saving Expert, who is our Chair.",
     "It’s run by two charities, Nesta’s Centre for Collective Intelligence and Involve. They organise the logistics of taking your ideas, sharpening them, and supporting Martin to get them in front of the people who can act. And because no one trusts an idea that only one side likes, we’ve got a cross-party panel of politicians and policy experts helping us work out which ideas can actually get support, and which are workable.",
   ],
-  ledByLabel: "Led by:",
+  ledByLabel: "Team:",
   leaders: [
     "Martin Lewis, Chair",
-    "Kathy Peach, Co-Director",
-    "Sue Tibbals, Co-Director",
+    "Kathy Peach, Nesta Centre for Collective Intelligence, Director",
+    "Sue Tibbals, Involve",
   ],
 };
 
@@ -231,31 +231,31 @@ export const FAQS_CONTENT: {
     },
     {
       question: "Will you contact me about my idea?",
-      answer: "",
+      answer: "Only for media opportunities, and only if you say yes at the point of submission. It's entirely optional, and saying no won't affect your idea's chances.",
     },
     {
       question: "Do I need evidence or data to back up my idea?",
-      answer: "",
+      answer: "No. Just tell us the problem and what you think would fix it - in your own words. If it makes the cut, we'll help sharpen it and build the case behind it.",
     },
     {
       question: "Can I submit more than one idea?",
-      answer: "",
+      answer: "Yes - if you've got more than one, send them separately so each gets looked at properly.",
     },
     {
       question: "Can organisations or charities submit ideas?",
-      answer: "",
+      answer: "Yes – if they fulfil our criteria. And we would especially welcome this in areas where people are unable or unlikely to put forward ideas themselves, whether it’s for young children, or people who face barriers to being heard.",
     },
     {
       question: "What if my idea overlaps with someone else's?",
-      answer: "",
+      answer: "That's fine, and it happens a lot. Popular ideas often come from lots of people spotting the same problem. We'll group similar ideas together rather than picking just one version.",
     },
     {
       question: "What will you do with the final list of ideas?",
-      answer: "",
+      answer: "Martin will take them to the people in government who can actually act on them - and keep pushing until they do.",
     },
     {
-      question: "Is this anything to do with Money Saving Expert?",
-      answer: "",
+      question: "Is this anything to do with MoneySavingExpert?",
+      answer: "No. Martin set up this project in a personal capacity. It's run by Nesta's Centre for Collective Intelligence and Involve, with Martin as Chair and funder.",
     },
   ],
 };
