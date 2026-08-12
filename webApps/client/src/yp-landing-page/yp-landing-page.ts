@@ -381,7 +381,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .criteriaGrid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          grid-template-columns: 2fr 1fr;
           gap: 24px;
         }
 
@@ -553,8 +553,19 @@ export class YpLandingPage extends YpBaseElement {
         .martinGrid {
           display: grid;
           grid-template-columns: 1.2fr 1fr;
-          gap: 48px;
+          column-gap: 48px;
+          row-gap: 0;
           align-items: center;
+        }
+
+        .martinHeading {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .martinCopy {
+          grid-column: 1;
+          grid-row: 2;
         }
 
         .martinCopy p {
@@ -563,6 +574,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .martinImage {
+          grid-column: 2;
+          grid-row: 1 / span 2;
           width: 100%;
           aspect-ratio: 4 / 5;
           overflow: hidden;
@@ -710,6 +723,17 @@ export class YpLandingPage extends YpBaseElement {
           .aboutUsGrid {
             grid-template-columns: 1fr;
             gap: 24px;
+          }
+
+          .martinHeading,
+          .martinCopy,
+          .martinImage {
+            grid-column: auto;
+            grid-row: auto;
+          }
+
+          .criteriaGrid {
+            grid-template-columns: 1fr;
           }
 
           .smallIdeaHeader {
@@ -1088,14 +1112,14 @@ export class YpLandingPage extends YpBaseElement {
 
         <div class="martinSection">
           <div class="sectionInner martinGrid">
+            <h2 class="bigHeading martinHeading">${MARTIN_CONTENT.heading}</h2>
+            <div class="martinImage" aria-hidden="true">
+              ${IMAGE_PLACEHOLDER_LABEL}
+            </div>
             <div class="martinCopy">
-              <h2 class="bigHeading">${MARTIN_CONTENT.heading}</h2>
               ${MARTIN_CONTENT.paragraphs.map(
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
-            </div>
-            <div class="martinImage" aria-hidden="true">
-              ${IMAGE_PLACEHOLDER_LABEL}
             </div>
           </div>
         </div>
