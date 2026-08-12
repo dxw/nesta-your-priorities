@@ -22,6 +22,7 @@ import {
   ABOUT_US_CONTENT,
   FAQS_CONTENT,
   FAQ_ANSWER_PENDING_LABEL,
+  FOOTER_CONTENT,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -698,6 +699,64 @@ export class YpLandingPage extends YpBaseElement {
           color: var(--yp-landing-body-text-color, #2e4057);
         }
 
+        .siteFooter {
+          background: var(--yp-landing-video-background-color, #191923);
+          padding: 64px 24px;
+        }
+
+        .footerHeading {
+          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
+          font-size: 1.25rem;
+          font-weight: 400;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+          margin: 0 0 12px;
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .footerEmail {
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 16px;
+          text-transform: uppercase;
+          color: var(--yp-landing-surface-color, #edeff2);
+          text-decoration: none;
+        }
+
+        .footerEmail:hover,
+        .footerEmail:focus {
+          text-decoration: underline;
+        }
+
+        .footerBottomRow {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          margin-top: 64px;
+        }
+
+        .footerCopyright {
+          margin: 0;
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 12px;
+          text-transform: uppercase;
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .footerPrivacyLink {
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 12px;
+          text-transform: uppercase;
+          color: var(--yp-landing-surface-color, #edeff2);
+          text-decoration: none;
+        }
+
+        .footerPrivacyLink:hover,
+        .footerPrivacyLink:focus {
+          text-decoration: underline;
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -716,8 +775,13 @@ export class YpLandingPage extends YpBaseElement {
           .kindOfThingSection,
           .martinSection,
           .aboutUsSection,
-          .faqsSection {
+          .faqsSection,
+          .siteFooter {
             padding: 40px 16px;
+          }
+
+          .footerBottomRow {
+            margin-top: 40px;
           }
 
           .martinGrid,
@@ -1190,6 +1254,32 @@ export class YpLandingPage extends YpBaseElement {
           </div>
         </div>
       </section>
+
+      <footer class="siteFooter">
+        <div class="sectionInner">
+          <h2 class="footerHeading">${FOOTER_CONTENT.heading}</h2>
+          <a
+            class="footerEmail"
+            href="mailto:${FOOTER_CONTENT.emailAddress}"
+          >
+            ${FOOTER_CONTENT.emailAddress}
+          </a>
+          <div class="footerBottomRow">
+            <p class="footerCopyright">
+              &copy; ${new Date().getFullYear()}
+              ${FOOTER_CONTENT.copyrightHolder}. All rights reserved.
+            </p>
+            <a
+              class="footerPrivacyLink"
+              href="${FOOTER_CONTENT.privacyPolicyUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ${FOOTER_CONTENT.privacyPolicyLabel}
+            </a>
+          </div>
+        </div>
+      </footer>
     `;
   }
 }

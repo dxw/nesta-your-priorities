@@ -259,3 +259,11 @@ export const FAQS_CONTENT: {
     },
   ],
 };
+
+export const FOOTER_CONTENT = {
+  heading: "Contact",
+  emailAddress: "smallideas@nesta.org.uk",
+  copyrightHolder: "The Institute for Small Ideas",
+  privacyPolicyLabel: "Privacy Policy",
+  privacyPolicyUrl: "https://www.nesta.org.uk/privacy/",
+};
