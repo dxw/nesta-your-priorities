@@ -4,16 +4,52 @@ import { customElement, state } from "lit/decorators.js";
 import { YpBaseElement } from "../common/yp-base-element.js";
 import { YpNavHelpers } from "../common/YpNavHelpers.js";
 import { YpHardShadowStyles } from "../common/YpHardShadowStyles.js";
+import {
+  YpLandingSectionId,
+  LOGO_PLACEHOLDER_LABEL,
+  VIDEO_PLACEHOLDER_LABEL,
+  IMAGE_PLACEHOLDER_LABEL,
+  LOGO_IMAGE_PLACEHOLDER_LABEL,
+  SHARE_IDEA_BUTTON_LABEL,
+  CAROUSEL_REGION_LABEL,
+  NAV_LINKS,
+  INTRO_CONTENT,
+  GET_INVOLVED_CONTENT,
+  HOW_IT_WORKS_CONTENT,
+  KIND_OF_THING_CONTENT,
+  SMALL_IDEA_CONTENT,
+  MARTIN_CONTENT,
+  ABOUT_US_CONTENT,
+  FAQS_CONTENT,
+  FAQ_ANSWER_PENDING_LABEL,
+  FOOTER_CONTENT,
+} from "./yp-landing-page-content.js";
 
-import "@material/web/button/filled-button.js";
 import "@material/web/button/text-button.js";
-
-type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
 
 @customElement("yp-landing-page")
 export class YpLandingPage extends YpBaseElement {
   @state()
   private videoPlaying = false;
+
+  @state()
+  private carouselThumbWidthPercent = 100;
+
+  @state()
+  private carouselThumbLeftPercent = 0;
+
+  @state()
+  private carouselCanScrollLeft = false;
+
+  @state()
+  private carouselCanScrollRight = false;
+
+  private carouselDragging = false;
+  private carouselDragStartX = 0;
+  private carouselDragStartScrollLeft = 0;
+
+  @state()
+  private openFaqIndexes = new Set<number>();
 
   static override get styles() {
     return [
@@ -32,7 +68,10 @@ export class YpLandingPage extends YpBaseElement {
         .intro h1,
         h2,
         .shareIdeaButton,
-        .videoPlaceholderLabel {
+        .videoPlaceholderLabel,
+        .howItWorksCard h3,
+        .criteriaBox h3,
+        .carouselCardBody h3 {
           font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
         }
 
@@ -100,7 +139,7 @@ export class YpLandingPage extends YpBaseElement {
         .hero {
           display: flex;
           flex-direction: column;
-          min-height: 100vh;
+          min-height: 90vh;
         }
 
         .intro {
@@ -190,6 +229,7 @@ export class YpLandingPage extends YpBaseElement {
           position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;
+          max-height: 80vh;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -246,8 +286,484 @@ export class YpLandingPage extends YpBaseElement {
           margin: 0 0 16px 0;
         }
 
-        .getInvolvedActions {
+        #get-involved,
+        #about-us,
+        #faqs {
+          max-width: none;
+          margin: 0;
+          padding: 0;
+          text-align: left;
+        }
+
+        .sectionInner {
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+
+        .bigHeading {
+          font-size: clamp(2rem, 4vw, 2.75rem);
+          font-weight: 400;
+          line-height: 1.05;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+          margin: 0 0 16px;
+        }
+
+        .getInvolvedDark {
+          background-color: var(--yp-landing-nav-background-color, #2e4057);
+          padding: 64px 24px;
+        }
+
+        .getInvolvedDark h2,
+        .getInvolvedDark p {
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .getInvolvedDark .eyebrow {
+          color: var(--yp-landing-accent-color, #e144dc);
+        }
+
+        .howItWorksHeading {
+          margin-top: 48px;
+        }
+
+        .howItWorksGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          gap: 24px;
           margin-top: 24px;
+        }
+
+        .howItWorksCard {
+          background: var(--yp-landing-surface-color, #edeff2);
+          padding: 20px;
+        }
+
+        .howItWorksCard h3,
+        .criteriaBox h3 {
+          font-size: 1.25rem;
+          font-weight: 400;
+          line-height: 1.15;
+          text-transform: uppercase;
+          letter-spacing: -0.01em;
+          margin: 0 0 12px;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .howItWorksCard p {
+          font-size: 0.9375rem;
+          margin: 0;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .smallIdeaSection {
+          padding: 64px 24px;
+        }
+
+        .smallIdeaHeader {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 24px;
+          flex-wrap: wrap;
+          margin-bottom: 32px;
+        }
+
+        .smallIdeaHeader .bigHeading {
+          margin-bottom: 8px;
+        }
+
+        .leadIn {
+          max-width: 480px;
+          margin: 0;
+          color: var(--yp-landing-accent-text-color, #c82cc3);
+          font-weight: 700;
+          font-size: 1rem;
+        }
+
+        .criteriaGrid {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 24px;
+        }
+
+        .criteriaBox {
+          background: var(--yp-landing-info-box-color, #8df6f9);
+          border-radius: 4px;
+          padding: 24px;
+        }
+
+        .criteriaBox ul {
+          margin: 0;
+          padding-left: 20px;
+        }
+
+        .criteriaBox li {
+          margin-bottom: 12px;
+          line-height: 1.5;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .criteriaBox li:last-child {
+          margin-bottom: 0;
+        }
+
+        .kindOfThingSection {
+          padding: 64px 24px;
+        }
+
+        .kindOfThingSection .bigHeading {
+          margin-bottom: 24px;
+        }
+
+        .carouselViewport {
+          margin: 0 -24px;
+          padding: 0 24px 8px;
+          overflow-x: auto;
+          scroll-snap-type: x proximity;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+
+        .carouselViewport::-webkit-scrollbar {
+          display: none;
+        }
+
+        .carouselTrack {
+          display: flex;
+          align-items: stretch;
+          gap: 24px;
+          width: max-content;
+        }
+
+        .carouselCard {
+          flex: 0 0 auto;
+          width: clamp(220px, 26vw, 280px);
+          scroll-snap-align: start;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .carouselCardImage {
+          width: 100%;
+          height: 180px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-video-background-color, #191923);
+          color: rgba(237, 239, 242, 0.6);
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .carouselCardImage img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .carouselCardBody {
+          flex: 1;
+          background: var(--yp-landing-surface-color, #edeff2);
+          padding: 20px;
+        }
+
+        .carouselCardBody h3 {
+          font-size: 1.25rem;
+          font-weight: 400;
+          line-height: 1.15;
+          text-transform: uppercase;
+          letter-spacing: -0.01em;
+          margin: 0 0 12px;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .carouselCardBody p {
+          font-size: 0.9375rem;
+          margin: 0;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .carouselScrollTrack {
+          position: relative;
+          margin-top: 16px;
+          height: 6px;
+          border-radius: 3px;
+          background: rgba(25, 25, 35, 0.15);
+          cursor: grab;
+          touch-action: none;
+        }
+
+        .carouselScrollTrack:active {
+          cursor: grabbing;
+        }
+
+        .carouselScrollThumb {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          border-radius: 3px;
+          background: var(--yp-landing-accent-color, #e144dc);
+          pointer-events: none;
+        }
+
+        .carouselWrapper {
+          position: relative;
+        }
+
+        .carouselArrow {
+          position: absolute;
+          top: 90px;
+          transform: translateY(-50%);
+          width: 44px;
+          height: 44px;
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-accent-color, #e144dc);
+          color: #edeff2;
+          cursor: pointer;
+          box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
+          z-index: 2;
+        }
+
+        .carouselArrow svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        .carouselArrowLeft {
+          left: 8px;
+        }
+
+        .carouselArrowRight {
+          right: 8px;
+        }
+
+        .carouselArrow:disabled {
+          opacity: 0.35;
+          cursor: default;
+          box-shadow: none;
+        }
+
+        .martinSection {
+          background-color: var(--yp-landing-nav-background-color, #2e4057);
+          padding: 64px 24px;
+        }
+
+        .martinSection h2,
+        .martinSection p {
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .martinGrid {
+          display: grid;
+          grid-template-columns: 1.2fr 1fr;
+          column-gap: 48px;
+          row-gap: 0;
+          align-items: center;
+        }
+
+        .martinHeading {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .martinCopy {
+          grid-column: 1;
+          grid-row: 2;
+        }
+
+        .martinCopy p {
+          font-style: italic;
+          line-height: 1.6;
+        }
+
+        .martinImage {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+          width: 100%;
+          aspect-ratio: 4 / 5;
+          overflow: hidden;
+          border-radius: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-video-background-color, #191923);
+          color: rgba(237, 239, 242, 0.6);
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .martinImage img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .aboutUsSection {
+          padding: 64px 24px;
+        }
+
+        .aboutUsGrid {
+          display: grid;
+          grid-template-columns: 1fr 1.2fr;
+          gap: 48px;
+          align-items: start;
+        }
+
+        .aboutUsLogo {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-video-background-color, #191923);
+          color: rgba(237, 239, 242, 0.6);
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .aboutUsLogo img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .aboutUsCopy p {
+          text-align: justify;
+        }
+
+        .aboutUsLeadershipList {
+          margin: 0 0 16px;
+          padding-left: 20px;
+        }
+
+        .aboutUsLeadershipList li {
+          line-height: 1.6;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .aboutUsActions {
+          text-align: right;
+        }
+
+        .faqsSection {
+          background: var(--yp-landing-info-box-color, #8df6f9);
+          padding: 64px 24px;
+        }
+
+        .faqsSection .bigHeading {
+          text-align: center;
+        }
+
+        .faqList {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .faqItem {
+          background: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .faqQuestion {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 20px 24px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          text-align: left;
+          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
+          font-size: 1.125rem;
+          font-weight: 400;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .faqToggleIcon {
+          flex-shrink: 0;
+          font-size: 1.5rem;
+          line-height: 1;
+          color: var(--yp-landing-accent-color, #e144dc);
+        }
+
+        .faqAnswer {
+          margin: 0;
+          padding: 0 24px 20px;
+          font-size: 0.9375rem;
+          line-height: 1.6;
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .siteFooter {
+          background: var(--yp-landing-video-background-color, #191923);
+          padding: 64px 24px;
+        }
+
+        .footerHeading {
+          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
+          font-size: 1.25rem;
+          font-weight: 400;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+          margin: 0 0 12px;
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .footerEmail {
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 16px;
+          text-transform: uppercase;
+          color: var(--yp-landing-surface-color, #edeff2);
+          text-decoration: none;
+        }
+
+        .footerEmail:hover,
+        .footerEmail:focus {
+          text-decoration: underline;
+        }
+
+        .footerBottomRow {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          margin-top: 64px;
+        }
+
+        .footerCopyright {
+          margin: 0;
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 12px;
+          text-transform: uppercase;
+          color: var(--yp-landing-surface-color, #edeff2);
+        }
+
+        .footerPrivacyLink {
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 12px;
+          text-transform: uppercase;
+          color: var(--yp-landing-surface-color, #edeff2);
+          text-decoration: none;
+        }
+
+        .footerPrivacyLink:hover,
+        .footerPrivacyLink:focus {
+          text-decoration: underline;
         }
 
         @media (max-width: 600px) {
@@ -262,6 +778,56 @@ export class YpLandingPage extends YpBaseElement {
           .introCopy {
             padding: 40px 16px 32px;
           }
+
+          .getInvolvedDark,
+          .smallIdeaSection,
+          .kindOfThingSection,
+          .martinSection,
+          .aboutUsSection,
+          .faqsSection,
+          .siteFooter {
+            padding: 40px 16px;
+          }
+
+          .footerBottomRow {
+            margin-top: 40px;
+          }
+
+          .martinGrid,
+          .aboutUsGrid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+
+          .martinHeading,
+          .martinCopy,
+          .martinImage {
+            grid-column: auto;
+            grid-row: auto;
+          }
+
+          .criteriaGrid {
+            grid-template-columns: 1fr;
+          }
+
+          .smallIdeaHeader {
+            justify-content: flex-start;
+          }
+
+          .aboutUsActions {
+            text-align: left;
+          }
+
+          .carouselViewport {
+            margin: 0 -16px;
+            padding: 0 16px 8px;
+            scroll-snap-type: x mandatory;
+          }
+
+          .carouselCard {
+            width: calc(100vw - 32px);
+            scroll-snap-align: center;
+          }
         }
       `,
     ];
@@ -275,15 +841,20 @@ export class YpLandingPage extends YpBaseElement {
     window.appGlobals.activity("click", "landingPageNav", sectionId);
   }
 
-  _goToMainSite() {
-    window.appGlobals.activity("click", "landingPageSubmitIdeas");
-    const domainId = window.appGlobals.domain?.id;
-    YpNavHelpers.redirectTo(domainId ? `/domain/${domainId}` : "/domain");
-  }
-
   _shareYourIdea() {
     window.appGlobals.activity("click", "landingPageShareYourIdea");
     YpNavHelpers.redirectTo("/group/1/new_post");
+  }
+
+  _toggleFaq(index: number) {
+    const openFaqIndexes = new Set(this.openFaqIndexes);
+    if (openFaqIndexes.has(index)) {
+      openFaqIndexes.delete(index);
+    } else {
+      openFaqIndexes.add(index);
+    }
+    this.openFaqIndexes = openFaqIndexes;
+    window.appGlobals.activity("click", "landingPageFaqToggle", `${index}`);
   }
 
   _playVideo() {
@@ -297,24 +868,114 @@ export class YpLandingPage extends YpBaseElement {
     });
   }
 
+  override connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener("resize", this._updateCarouselThumb);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("resize", this._updateCarouselThumb);
+  }
+
+  override firstUpdated(changedProperties: Map<string, unknown>) {
+    super.firstUpdated(changedProperties);
+    this._updateCarouselThumb();
+  }
+
+  private _updateCarouselThumb = () => {
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    if (!viewport) return;
+    const { scrollWidth, clientWidth, scrollLeft } = viewport;
+    if (scrollWidth <= clientWidth) {
+      this.carouselThumbWidthPercent = 100;
+      this.carouselThumbLeftPercent = 0;
+      this.carouselCanScrollLeft = false;
+      this.carouselCanScrollRight = false;
+      return;
+    }
+    this.carouselThumbWidthPercent = (clientWidth / scrollWidth) * 100;
+    const maxScrollLeft = scrollWidth - clientWidth;
+    this.carouselThumbLeftPercent =
+      (scrollLeft / maxScrollLeft) * (100 - this.carouselThumbWidthPercent);
+    // scroll-snap-type combined with this viewport's own left padding means
+    // the browser settles at rest on scrollLeft === padding-left, not 0.
+    const restScrollLeft =
+      parseFloat(getComputedStyle(viewport).paddingLeft) || 0;
+    this.carouselCanScrollLeft = scrollLeft > restScrollLeft + 1;
+    this.carouselCanScrollRight = scrollLeft < maxScrollLeft - 1;
+  };
+
+  _scrollCarousel(direction: -1 | 1) {
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    if (!viewport) return;
+    const card = viewport.querySelector(".carouselCard") as HTMLElement | null;
+    const step = card ? card.offsetWidth + 24 : viewport.clientWidth;
+    viewport.scrollBy({ left: direction * step, behavior: "smooth" });
+    window.appGlobals.activity(
+      "click",
+      "landingPageCarouselArrow",
+      direction === 1 ? "next" : "previous"
+    );
+  }
+
+  _onCarouselTrackPointerDown(event: PointerEvent) {
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    if (!viewport) return;
+    this.carouselDragging = true;
+    this.carouselDragStartX = event.clientX;
+    this.carouselDragStartScrollLeft = viewport.scrollLeft;
+    (event.currentTarget as HTMLElement).setPointerCapture?.(
+      event.pointerId
+    );
+    event.preventDefault();
+  }
+
+  _onCarouselTrackPointerMove(event: PointerEvent) {
+    if (!this.carouselDragging) return;
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    const track = this.$$(".carouselScrollTrack") as HTMLElement | null;
+    if (!viewport || !track) return;
+    const scrollableWidth = viewport.scrollWidth - viewport.clientWidth;
+    if (scrollableWidth <= 0) return;
+    const thumbWidthPx =
+      (track.clientWidth * viewport.clientWidth) / viewport.scrollWidth;
+    const thumbTravelPx = track.clientWidth - thumbWidthPx;
+    if (thumbTravelPx <= 0) return;
+    const deltaX = event.clientX - this.carouselDragStartX;
+    const scrollDelta = (deltaX / thumbTravelPx) * scrollableWidth;
+    viewport.scrollLeft = Math.max(
+      0,
+      Math.min(
+        scrollableWidth,
+        this.carouselDragStartScrollLeft + scrollDelta
+      )
+    );
+  }
+
+  _onCarouselTrackPointerUp(event: PointerEvent) {
+    this.carouselDragging = false;
+    (event.currentTarget as HTMLElement).releasePointerCapture?.(
+      event.pointerId
+    );
+  }
+
   renderNav() {
     return html`
       <nav class="nav" aria-label="Landing page sections">
         <div class="logoPlaceholder" aria-label="Site logo placeholder">
-          Logo
+          ${LOGO_PLACEHOLDER_LABEL}
         </div>
         <div class="navLinks">
-          <md-text-button
-            @click="${() => this._scrollToSection("get-involved")}"
-          >
-            Get Involved
-          </md-text-button>
-          <md-text-button @click="${() => this._scrollToSection("about-us")}">
-            About Us
-          </md-text-button>
-          <md-text-button @click="${() => this._scrollToSection("faqs")}">
-            FAQs
-          </md-text-button>
+          ${NAV_LINKS.map(
+            (link) => html`
+              <md-text-button
+                @click="${() => this._scrollToSection(link.id)}"
+              >
+                ${link.label}
+              </md-text-button>
+            `
+          )}
         </div>
       </nav>
     `;
@@ -331,7 +992,9 @@ export class YpLandingPage extends YpBaseElement {
         ></video>
         ${!this.videoPlaying
           ? html`
-              <div class="videoPlaceholderLabel">Video placeholder</div>
+              <div class="videoPlaceholderLabel">
+                ${VIDEO_PLACEHOLDER_LABEL}
+              </div>
               <button
                 class="playButton"
                 aria-label="Play video"
@@ -354,24 +1017,18 @@ export class YpLandingPage extends YpBaseElement {
 
         <section class="intro" id="intro">
           <div class="introCopy">
-            <p class="eyebrow">The Institute for Small Ideas</p>
-            <h1>Getting government to fix the small stuff</h1>
-            <p class="quote">
-              &ldquo;I think small ideas to fix life's frustrations deserve
-              the same serious policy concentration as the big ones because
-              if we get it right, they add up &ndash; and bit by bit, we can
-              make day-to-day life better for everyone.&rdquo;
-            </p>
+            <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
+            <h1>${INTRO_CONTENT.heading}</h1>
+            <p class="quote">${INTRO_CONTENT.quote}</p>
             <p class="attribution">
-              <strong>Martin Lewis</strong>
-              &nbsp;|&nbsp; Money Saving Expert, Chair of the Institute for
-              Small Ideas
+              <strong>${INTRO_CONTENT.attributionName}</strong>
+              &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
             </p>
             <button
               class="shareIdeaButton yp-hard-shadow-box"
               @click="${this._shareYourIdea}"
             >
-              Share your idea
+              ${SHARE_IDEA_BUTTON_LABEL}
             </button>
           </div>
         </section>
@@ -380,58 +1037,258 @@ export class YpLandingPage extends YpBaseElement {
       ${this.renderIntroVideo()}
 
       <section id="get-involved">
-        <h2>Get Involved</h2>
-        <p>
-          There are lots of ways to take part. You can submit your own
-          ideas, comment on and rate ideas from other members of the
-          community, and follow discussions on the topics you care about
-          most.
-        </p>
-        <p>
-          Every contribution helps build a clearer picture of what matters
-          to the community, so decision makers can act on real, shared
-          priorities rather than guesswork.
-        </p>
-        <div class="getInvolvedActions">
-          <md-filled-button @click="${this._goToMainSite}">
-            Submit your ideas
-          </md-filled-button>
+        <div class="getInvolvedDark">
+          <div class="sectionInner">
+            <h2 class="bigHeading">${GET_INVOLVED_CONTENT.heading}</h2>
+            <p class="eyebrow">${GET_INVOLVED_CONTENT.eyebrow}</p>
+            ${GET_INVOLVED_CONTENT.paragraphs.map(
+              (paragraph) => html`<p>${paragraph}</p>`
+            )}
+            <button
+              class="shareIdeaButton yp-hard-shadow-box"
+              @click="${this._shareYourIdea}"
+            >
+              ${SHARE_IDEA_BUTTON_LABEL}
+            </button>
+
+            <h2 class="bigHeading howItWorksHeading">
+              ${HOW_IT_WORKS_CONTENT.heading}
+            </h2>
+            <div class="howItWorksGrid">
+              ${HOW_IT_WORKS_CONTENT.steps.map(
+                (step) => html`
+                  <div class="howItWorksCard yp-hard-shadow-box">
+                    <h3>${step.title}</h3>
+                    <p>${step.description}</p>
+                  </div>
+                `
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div class="smallIdeaSection">
+          <div class="sectionInner">
+            <div class="smallIdeaHeader">
+              <div>
+                <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
+                <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
+              </div>
+              <button
+                class="shareIdeaButton yp-hard-shadow-box"
+                @click="${this._shareYourIdea}"
+              >
+                ${SHARE_IDEA_BUTTON_LABEL}
+              </button>
+            </div>
+            <div class="criteriaGrid">
+              ${SMALL_IDEA_CONTENT.criteria.map(
+                (group) => html`
+                  <div class="criteriaBox">
+                    <h3>${group.heading}</h3>
+                    <ul>
+                      ${group.items.map(
+                        (item) => html`
+                          <li>
+                            <strong>${item.lead}</strong> &ndash; ${item.text}
+                          </li>
+                        `
+                      )}
+                    </ul>
+                  </div>
+                `
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div class="kindOfThingSection">
+          <div class="sectionInner">
+            <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
+            ${KIND_OF_THING_CONTENT.paragraphs.map(
+              (paragraph) => html`<p>${paragraph}</p>`
+            )}
+            <div class="carouselWrapper">
+              <div
+                class="carouselViewport"
+                role="region"
+                aria-label="${CAROUSEL_REGION_LABEL}"
+                tabindex="0"
+                @scroll="${this._updateCarouselThumb}"
+              >
+                <div class="carouselTrack">
+                  ${KIND_OF_THING_CONTENT.examples.map(
+                    (idea) => html`
+                      <div class="carouselCard">
+                        <div class="carouselCardImage" aria-hidden="true">
+                          ${IMAGE_PLACEHOLDER_LABEL}
+                        </div>
+                        <div class="carouselCardBody yp-hard-shadow-box">
+                          <h3>${idea.title}</h3>
+                          <p>${idea.description}</p>
+                        </div>
+                      </div>
+                    `
+                  )}
+                </div>
+              </div>
+              <button
+                class="carouselArrow carouselArrowLeft"
+                aria-label="Show previous examples"
+                ?disabled="${!this.carouselCanScrollLeft}"
+                @click="${() => this._scrollCarousel(-1)}"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M15 6l-6 6 6 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                class="carouselArrow carouselArrowRight"
+                aria-label="Show more examples"
+                ?disabled="${!this.carouselCanScrollRight}"
+                @click="${() => this._scrollCarousel(1)}"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M9 6l6 6-6 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div
+              class="carouselScrollTrack"
+              aria-hidden="true"
+              @pointerdown="${this._onCarouselTrackPointerDown}"
+              @pointermove="${this._onCarouselTrackPointerMove}"
+              @pointerup="${this._onCarouselTrackPointerUp}"
+              @pointercancel="${this._onCarouselTrackPointerUp}"
+            >
+              <div
+                class="carouselScrollThumb"
+                style="width: ${this.carouselThumbWidthPercent}%; left: ${this
+                  .carouselThumbLeftPercent}%;"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="martinSection">
+          <div class="sectionInner martinGrid">
+            <h2 class="bigHeading martinHeading">${MARTIN_CONTENT.heading}</h2>
+            <div class="martinImage" aria-hidden="true">
+              ${IMAGE_PLACEHOLDER_LABEL}
+            </div>
+            <div class="martinCopy">
+              ${MARTIN_CONTENT.paragraphs.map(
+                (paragraph) => html`<p>${paragraph}</p>`
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
       <section id="about-us">
-        <h2>About Us</h2>
-        <p>
-          Your Priorities is a citizen participation platform that helps
-          communities and organisations gather ideas, prioritise them
-          together, and turn discussion into action.
-        </p>
-        <p>
-          Our goal is to make it as easy as possible for anyone to take
-          part in shaping the decisions that affect them, and for
-          organisations to listen at scale.
-        </p>
+        <div class="aboutUsSection">
+          <div class="sectionInner aboutUsGrid">
+            <div class="aboutUsLogo" aria-hidden="true">
+              ${LOGO_IMAGE_PLACEHOLDER_LABEL}
+            </div>
+            <div class="aboutUsCopy">
+              <h2 class="bigHeading">${ABOUT_US_CONTENT.heading}</h2>
+              ${ABOUT_US_CONTENT.paragraphs.map(
+                (paragraph) => html`<p>${paragraph}</p>`
+              )}
+              <p>${ABOUT_US_CONTENT.ledByLabel}</p>
+              <ul class="aboutUsLeadershipList">
+                ${ABOUT_US_CONTENT.leaders.map(
+                  (leader) => html`<li>${leader}</li>`
+                )}
+              </ul>
+              <div class="aboutUsActions">
+                <button
+                  class="shareIdeaButton yp-hard-shadow-box"
+                  @click="${this._shareYourIdea}"
+                >
+                  ${SHARE_IDEA_BUTTON_LABEL}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="faqs">
-        <h2>FAQs</h2>
-        <p>
-          <strong>Do I need an account to take part?</strong>
-          You can browse most content without one, but you'll need to
-          register to submit ideas, comment, or rate other people's
-          contributions.
-        </p>
-        <p>
-          <strong>Is my information kept private?</strong>
-          We only use your information to run the platform and never sell
-          it to third parties. See our privacy policy for full details.
-        </p>
-        <p>
-          <strong>Who can I contact if I have questions?</strong>
-          You'll find contact details for the team running this community
-          in the footer of the site.
-        </p>
+        <div class="faqsSection">
+          <div class="sectionInner">
+            <h2 class="bigHeading">${FAQS_CONTENT.heading}</h2>
+            <div class="faqList">
+              ${FAQS_CONTENT.items.map((item, index) => {
+                const isOpen = this.openFaqIndexes.has(index);
+                return html`
+                  <div class="faqItem yp-hard-shadow-box">
+                    <button
+                      class="faqQuestion"
+                      aria-expanded="${isOpen}"
+                      aria-controls="faq-answer-${index}"
+                      @click="${() => this._toggleFaq(index)}"
+                    >
+                      <span>${item.question}</span>
+                      <span class="faqToggleIcon" aria-hidden="true">
+                        ${isOpen ? "−" : "+"}
+                      </span>
+                    </button>
+                    <p
+                      class="faqAnswer"
+                      id="faq-answer-${index}"
+                      ?hidden="${!isOpen}"
+                    >
+                      ${item.answer || FAQ_ANSWER_PENDING_LABEL}
+                    </p>
+                  </div>
+                `;
+              })}
+            </div>
+          </div>
+        </div>
       </section>
+
+      <footer class="siteFooter">
+        <div class="sectionInner">
+          <h2 class="footerHeading">${FOOTER_CONTENT.heading}</h2>
+          <a
+            class="footerEmail"
+            href="mailto:${FOOTER_CONTENT.emailAddress}"
+          >
+            ${FOOTER_CONTENT.emailAddress}
+          </a>
+          <div class="footerBottomRow">
+            <p class="footerCopyright">
+              &copy; ${new Date().getFullYear()}
+              ${FOOTER_CONTENT.copyrightHolder}. All rights reserved.
+            </p>
+            <a
+              class="footerPrivacyLink"
+              href="${FOOTER_CONTENT.privacyPolicyUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ${FOOTER_CONTENT.privacyPolicyLabel}
+            </a>
+          </div>
+        </div>
+      </footer>
     `;
   }
 }
