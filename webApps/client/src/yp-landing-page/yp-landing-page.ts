@@ -674,6 +674,14 @@ export class YpLandingPage extends YpBaseElement {
             gap: 24px;
           }
 
+          .smallIdeaHeader {
+            justify-content: flex-start;
+          }
+
+          .aboutUsActions {
+            text-align: left;
+          }
+
           .carouselViewport {
             margin: 0 -16px;
             padding: 0 16px 8px;
@@ -695,12 +703,6 @@ export class YpLandingPage extends YpBaseElement {
       section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
     window.appGlobals.activity("click", "landingPageNav", sectionId);
-  }
-
-  _goToMainSite() {
-    window.appGlobals.activity("click", "landingPageSubmitIdeas");
-    const domainId = window.appGlobals.domain?.id;
-    YpNavHelpers.redirectTo(domainId ? `/domain/${domainId}` : "/domain");
   }
 
   _shareYourIdea() {
@@ -887,7 +889,7 @@ export class YpLandingPage extends YpBaseElement {
             )}
             <button
               class="shareIdeaButton yp-hard-shadow-box"
-              @click="${this._goToMainSite}"
+              @click="${this._shareYourIdea}"
             >
               ${SHARE_IDEA_BUTTON_LABEL}
             </button>
@@ -963,7 +965,7 @@ export class YpLandingPage extends YpBaseElement {
               </div>
               <button
                 class="shareIdeaButton yp-hard-shadow-box"
-                @click="${this._goToMainSite}"
+                @click="${this._shareYourIdea}"
               >
                 ${SHARE_IDEA_BUTTON_LABEL}
               </button>
@@ -1024,7 +1026,7 @@ export class YpLandingPage extends YpBaseElement {
               <div class="aboutUsActions">
                 <button
                   class="shareIdeaButton yp-hard-shadow-box"
-                  @click="${this._goToMainSite}"
+                  @click="${this._shareYourIdea}"
                 >
                   ${SHARE_IDEA_BUTTON_LABEL}
                 </button>

@@ -106,38 +106,19 @@ describe('YpLandingPage', () => {
         expect(redirectedTo).to.deep.equal(['/group/1/new_post']);
       });
     });
-  });
 
-  describe('"Submit your ideas" button', () => {
-    [1, 42].forEach((domainId) => {
-      it(`redirects to /domain/${domainId} for the current domain`, async () => {
-        window.appGlobals.domain = {
-          ...YpTestHelpers.getDomain(),
-          id: domainId,
-        };
-        element = await fixture(html`<yp-landing-page></yp-landing-page>`);
-        await aTimeout(50);
+    it('redirects every "Share your idea" button on the page to the same place', () => {
+      const buttons = Array.from(
+        element.shadowRoot!.querySelectorAll('.shareIdeaButton')
+      ) as HTMLButtonElement[];
 
-        const button = element.shadowRoot!.querySelector(
-          '#get-involved md-filled-button'
-        ) as HTMLElement;
-        expect(button, 'submit your ideas button should exist').to.exist;
+      expect(buttons.length).to.be.greaterThan(1);
 
+      buttons.forEach((button) => {
+        redirectedTo.length = 0;
         button.click();
-
-        expect(redirectedTo).to.deep.equal([`/domain/${domainId}`]);
+        expect(redirectedTo).to.deep.equal(['/group/1/new_post']);
       });
-    });
-
-    it('falls back to /domain when no domain has loaded yet', () => {
-      window.appGlobals.domain = undefined;
-
-      const button = element.shadowRoot!.querySelector(
-        '#get-involved md-filled-button'
-      ) as HTMLElement;
-      button.click();
-
-      expect(redirectedTo).to.deep.equal(['/domain']);
     });
   });
 
