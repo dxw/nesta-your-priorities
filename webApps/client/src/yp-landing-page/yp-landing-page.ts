@@ -37,6 +37,12 @@ export class YpLandingPage extends YpBaseElement {
   @state()
   private carouselThumbLeftPercent = 0;
 
+  @state()
+  private carouselCanScrollLeft = false;
+
+  @state()
+  private carouselCanScrollRight = false;
+
   private carouselDragging = false;
   private carouselDragStartX = 0;
   private carouselDragStartScrollLeft = 0;
@@ -502,6 +508,38 @@ export class YpLandingPage extends YpBaseElement {
           pointer-events: none;
         }
 
+        .carouselControls {
+          display: flex;
+          justify-content: center;
+          gap: 16px;
+          margin-top: 16px;
+        }
+
+        .carouselArrow {
+          width: 44px;
+          height: 44px;
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--yp-landing-accent-color, #e144dc);
+          color: #edeff2;
+          cursor: pointer;
+          box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
+        }
+
+        .carouselArrow svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        .carouselArrow:disabled {
+          opacity: 0.35;
+          cursor: default;
+          box-shadow: none;
+        }
+
         .martinSection {
           background-color: var(--yp-landing-nav-background-color, #2e4057);
           padding: 64px 24px;
@@ -754,13 +792,34 @@ export class YpLandingPage extends YpBaseElement {
     if (scrollWidth <= clientWidth) {
       this.carouselThumbWidthPercent = 100;
       this.carouselThumbLeftPercent = 0;
+      this.carouselCanScrollLeft = false;
+      this.carouselCanScrollRight = false;
       return;
     }
     this.carouselThumbWidthPercent = (clientWidth / scrollWidth) * 100;
     const maxScrollLeft = scrollWidth - clientWidth;
     this.carouselThumbLeftPercent =
       (scrollLeft / maxScrollLeft) * (100 - this.carouselThumbWidthPercent);
+    // scroll-snap-type combined with this viewport's own left padding means
+    // the browser settles at rest on scrollLeft === padding-left, not 0.
+    const restScrollLeft =
+      parseFloat(getComputedStyle(viewport).paddingLeft) || 0;
+    this.carouselCanScrollLeft = scrollLeft > restScrollLeft + 1;
+    this.carouselCanScrollRight = scrollLeft < maxScrollLeft - 1;
   };
+
+  _scrollCarousel(direction: -1 | 1) {
+    const viewport = this.$$(".carouselViewport") as HTMLElement | null;
+    if (!viewport) return;
+    const card = viewport.querySelector(".carouselCard") as HTMLElement | null;
+    const step = card ? card.offsetWidth + 24 : viewport.clientWidth;
+    viewport.scrollBy({ left: direction * step, behavior: "smooth" });
+    window.appGlobals.activity(
+      "click",
+      "landingPageCarouselArrow",
+      direction === 1 ? "next" : "previous"
+    );
+  }
 
   _onCarouselTrackPointerDown(event: PointerEvent) {
     const viewport = this.$$(".carouselViewport") as HTMLElement | null;
@@ -952,6 +1011,42 @@ export class YpLandingPage extends YpBaseElement {
                 style="width: ${this.carouselThumbWidthPercent}%; left: ${this
                   .carouselThumbLeftPercent}%;"
               ></div>
+            </div>
+            <div class="carouselControls">
+              <button
+                class="carouselArrow carouselArrowLeft"
+                aria-label="Show previous examples"
+                ?disabled="${!this.carouselCanScrollLeft}"
+                @click="${() => this._scrollCarousel(-1)}"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M15 6l-6 6 6 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                class="carouselArrow carouselArrowRight"
+                aria-label="Show more examples"
+                ?disabled="${!this.carouselCanScrollRight}"
+                @click="${() => this._scrollCarousel(1)}"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M9 6l6 6-6 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>

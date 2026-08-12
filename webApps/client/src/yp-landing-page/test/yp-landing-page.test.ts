@@ -122,6 +122,62 @@ describe('YpLandingPage', () => {
     });
   });
 
+  describe('carousel arrows', () => {
+    function getArrows() {
+      const leftArrow = element.shadowRoot!.querySelector(
+        '.carouselArrowLeft'
+      ) as HTMLButtonElement;
+      const rightArrow = element.shadowRoot!.querySelector(
+        '.carouselArrowRight'
+      ) as HTMLButtonElement;
+      expect(leftArrow, 'left arrow should exist').to.exist;
+      expect(rightArrow, 'right arrow should exist').to.exist;
+      return { leftArrow, rightArrow };
+    }
+
+    it('disables the left arrow and enables the right arrow before any scrolling', () => {
+      const { leftArrow, rightArrow } = getArrows();
+      expect(leftArrow.disabled).to.be.true;
+      expect(rightArrow.disabled).to.be.false;
+    });
+
+    it('scrolls the carousel forward by roughly one card when the right arrow is clicked', () => {
+      const { rightArrow } = getArrows();
+      const viewport = element.shadowRoot!.querySelector(
+        '.carouselViewport'
+      ) as HTMLElement;
+
+      let scrolledBy: { left?: number; behavior?: string } | undefined;
+      viewport.scrollBy = ((options: { left?: number; behavior?: string }) => {
+        scrolledBy = options;
+      }) as typeof viewport.scrollBy;
+
+      rightArrow.click();
+
+      expect(scrolledBy?.left).to.be.greaterThan(0);
+      expect(scrolledBy?.behavior).to.equal('smooth');
+    });
+
+    it('scrolls the carousel backward when the left arrow is clicked', () => {
+      const { leftArrow } = getArrows();
+      const viewport = element.shadowRoot!.querySelector(
+        '.carouselViewport'
+      ) as HTMLElement;
+
+      let scrolledBy: { left?: number; behavior?: string } | undefined;
+      viewport.scrollBy = ((options: { left?: number; behavior?: string }) => {
+        scrolledBy = options;
+      }) as typeof viewport.scrollBy;
+
+      // Force the left arrow active to test its scroll direction in isolation,
+      // since it starts disabled before any scrolling has happened.
+      leftArrow.disabled = false;
+      leftArrow.click();
+
+      expect(scrolledBy?.left).to.be.lessThan(0);
+    });
+  });
+
   describe('sections', () => {
     it('renders the intro section first, as the first thing a user sees', () => {
       const sections = element.shadowRoot!.querySelectorAll('section');
