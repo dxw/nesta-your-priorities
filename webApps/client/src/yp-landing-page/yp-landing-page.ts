@@ -510,14 +510,14 @@ export class YpLandingPage extends YpBaseElement {
           pointer-events: none;
         }
 
-        .carouselControls {
-          display: flex;
-          justify-content: center;
-          gap: 16px;
-          margin-top: 16px;
+        .carouselWrapper {
+          position: relative;
         }
 
         .carouselArrow {
+          position: absolute;
+          top: 90px;
+          transform: translateY(-50%);
           width: 44px;
           height: 44px;
           border: none;
@@ -529,11 +529,20 @@ export class YpLandingPage extends YpBaseElement {
           color: #edeff2;
           cursor: pointer;
           box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
+          z-index: 2;
         }
 
         .carouselArrow svg {
           width: 20px;
           height: 20px;
+        }
+
+        .carouselArrowLeft {
+          left: 8px;
+        }
+
+        .carouselArrowRight {
+          right: 8px;
         }
 
         .carouselArrow:disabled {
@@ -1099,44 +1108,30 @@ export class YpLandingPage extends YpBaseElement {
             ${KIND_OF_THING_CONTENT.paragraphs.map(
               (paragraph) => html`<p>${paragraph}</p>`
             )}
-            <div
-              class="carouselViewport"
-              role="region"
-              aria-label="${CAROUSEL_REGION_LABEL}"
-              tabindex="0"
-              @scroll="${this._updateCarouselThumb}"
-            >
-              <div class="carouselTrack">
-                ${KIND_OF_THING_CONTENT.examples.map(
-                  (idea) => html`
-                    <div class="carouselCard">
-                      <div class="carouselCardImage" aria-hidden="true">
-                        ${IMAGE_PLACEHOLDER_LABEL}
-                      </div>
-                      <div class="carouselCardBody yp-hard-shadow-box">
-                        <h3>${idea.title}</h3>
-                        <p>${idea.description}</p>
-                      </div>
-                    </div>
-                  `
-                )}
-              </div>
-            </div>
-            <div
-              class="carouselScrollTrack"
-              aria-hidden="true"
-              @pointerdown="${this._onCarouselTrackPointerDown}"
-              @pointermove="${this._onCarouselTrackPointerMove}"
-              @pointerup="${this._onCarouselTrackPointerUp}"
-              @pointercancel="${this._onCarouselTrackPointerUp}"
-            >
+            <div class="carouselWrapper">
               <div
-                class="carouselScrollThumb"
-                style="width: ${this.carouselThumbWidthPercent}%; left: ${this
-                  .carouselThumbLeftPercent}%;"
-              ></div>
-            </div>
-            <div class="carouselControls">
+                class="carouselViewport"
+                role="region"
+                aria-label="${CAROUSEL_REGION_LABEL}"
+                tabindex="0"
+                @scroll="${this._updateCarouselThumb}"
+              >
+                <div class="carouselTrack">
+                  ${KIND_OF_THING_CONTENT.examples.map(
+                    (idea) => html`
+                      <div class="carouselCard">
+                        <div class="carouselCardImage" aria-hidden="true">
+                          ${IMAGE_PLACEHOLDER_LABEL}
+                        </div>
+                        <div class="carouselCardBody yp-hard-shadow-box">
+                          <h3>${idea.title}</h3>
+                          <p>${idea.description}</p>
+                        </div>
+                      </div>
+                    `
+                  )}
+                </div>
+              </div>
               <button
                 class="carouselArrow carouselArrowLeft"
                 aria-label="Show previous examples"
@@ -1171,6 +1166,20 @@ export class YpLandingPage extends YpBaseElement {
                   />
                 </svg>
               </button>
+            </div>
+            <div
+              class="carouselScrollTrack"
+              aria-hidden="true"
+              @pointerdown="${this._onCarouselTrackPointerDown}"
+              @pointermove="${this._onCarouselTrackPointerMove}"
+              @pointerup="${this._onCarouselTrackPointerUp}"
+              @pointercancel="${this._onCarouselTrackPointerUp}"
+            >
+              <div
+                class="carouselScrollThumb"
+                style="width: ${this.carouselThumbWidthPercent}%; left: ${this
+                  .carouselThumbLeftPercent}%;"
+              ></div>
             </div>
           </div>
         </div>
