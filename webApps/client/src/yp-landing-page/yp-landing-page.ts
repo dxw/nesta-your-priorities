@@ -1058,6 +1058,41 @@ export class YpLandingPage extends YpBaseElement {
           </div>
         </div>
 
+        <div class="smallIdeaSection">
+          <div class="sectionInner">
+            <div class="smallIdeaHeader">
+              <div>
+                <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
+                <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
+              </div>
+              <button
+                class="shareIdeaButton yp-hard-shadow-box"
+                @click="${this._shareYourIdea}"
+              >
+                ${SHARE_IDEA_BUTTON_LABEL}
+              </button>
+            </div>
+            <div class="criteriaGrid">
+              ${SMALL_IDEA_CONTENT.criteria.map(
+                (group) => html`
+                  <div class="criteriaBox">
+                    <h3>${group.heading}</h3>
+                    <ul>
+                      ${group.items.map(
+                        (item) => html`
+                          <li>
+                            <strong>${item.lead}</strong> &ndash; ${item.text}
+                          </li>
+                        `
+                      )}
+                    </ul>
+                  </div>
+                `
+              )}
+            </div>
+          </div>
+        </div>
+
         <div class="kindOfThingSection">
           <div class="sectionInner">
             <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
@@ -1136,41 +1171,6 @@ export class YpLandingPage extends YpBaseElement {
                   />
                 </svg>
               </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="smallIdeaSection">
-          <div class="sectionInner">
-            <div class="smallIdeaHeader">
-              <div>
-                <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
-                <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
-              </div>
-              <button
-                class="shareIdeaButton yp-hard-shadow-box"
-                @click="${this._shareYourIdea}"
-              >
-                ${SHARE_IDEA_BUTTON_LABEL}
-              </button>
-            </div>
-            <div class="criteriaGrid">
-              ${SMALL_IDEA_CONTENT.criteria.map(
-                (group) => html`
-                  <div class="criteriaBox">
-                    <h3>${group.heading}</h3>
-                    <ul>
-                      ${group.items.map(
-                        (item) => html`
-                          <li>
-                            <strong>${item.lead}</strong> &ndash; ${item.text}
-                          </li>
-                        `
-                      )}
-                    </ul>
-                  </div>
-                `
-              )}
             </div>
           </div>
         </div>
