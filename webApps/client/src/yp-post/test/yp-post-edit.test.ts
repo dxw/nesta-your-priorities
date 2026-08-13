@@ -83,6 +83,41 @@ describe('YpPostEdit thank you screen', () => {
     expect(element.post?.name).to.equal('');
   });
 
+  it('does not clear the thank you state as a side effect of clear() (e.g. right after a successful submission)', async () => {
+    element.submissionCompleted = true;
+    element.thankYouMessage = 'Thank you for adding content';
+    await element.updateComplete;
+
+    element.clear();
+    await element.updateComplete;
+
+    expect(element.submissionCompleted).to.be.true;
+    expect(element.thankYouMessage).to.equal('Thank you for adding content');
+  });
+
+  it('resets the thank you state when the component reconnects, e.g. navigating away and back', async () => {
+    element.submissionCompleted = true;
+    element.thankYouMessage = 'Thank you for adding content';
+    element.disableDialog = true;
+    await element.updateComplete;
+
+    element.connectedCallback();
+
+    expect(element.submissionCompleted).to.be.false;
+    expect(element.thankYouMessage).to.be.undefined;
+  });
+
+  it('shows the thank you screen after the full successful-submission response chain (customRedirect then clear)', async () => {
+    const post = { ...YpTestHelpers.getPost(), id: 999, name: 'New idea' };
+
+    (element as any).customRedirect(post);
+    element.clear();
+    await element.updateComplete;
+
+    expect(element.submissionCompleted).to.be.true;
+    expect(element.shadowRoot!.querySelector('.thankYouMessage')).to.exist;
+  });
+
   it('does not accumulate the submit action url across repeated submissions', async () => {
     element.params = { groupId: 1 };
     const form = element.shadowRoot!.querySelector('#form') as any;

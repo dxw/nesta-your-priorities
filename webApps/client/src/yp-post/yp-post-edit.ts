@@ -1727,6 +1727,12 @@ export class YpPostEdit extends YpEditBase {
     );
 
     if (this.disableDialog) {
+      // Reset any thank you state left over from a previous visit: lit's
+      // cache() directive in yp-app.ts keeps this component instance alive
+      // across navigating away and back, so connectedCallback can fire
+      // again on the same instance without a fresh page load.
+      this.submissionCompleted = false;
+      this.thankYouMessage = undefined;
       this.setup(this.post, this.new, undefined, this.group!);
     }
 
