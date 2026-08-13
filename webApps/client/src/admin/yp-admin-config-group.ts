@@ -754,6 +754,12 @@ export class YpAdminConfigGroup extends YpAdminConfigBase {
           translationToken: "allowOneTimeLoginWithName",
         },
         {
+          text: "onlyAdminsCanViewIdeas",
+          type: "checkbox",
+          value: this.group.configuration.onlyAdminsCanViewIdeas,
+          translationToken: "onlyAdminsCanViewIdeas",
+        },
+        {
           text: "disableFacebookLoginForGroup",
           type: "checkbox",
           value: this.group.configuration.disableFacebookLoginForGroup,
