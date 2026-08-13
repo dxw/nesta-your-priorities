@@ -256,6 +256,10 @@ var updateGroupConfigParameters = function (req, group) {
     "configuration.anonymousAskRegistrationQuestions",
     truthValueFromBody(req.body.anonymousAskRegistrationQuestions)
   );
+  group.set(
+    "configuration.onlyAdminsCanViewIdeas",
+    truthValueFromBody(req.body.onlyAdminsCanViewIdeas)
+  );
 
   group.set(
     "configuration.hideAllTabs",
@@ -3731,7 +3735,7 @@ router.post(
   }
 );
 
-router.get("/:id/checkNonOpenPosts", auth.can("view group"), (req, res) => {
+router.get("/:id/checkNonOpenPosts", auth.can("view group posts"), (req, res) => {
   var PostsByNotOpen = models.Post.scope("not_open");
   PostsByNotOpen.count({ where: { group_id: req.params.id } })
     .then(function (count) {
@@ -4076,7 +4080,7 @@ router.get(
   }
 );
 
-router.get("/:id/search/:term", auth.can("view group"), function (req, res) {
+router.get("/:id/search/:term", auth.can("view group posts"), function (req, res) {
   log.info("Group Search", {
     groupId: req.params.id,
     context: "view",
@@ -4266,7 +4270,7 @@ var getPostsWithAllFromIds = function (postsWithIds, postOrder, done) {
 
 router.get(
   "/:id/posts/:filter/:categoryId{/:status}",
-  auth.can("view group"),
+  auth.can("view group posts"),
   function (req, res) {
     const redisKey = `cache:posts:${req.params.id}:${req.params.filter}:${req.params.categoryId}:${req.params.status}:${req.query.offset}:${req.query.randomSeed}`;
     req.redisClient
@@ -4564,7 +4568,7 @@ router.get("/:id/categories", auth.can("view group"), function (req, res) {
     });
 });
 
-router.get("/:id/post_locations", auth.can("view group"), function (req, res) {
+router.get("/:id/post_locations", auth.can("view group posts"), function (req, res) {
   models.Post.findAll({
     where: {
       location: {
@@ -5848,7 +5852,7 @@ router.delete(
 
 router.get(
   "/:groupId/get_posts_with_public_private",
-  auth.can("view group"),
+  auth.can("view group posts"),
   async (req, res) => {
     try {
       const posts = await models.Post.findAll({
