@@ -413,6 +413,10 @@ export class YpLandingPage extends YpBaseElement {
           padding: 64px 24px;
         }
 
+        .kindOfThingEmphasis {
+          font-weight: 700;
+        }
+
         .carouselViewport {
           margin: 0 -24px;
           padding: 0 24px 8px;
@@ -1108,9 +1112,12 @@ export class YpLandingPage extends YpBaseElement {
         <div class="kindOfThingSection">
           <div class="sectionInner">
             <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
-            <p class="leadIn">${KIND_OF_THING_CONTENT.tagline}</p>
             ${KIND_OF_THING_CONTENT.paragraphs.map(
-              (paragraph) => html`<p>${paragraph}</p>`
+              (paragraph) => html`
+                <p class="${paragraph.bold ? "kindOfThingEmphasis" : ""}">
+                  ${paragraph.text}
+                </p>
+              `
             )}
             <div class="carouselWrapper">
               <div
