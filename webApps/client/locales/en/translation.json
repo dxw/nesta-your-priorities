@@ -550,6 +550,7 @@
   "thankYouForYourSubmission": "Thank you for adding content",
   "submitAnotherIdea": "Submit another idea",
   "returnToHomepage": "Return to homepage",
+  "postSubmissionError": "Sorry, there was a problem submitting your idea. Please try again later",
   "useCommunityTopBanner": "Use project top banner",
   "customThankYouTextNewPosts": "Custom thank you for new post",
   "allPostsBlockedByDefault": "Posts blocked for moderation by default",

@@ -82,4 +82,17 @@ describe('YpPostEdit thank you screen', () => {
     expect(element.shadowRoot!.querySelector('.thankYouMessage')).to.not.exist;
     expect(element.post?.name).to.equal('');
   });
+
+  it('does not accumulate the submit action url across repeated submissions', async () => {
+    element.params = { groupId: 1 };
+    const form = element.shadowRoot!.querySelector('#form') as any;
+    form.validate = () => true;
+    form.submit = () => {};
+
+    await element.submit();
+    expect(element.action).to.equal('/posts/1');
+
+    await element.submit();
+    expect(element.action).to.equal('/posts/1');
+  });
 });

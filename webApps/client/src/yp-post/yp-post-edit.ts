@@ -1415,6 +1415,9 @@ export class YpPostEdit extends YpEditBase {
 
   async submit(validate = true) {
     this.submitDisabled = true;
+    // Rests base action - otherwise submitting subsequent ideas in same session
+    // appends them to the already-appended action from previous submission
+    this.action = "/posts";
     if (this.params && this.params.communityId) {
       this.action = this.action + "/" + this.params.communityId;
     } else if (this.params && this.params.groupId) {
@@ -1781,7 +1784,7 @@ export class YpPostEdit extends YpEditBase {
     } else {
       this.submitDisabled = false;
       console.log("Form error: ", event.detail.error);
-      this._showErrorDialog(this.t("form.invalid"));
+      this._showErrorDialog(this.t("postSubmissionError"));
       (this.$$("#spinner") as Progress).hidden = false;
     }
   }
