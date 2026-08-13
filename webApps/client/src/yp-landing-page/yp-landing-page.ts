@@ -140,14 +140,14 @@ export class YpLandingPage extends YpBaseElement {
         .hero {
           display: flex;
           flex-direction: column;
-          min-height: 90vh;
         }
 
         .intro {
           flex: 1;
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           justify-content: center;
+          min-height: 75vh;
           max-width: none;
           margin: 0;
           padding: 0;
