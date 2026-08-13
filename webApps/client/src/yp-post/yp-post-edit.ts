@@ -802,19 +802,19 @@ export class YpPostEdit extends YpEditBase {
       >
       </md-outlined-text-field>
 
+  <h2>Want to help or stay in touch? (optional)</h2>
 
-      <label>
+  <label>
   <md-checkbox id="agreeMedia" name="agreeMedia"></md-checkbox>
-  Yes, I'd consider talking to the media about my idea.
+  I'd consider talking to the media about my idea.
+  </label>
 
-</label>
-
-      <label>
+  <label>
   <md-checkbox id="agreeEmail" name="agreeEmail"></md-checkbox>
-Keep me posted on how the Small Ideas campaign's going.
+  Please keep me posted on how the Institute of Small Ideas campaign is going.
+  </label>
 
-</label>
-<div>By submitting this form, you agree to our <a href="https://www.nesta.org.uk/privacy/">Privacy Policy</a>.</div>
+<div>By submitting your idea, you agree to our <a href="https://www.nesta.org.uk/privacy/">privacy policy</a>.</div>
 
 
     `;
