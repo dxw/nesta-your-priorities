@@ -1108,6 +1108,7 @@ export class YpLandingPage extends YpBaseElement {
             ${KIND_OF_THING_CONTENT.paragraphs.map(
               (paragraph) => html`<p>${paragraph}</p>`
             )}
+            <p class="leadIn">${KIND_OF_THING_CONTENT.tagline}</p>
             <div class="carouselWrapper">
               <div
                 class="carouselViewport"
