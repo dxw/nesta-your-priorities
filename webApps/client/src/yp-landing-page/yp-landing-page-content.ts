@@ -93,6 +93,7 @@ export const HOW_IT_WORKS_CONTENT: {
 export const KIND_OF_THING_CONTENT: {
   heading: string;
   paragraphs: string[];
+  tagline: string;
   examples: YpLandingPageExample[];
 } = {
   heading: "The kind of thing we mean",
@@ -100,6 +101,7 @@ export const KIND_OF_THING_CONTENT: {
     "Think about something that happened to you or someone you care about – or something that should exist, but doesn’t. Was there a rule that made no sense, or something that should’ve been simple, and wasn’t, or a gap no-one filled? Health, community, education, transport, money, the environment, or anything else – if it’s real to you, it counts.",
     "Here’s a few, some that’ve been campaigned on already, some not, we want yours…",
   ],
+  tagline: "They might be small ideas on their own. They’ll be big together.",
   examples: [
     {
       title: "Universal allergy symbols",
@@ -211,8 +213,8 @@ export const ABOUT_US_CONTENT: {
   ledByLabel: "Team:",
   leaders: [
     "Martin Lewis, Chair",
-    "Kathy Peach, Nesta Centre for Collective Intelligence, Director",
-    "Sue Tibbals, Involve",
+    "Kathy Peach, Co-Director",
+    "Sue Tibbals, Co-Director",
   ],
 };
 

@@ -97,7 +97,8 @@ export class YpLandingPage extends YpBaseElement {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          height: 40px;
+          height: 100px;
+          width: 249px;
           padding: 0 16px;
           border: 1px dashed rgba(237, 239, 242, 0.5);
           border-radius: 4px;
@@ -121,7 +122,7 @@ export class YpLandingPage extends YpBaseElement {
           --md-text-button-hover-label-text-color: #edeff2;
           --md-text-button-focus-label-text-color: #edeff2;
           --md-text-button-pressed-label-text-color: #edeff2;
-          font-size: clamp(0.75rem, 1vw, 0.875rem);
+          font-size: clamp(1rem, 0.75rem + 1vw, 1.125rem);
           font-weight: 700;
           line-height: 1;
           letter-spacing: normal;
@@ -139,7 +140,6 @@ export class YpLandingPage extends YpBaseElement {
         .hero {
           display: flex;
           flex-direction: column;
-          min-height: 90vh;
         }
 
         .intro {
@@ -147,6 +147,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
+          min-height: 75vh;
           max-width: none;
           margin: 0;
           padding: 0;
@@ -165,7 +166,7 @@ export class YpLandingPage extends YpBaseElement {
         .eyebrow {
           margin: 0 0 16px;
           color: var(--yp-landing-accent-text-color, #c82cc3);
-          font-size: clamp(0.75rem, 1vw, 0.875rem);
+          font-size: clamp(1rem, 0.75rem + 1vw, 1.125rem);
           font-weight: 700;
           line-height: 1;
           letter-spacing: normal;
@@ -410,10 +411,6 @@ export class YpLandingPage extends YpBaseElement {
 
         .kindOfThingSection {
           padding: 64px 24px;
-        }
-
-        .kindOfThingSection .bigHeading {
-          margin-bottom: 24px;
         }
 
         .carouselViewport {
@@ -767,6 +764,12 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         @media (max-width: 600px) {
+          p,
+          .leadIn,
+          .navLinks md-text-button {
+            font-size: 0.875rem;
+          }
+
           .nav {
             padding: 12px 16px;
           }
@@ -1105,6 +1108,7 @@ export class YpLandingPage extends YpBaseElement {
         <div class="kindOfThingSection">
           <div class="sectionInner">
             <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
+            <p class="leadIn">${KIND_OF_THING_CONTENT.tagline}</p>
             ${KIND_OF_THING_CONTENT.paragraphs.map(
               (paragraph) => html`<p>${paragraph}</p>`
             )}
