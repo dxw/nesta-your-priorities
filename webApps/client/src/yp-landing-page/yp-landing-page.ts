@@ -97,7 +97,8 @@ export class YpLandingPage extends YpBaseElement {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          height: 40px;
+          height: 100px;
+          width: 249px;
           padding: 0 16px;
           border: 1px dashed rgba(237, 239, 242, 0.5);
           border-radius: 4px;
@@ -145,7 +146,7 @@ export class YpLandingPage extends YpBaseElement {
         .intro {
           flex: 1;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
           max-width: none;
           margin: 0;
