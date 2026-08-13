@@ -118,6 +118,22 @@ describe('YpPostEdit thank you screen', () => {
     expect(element.shadowRoot!.querySelector('.thankYouMessage')).to.exist;
   });
 
+  it('resets submitDisabled, validationErrorMessage and structured answers via clear(), e.g. on reconnect', async () => {
+    element.submitDisabled = true;
+    element.validationErrorMessage = 'Some previous error';
+    element.structuredAnswersJson = '[{"foo":"bar"}]';
+    element.structuredAnswersString = 'foo';
+    await element.updateComplete;
+
+    element.clear();
+    await element.updateComplete;
+
+    expect(element.submitDisabled).to.be.false;
+    expect(element.validationErrorMessage).to.be.undefined;
+    expect(element.structuredAnswersJson).to.equal('');
+    expect(element.structuredAnswersString).to.equal('');
+  });
+
   it('does not accumulate the submit action url across repeated submissions', async () => {
     element.params = { groupId: 1 };
     const form = element.shadowRoot!.querySelector('#form') as any;

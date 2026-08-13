@@ -2626,9 +2626,6 @@ export class YpPostEdit extends YpEditBase {
     // (for caching) after clear() already blanked it, so clear again here to
     // avoid showing the just-submitted content in the fresh form.
     this.clear();
-    this.structuredAnswersJson = "";
-    this.structuredAnswersString = "";
-    this.submitDisabled = false;
     this.submissionCompleted = false;
     this.thankYouMessage = undefined;
   }
@@ -2656,6 +2653,10 @@ export class YpPostEdit extends YpEditBase {
       this.currentVideoId = undefined;
       this.currentAudioId = undefined;
       this.selectedCoverMediaType = "none";
+      this.submitDisabled = false;
+      this.validationErrorMessage = undefined;
+      this.structuredAnswersJson = "";
+      this.structuredAnswersString = "";
       this.requestUpdate();
       if (this.$$("#imageFileUpload")) {
         //(this.$$('#imageFileUpload') as YpFileUpload).clear();
