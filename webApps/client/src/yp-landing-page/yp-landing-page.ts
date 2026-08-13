@@ -121,7 +121,7 @@ export class YpLandingPage extends YpBaseElement {
           --md-text-button-hover-label-text-color: #edeff2;
           --md-text-button-focus-label-text-color: #edeff2;
           --md-text-button-pressed-label-text-color: #edeff2;
-          font-size: clamp(0.75rem, 1vw, 0.875rem);
+          font-size: clamp(1rem, 0.75rem + 1vw, 1.125rem);
           font-weight: 700;
           line-height: 1;
           letter-spacing: normal;
@@ -165,7 +165,7 @@ export class YpLandingPage extends YpBaseElement {
         .eyebrow {
           margin: 0 0 16px;
           color: var(--yp-landing-accent-text-color, #c82cc3);
-          font-size: clamp(0.75rem, 1vw, 0.875rem);
+          font-size: clamp(1rem, 0.75rem + 1vw, 1.125rem);
           font-weight: 700;
           line-height: 1;
           letter-spacing: normal;
@@ -763,6 +763,12 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         @media (max-width: 600px) {
+          p,
+          .leadIn,
+          .navLinks md-text-button {
+            font-size: 0.875rem;
+          }
+
           .nav {
             padding: 12px 16px;
           }
