@@ -1025,6 +1025,9 @@ export class YpLogin extends YpBaseElement {
 
   closeCreateUserDialog() {
     this.fireGlobal("yp-dialog-closed");
+    if (this.reloadPageOnDialogClose) {
+      window.location.reload();
+    }
   }
 
   renderCreateUserDialog() {
@@ -1089,6 +1092,9 @@ export class YpLogin extends YpBaseElement {
 
   closeAndReset() {
     this.close();
+    this._logingDialogClose();
+    // restore default behavior for future closes
+    this.reloadPageOnDialogClose = true;
   }
 
   renderOneTimeDialog() {
@@ -1138,6 +1144,8 @@ export class YpLogin extends YpBaseElement {
   openCreateUser() {
     (this.$$("#createUserDialog") as Dialog).show();
     if (this.$$("#loginDialog")) {
+      // prevent reload when we close the login dialog to open the create-user dialog
+      this.reloadPageOnDialogClose = false;
       (this.$$("#loginDialog") as Dialog).close();
     }
     this.fireGlobal("yp-dialog-opened");
