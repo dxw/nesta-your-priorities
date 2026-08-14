@@ -1025,7 +1025,6 @@ export class YpLogin extends YpBaseElement {
 
   closeCreateUserDialog() {
     this.fireGlobal("yp-dialog-closed");
-    window.location.reload();
   }
 
   renderCreateUserDialog() {

@@ -92,16 +92,22 @@ export const HOW_IT_WORKS_CONTENT: {
 
 export const KIND_OF_THING_CONTENT: {
   heading: string;
-  paragraphs: string[];
-  tagline: string;
+  paragraphs: { text: string; bold?: boolean }[];
   examples: YpLandingPageExample[];
 } = {
   heading: "The kind of thing we mean",
   paragraphs: [
-    "Think about something that happened to you or someone you care about – or something that should exist, but doesn’t. Was there a rule that made no sense, or something that should’ve been simple, and wasn’t, or a gap no-one filled? Health, community, education, transport, money, the environment, or anything else – if it’s real to you, it counts.",
-    "Here’s a few, some that’ve been campaigned on already, some not, we want yours…",
+    {
+      text: "Think about something that happened to you or someone you care about – or something that should exist, but doesn’t. Was there a rule that made no sense, or something that should’ve been simple, and wasn’t, or a gap no-one filled? Health, community, education, transport, money, the environment, or anything else – if it’s real to you, it counts.",
+    },
+    {
+      text: "They might be small ideas on their own. They’ll be big together.",
+      bold: true,
+    },
+    {
+      text: "Here’s a few, some that’ve been campaigned on already, some not, we want yours…",
+    },
   ],
-  tagline: "They might be small ideas on their own. They’ll be big together.",
   examples: [
     {
       title: "Universal allergy symbols",

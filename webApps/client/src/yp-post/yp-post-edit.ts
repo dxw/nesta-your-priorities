@@ -56,6 +56,12 @@ export class YpPostEdit extends YpEditBase {
   @property({ type: Boolean })
   newPost = false;
 
+  @property({ type: Boolean })
+  submissionCompleted = false;
+
+  @property({ type: String })
+  thankYouMessage: string | undefined;
+
   @property({ type: Number })
   selectedCategoryArrayId: number | undefined;
 
@@ -438,6 +444,24 @@ export class YpPostEdit extends YpEditBase {
           border: 1px solid var(--md-sys-color-outline);
           position: relative;
           background-color: var(--md-sys-color-surface);
+        }
+
+        .frameContainer.thankYouContainer {
+          min-height: auto;
+          text-align: center;
+          gap: 24px;
+        }
+
+        .thankYouMessage {
+          font-size: 24px;
+          margin-top: 16px;
+          margin-bottom: 16px;
+        }
+
+        .thankYouActions {
+          gap: 16px;
+          margin-bottom: 16px;
+          flex-wrap: wrap;
         }
 
         .mediaAndLocation {
@@ -1391,6 +1415,9 @@ export class YpPostEdit extends YpEditBase {
 
   async submit(validate = true) {
     this.submitDisabled = true;
+    // Rests base action - otherwise submitting subsequent ideas in same session
+    // appends them to the already-appended action from previous submission
+    this.action = "/posts";
     if (this.params && this.params.communityId) {
       this.action = this.action + "/" + this.params.communityId;
     } else if (this.params && this.params.groupId) {
@@ -1497,8 +1524,30 @@ export class YpPostEdit extends YpEditBase {
     `;
   }
 
-  override render() {
+  renderThankYou() {
     return html`
+      <div class="layout vertical center-center outerFrameContainer">
+        <div
+          class="layout vertical center-center frameContainer thankYouContainer"
+        >
+          <div class="thankYouMessage">${this.thankYouMessage}</div>
+          <div class="layout horizontal center-center thankYouActions">
+            <md-filled-button @click="${this._submitAnotherIdea}"
+              >${this.t("submitAnotherIdea")}</md-filled-button
+            >
+            <md-outlined-button @click="${this._returnToHomepage}"
+              >${this.t("returnToHomepage")}</md-outlined-button
+            >
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  override render() {
+    return this.newPost && this.submissionCompleted
+      ? this.renderThankYou()
+      : html`
         <yp-form id="form" method="POST" .params="${this.params}">
           <form
             name="ypForm"
@@ -1678,6 +1727,12 @@ export class YpPostEdit extends YpEditBase {
     );
 
     if (this.disableDialog) {
+      // Reset any thank you state left over from a previous visit: lit's
+      // cache() directive in yp-app.ts keeps this component instance alive
+      // across navigating away and back, so connectedCallback can fire
+      // again on the same instance without a fresh page load.
+      this.submissionCompleted = false;
+      this.thankYouMessage = undefined;
       this.setup(this.post, this.new, undefined, this.group!);
     }
 
@@ -1735,7 +1790,7 @@ export class YpPostEdit extends YpEditBase {
     } else {
       this.submitDisabled = false;
       console.log("Form error: ", event.detail.error);
-      this._showErrorDialog(this.t("form.invalid"));
+      this._showErrorDialog(this.t("postSubmissionError"));
       (this.$$("#spinner") as Progress).hidden = false;
     }
   }
@@ -2558,21 +2613,25 @@ export class YpPostEdit extends YpEditBase {
       }
     }
 
-    /*window.appDialogs.getDialogAsync('mastersnackbar', (snackbar: Snackbar) => {
-      snackbar.textContent = text;
-      snackbar.timeoutMs = 5000;
-      snackbar.open = true;
-    });*/
-
-    if (
-      this.group &&
-      this.group.configuration &&
-      this.group.configuration.allPostsBlockedByDefault
-    ) {
-      // Nothing?
+    if (this.newPost) {
+      this.thankYouMessage = text;
+      this.submissionCompleted = true;
     } else {
       YpNavHelpers.redirectTo("/post/" + (post ? post.id : this.post?.id));
     }
+  }
+
+  _submitAnotherIdea() {
+    // customFormResponse() re-populates this.post from the server response
+    // (for caching) after clear() already blanked it, so clear again here to
+    // avoid showing the just-submitted content in the fresh form.
+    this.clear();
+    this.submissionCompleted = false;
+    this.thankYouMessage = undefined;
+  }
+
+  _returnToHomepage() {
+    YpNavHelpers.redirectTo("/");
   }
 
   clear() {
@@ -2594,6 +2653,10 @@ export class YpPostEdit extends YpEditBase {
       this.currentVideoId = undefined;
       this.currentAudioId = undefined;
       this.selectedCoverMediaType = "none";
+      this.submitDisabled = false;
+      this.validationErrorMessage = undefined;
+      this.structuredAnswersJson = "";
+      this.structuredAnswersString = "";
       this.requestUpdate();
       if (this.$$("#imageFileUpload")) {
         //(this.$$('#imageFileUpload') as YpFileUpload).clear();
