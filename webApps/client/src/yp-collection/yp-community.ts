@@ -6,6 +6,8 @@ import { YpCollectionItemsList } from "./yp-collection-items-list.js";
 import { customElement } from "lit/decorators.js";
 import { AcActivities } from "../ac-activities/ac-activities.js";
 import { YpNavHelpers } from "../common/YpNavHelpers.js";
+import "../yp-page/yp-page-not-available.js";
+import { html } from 'lit';
 
 @customElement("yp-community")
 export class YpCommunity extends YpCollection {
@@ -278,4 +280,17 @@ export class YpCommunity extends YpCollection {
     });
     this.locationHidden = locationHidden;
   }
+
+  get pageHiddenFromViewer() {
+  return !YpAccessHelpers.checkCommunityAccess(this.collection as YpCommunityData)
+  }
+
+  override render() {
+    if (this.pageHiddenFromViewer) {
+      return html`<yp-page-not-available></yp-page-not-available>`;
+    }
+    return super.render();
+    }
 }
+
+
