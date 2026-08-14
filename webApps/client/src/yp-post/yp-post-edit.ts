@@ -788,15 +788,7 @@ export class YpPostEdit extends YpEditBase {
         charCounter
       >
       </md-outlined-text-field>
-      <md-outlined-text-field
-        class="contactInfoField"
-        id="contactTelephone"
-        name="contacTelephone"
-        type="text"
-        .label="${this.t("contactTelephone")}"
-        maxlength="20"
-        charCounter
-      >
+
       </md-outlined-text-field>
       <md-outlined-text-field
         class="contactInfoField"
@@ -809,6 +801,22 @@ export class YpPostEdit extends YpEditBase {
         charCounter
       >
       </md-outlined-text-field>
+
+  <h2>Want to help or stay in touch? (optional)</h2>
+
+  <label>
+  <md-checkbox id="agreeMedia" name="agreeMedia"></md-checkbox>
+  I'd consider talking to the media about my idea.
+  </label>
+
+  <label>
+  <md-checkbox id="agreeEmail" name="agreeEmail"></md-checkbox>
+  Please keep me posted on how the Institute of Small Ideas campaign is going.
+  </label>
+
+<div>By submitting your idea, you agree to our <a href="https://www.nesta.org.uk/privacy/">privacy policy</a>.</div>
+
+
     `;
   }
 

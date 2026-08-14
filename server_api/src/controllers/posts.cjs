@@ -1596,37 +1596,39 @@ var updatePostData = function (req, post) {
     post.set("data.attachment", {});
   }
 
-  if (
-    req.body.contactName ||
-    req.body.contactEmail ||
-    req.body.contacTelephone
-  ) {
-    post.set(
-      "data.contact.name",
-      req.body.contactName && req.body.contactName != ""
-        ? req.body.contactName
-        : null
-    );
-    post.set(
-      "data.contact.email",
-      req.body.contactEmail && req.body.contactEmail != ""
-        ? req.body.contactEmail
-        : null
-    );
-    post.set(
-      "data.contact.telephone",
-      req.body.contacTelephone && req.body.contacTelephone != ""
-        ? req.body.contacTelephone
-        : null
-    );
-    post.set(
-      "data.contact.address",
-      req.body.contactAddress && req.body.contactAddress != ""
-        ? req.body.contactAddress
-        : null
-    );
-  }
-
+  post.set(
+    "data.contact.name",
+    req.body.contactName && req.body.contactName != ""
+      ? req.body.contactName
+      : null
+  );
+  post.set(
+    "data.contact.email",
+    req.body.contactEmail && req.body.contactEmail != ""
+      ? req.body.contactEmail
+      : null
+  );
+  post.set(
+    "data.contact.telephone",
+    req.body.contacTelephone && req.body.contacTelephone != ""
+      ? req.body.contacTelephone
+      : null
+  );
+  post.set(
+    "data.contact.address",
+    req.body.contactAddress && req.body.contactAddress != ""
+      ? req.body.contactAddress
+      : null
+  );
+  post.set(
+    "data.contact.agreeMedia",
+    req.body.agreeMedia == "on"
+  );
+  post.set(
+    "data.contact.agreeEmail",
+    req.body.agreeEmail == "on"
+  );
+    
   if (req.body.uploadedDocumentUrl && req.body.uploadedDocumentUrl != "") {
     post.set(
       "data.attachment.url",

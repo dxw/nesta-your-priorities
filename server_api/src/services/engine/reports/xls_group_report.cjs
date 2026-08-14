@@ -265,13 +265,17 @@ const getContactDataRow = function (post) {
     (post.data.contact.name ||
       post.data.contact.email ||
       post.data.contact.address ||
-      post.data.contact.telephone)
+      post.data.contact.telephone ||
+      post.data.contact.agreeMedia ||
+      post.data.contact.agreeEmail)
   ) {
     return {
       contactName: post.data.contact.name,
       contactEmail: post.data.contact.email,
       contactTelephone: post.data.contact.telephone,
       contactAddress: post.data.contact.address,
+      contactAgreeMedia: post.data.contact.agreeMedia,
+      contactAgreeEmail: post.data.contact.agreeEmail,
     };
   } else {
     return {};
@@ -568,6 +572,18 @@ async function exportToXls(options, callback) {
       width: 50,
     });
   }
+
+  columns.push({
+      header: "Agree Media",
+      key: "contactAgreeMedia",
+      width:10,
+  })
+  
+  columns.push({
+      header: "Agree Email",
+      key: "contactAgreeEmail",
+      width:10,
+  })
 
   if (group.configuration.attachmentsEnabled) {
     columns.push(
