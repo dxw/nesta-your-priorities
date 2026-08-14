@@ -757,6 +757,11 @@ export class YpGroup extends YpCollection {
       }
 
       setTimeout(async () => {
+        // Skip when the ideas list isn't being shown to avoid repeated login form render
+        if (this.isNewPost || this.ideasHiddenFromViewer) {
+          return;
+        }
+
         const checkResults = (await window.serverApi.getHasNonOpenPosts(
           group.id
         )) as YpGetNonOpenPostsResponse | void;

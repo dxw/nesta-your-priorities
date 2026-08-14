@@ -2705,6 +2705,17 @@ export class YpPostEdit extends YpEditBase {
     }
   }
 
+  override async open(
+    newItem: boolean,
+    params: Record<string, string | boolean | number | object>
+  ) {
+    if (this.disableDialog) {
+      await this.setup(this.post, newItem, this.refreshFunction, this.group!, params);
+    } else {
+      await super.open(newItem, params);
+    }
+  }
+
   _setupGroup(group: YpGroupData | undefined) {
     if (group) {
       this.group = group;

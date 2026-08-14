@@ -365,14 +365,10 @@ export class YpAppUser extends YpCodeBase {
     //TODO: Get working again
     if (this.loginForEditParams) {
       const loginParams = this.loginForEditParams;
-      // TODO: Remove any
-      window.appDialogs.getDialogAsync(
-        loginParams.editDialog as any,
-        (dialog: any) => {
-          dialog.setup(null, true, loginParams.refreshFunction);
-          dialog.open("new", loginParams.params);
-          this.loginForEditParams = null;
-        }
+      this.loginForEditParams = null;
+      (loginParams.editDialog as any).open(
+        loginParams.newOrUpdate,
+        loginParams.params
       );
     } else if (this.loginForNewPointParams) {
       const newPointParams = this.loginForNewPointParams;
