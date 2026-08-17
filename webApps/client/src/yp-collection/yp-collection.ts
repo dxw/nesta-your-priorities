@@ -218,7 +218,8 @@ export abstract class YpCollection extends YpBaseElementWithLogin {
       }
       this.collection = (await window.serverApi.getCollection(
         this.collectionType,
-        this.collectionId
+        this.collectionId,
+        this.collectionType !== "domain" && this.collectionType !== "community"
       )) as YpCollectionData | undefined;
       this.refresh();
       if (this.collectionType == "domain") {
