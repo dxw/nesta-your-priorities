@@ -960,13 +960,6 @@ router.get('/:id/my_domains', auth.can('view domain'), function(req, res) {
     include: [
       {
         model: models.User,
-        as: 'DomainUsers',
-        attributes: [],
-        where: { id: req.user.id },
-        required: false
-      },
-      {
-        model: models.User,
         as: 'DomainAdmins',
         attributes: [],
         where: { id: req.user.id },
@@ -974,10 +967,7 @@ router.get('/:id/my_domains', auth.can('view domain'), function(req, res) {
       }
     ],
     where: {
-      [models.Sequelize.Op.or]: [
-        { '$DomainUsers.id$': { [models.Sequelize.Op.eq]: req.user.id } },
-        { '$DomainAdmins.id$': { [models.Sequelize.Op.eq]: req.user.id } }
-      ]
+      '$DomainAdmins.id$': { [models.Sequelize.Op.eq]: req.user.id }
     }
   }).then(function(domains) {
     // Deduplicate the domains in case the user is both an admin and a user
