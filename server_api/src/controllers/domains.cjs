@@ -782,13 +782,19 @@ router.get('/:id/translatedText', auth.can('view domain'), function(req, res) {
 
 router.get('/:id', auth.can('view domain'), function(req, res) {
   if (isValidDbId(req.params.id)) {
-    getDomain(req, req.params.id, function (error, domain) {
-      if (error) {
-        sendDomainOrError(res, null, 'view', req.user, error);
-      } else {
-        log.info('Domain Viewed', { id: domain ? domain.id : -1, userId: req.user ? req.user.id : null });
-        res.send(domain);
+    auth.hasDomainAdmin(req.params.id, req, function (error, isAdmin) {
+      if (!isAdmin) {
+        res.sendStatus(404);
+        return;
       }
+      getDomain(req, req.params.id, function (error, domain) {
+        if (error) {
+          sendDomainOrError(res, null, 'view', req.user, error);
+        } else {
+          log.info('Domain Viewed', { id: domain ? domain.id : -1, userId: req.user ? req.user.id : null });
+          res.send(domain);
+        }
+      });
     });
   } else {
     res.sendStatus(404);
