@@ -12,6 +12,7 @@ import { YpFormattingHelpers } from "../common/YpFormattingHelpers.js";
 
 import "./yp-domain-header.js";
 import { Dialog } from "@material/web/dialog/internal/dialog.js";
+import "../yp-page/yp-page-not-available.js";
 
 @customElement("yp-domain")
 export class YpDomain extends YpCollection {
@@ -249,8 +250,14 @@ export class YpDomain extends YpCollection {
     `;
   }
 
+  get pageHiddenFromViewer() {
+    return !YpAccessHelpers.checkDomainAccess(this.collection as YpDomainData);
+  }
+
   override render() {
-    if (
+    if (this.pageHiddenFromViewer) {
+      return html`<yp-page-not-available></yp-page-not-available>`;
+    } else if (
       this.collection &&
       !this.loggedInUser &&
       (this.collection.configuration as YpDomainConfiguration)
