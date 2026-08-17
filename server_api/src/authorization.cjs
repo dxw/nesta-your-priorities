@@ -337,6 +337,32 @@ auth.hasDomainAdmin = function (domainId, req, done) {
     });
 };
 
+auth.hasCommunityAdmin = function (communityId, req, done) {
+  models.Community.findOne({
+    where: { id: communityId },
+    attributes: ["id", "user_id"],
+  })
+    .then(function (community) {
+      if (!auth.isAuthenticated(req)) {
+        done(null, false);
+      } else if (community.user_id === req.user.id) {
+        done(null, true);
+      } else {
+        community.hasCommunityAdmins(req.user).then(function (result) {
+          if (result) {
+            done(null, true);
+          } else {
+            done(null, false);
+          }
+        });
+      }
+    })
+    .catch(function (error) {
+      log.error("Error in authentication", { error });
+      done(null, false);
+    });
+};
+
 auth.isGroupMemberOrOpenToCommunityMember = function (group, req, done) {
   if (group) {
     if (
