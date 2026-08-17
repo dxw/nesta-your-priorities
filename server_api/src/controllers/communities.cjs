@@ -2321,21 +2321,27 @@ router.get(
 
 router.get("/:id", auth.can("view community"), function (req, res) {
   if (isValidDbId(req.params.id)) {
-    getCommunity(req, function (error, community) {
-      if (community) {
-        res.send(community);
-      } else if (error && error != "Not found") {
-        sendCommunityOrError(res, null, "view", req.user, error);
-      } else {
-        sendCommunityOrError(
-          res,
-          req.params.id,
-          "view",
-          req.user,
-          "Not found",
-          404
-        );
+    auth.hasCommunityAdmin(req.params.id, req, function (error, isAdmin) {
+      if (!isAdmin) {
+        res.sendStatus(404);
+        return;
       }
+      getCommunity(req, function (error, community) {
+        if (community) {
+          res.send(community);
+        } else if (error && error != "Not found") {
+          sendCommunityOrError(res, null, "view", req.user, error);
+        } else {
+          sendCommunityOrError(
+            res,
+            req.params.id,
+            "view",
+            req.user,
+            "Not found",
+            404
+          );
+        }
+      });
     });
   } else {
     res.sendStatus(404);
