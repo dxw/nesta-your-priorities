@@ -193,7 +193,10 @@ export class YpCommunity extends YpCollection {
         headerTitle = community.CommunityFolder.name;
         headerDescription = community.CommunityFolder.description;
       } else {
-        backPath = "/domain/" + community.domain_id;
+        const isDomainAdmin = community.Domain
+          ? YpAccessHelpers.checkDomainAccess(community.Domain)
+          : false;
+        backPath = isDomainAdmin ? "/domain/" + community.domain_id : "/";
         if (community.Domain) {
           headerTitle = community.Domain.name;
           headerDescription = community.Domain.description;
