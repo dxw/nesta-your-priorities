@@ -1620,7 +1620,7 @@ export class YpAdminConfigGroup extends YpAdminConfigBase {
         {
           text: "customBackName",
           type: "textfield",
-          maxLength: 20,
+          maxLength: 50,
           value: this.group.configuration.customBackName,
           translationToken: "customBackName",
         },
