@@ -1,3 +1,8 @@
+# SUPERSEDED / UNMAINTAINED: this Dockerfile does not rebuild the client from
+# source (it copies the committed server_api/webAppsDist as-is) and its CMD path
+# does not match where COPY places server_api in this image. It is not referenced
+# by any current deploy path, CI, or top-level docs. See the root Dockerfile for
+# the current, live build (rebuilds the client fresh on every build).
 FROM node:24
 
 LABEL maintainer="Robert Vidar Bjarnason <robert@citizens.is>"

@@ -1,3 +1,6 @@
+# SUPERSEDED / UNMAINTAINED: builds deployment/2024/your-priorities-app/Dockerfile,
+# which does not rebuild the client and is not referenced by any current deploy
+# path, CI, or top-level docs. See the root Dockerfile for the current, live build.
 version: '3.9'
 
 x-your-priorities-app-common: &your-priorities-app-common
