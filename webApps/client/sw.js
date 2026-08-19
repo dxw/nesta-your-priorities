@@ -22,7 +22,7 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
-  if (event.request.url.match(/\.[js]$/)) {
+  if (event.request.url.match(/\.js$/)) {
     // Cache First strategy for .js files
     event.respondWith(
       caches.match(event.request)
