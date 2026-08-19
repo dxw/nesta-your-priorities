@@ -15,10 +15,10 @@ describe('YpPostCard', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-card
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-card>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

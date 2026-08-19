@@ -16,10 +16,10 @@ describe('YpPostActions', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-actions
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-actions>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -35,10 +35,10 @@ describe('AcNotificationList', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <ac-notification-list
         .user="${YpTestHelpers.getUser()}"
       ></ac-notification-list>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(200);
   });

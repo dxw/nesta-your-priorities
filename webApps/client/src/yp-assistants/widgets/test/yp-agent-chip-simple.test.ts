@@ -15,8 +15,8 @@ describe('YpAgentChipSimple', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-agent-chip-simple></yp-agent-chip-simple>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

@@ -15,8 +15,8 @@ describe('YpAgentConfigurationWidget', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-agent-configuration-widget></yp-agent-configuration-widget>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

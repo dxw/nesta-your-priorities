@@ -15,10 +15,10 @@ describe('YpPointNewsStoryEmbed', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-point-news-story-embed
         .point="${YpTestHelpers.getPoint()}"
       ></yp-point-news-story-embed>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

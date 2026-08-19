@@ -15,8 +15,8 @@ describe('PlausableCountriesMap', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <pl-countries-map></pl-countries-map>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

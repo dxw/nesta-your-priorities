@@ -42,11 +42,11 @@ describe('AcActivityRecommendedPosts', () => {
       const recommendedPosts = [recommendedPost, recommendedPost]
 
     element = await fixture(html`
-    ${YpTestHelpers.renderCommonHeader()}
       <ac-activity-recommended-posts
         .recommendedPosts ="${recommendedPosts}">
       </ac-activity-recommended-posts
       >
+    ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

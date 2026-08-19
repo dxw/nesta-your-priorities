@@ -15,8 +15,8 @@ describe('PlausableEntryPages', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <pl-entry-pages></pl-entry-pages>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

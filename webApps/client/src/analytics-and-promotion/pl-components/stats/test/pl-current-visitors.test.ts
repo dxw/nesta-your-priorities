@@ -15,8 +15,8 @@ describe('PlausibleCurrentVisitors', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <pl-current-visitors></pl-current-visitors>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

@@ -31,10 +31,10 @@ describe('AcNotificationListPoint', () => {
     } as AcNotificationData;
 
       element = await fixture(html`
-        ${YpTestHelpers.renderCommonHeader()}
         <ac-notification-list-point
           .notification="${notification}"
         ></ac-notification-list-point>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

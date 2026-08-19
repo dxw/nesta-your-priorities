@@ -58,11 +58,11 @@ describe('AcActivities', () => {
     (window as any).ResizeObserver = undefined;
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <ac-activities
         collectionId="1"
         collectionType="group">
       </ac-activities>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(150);

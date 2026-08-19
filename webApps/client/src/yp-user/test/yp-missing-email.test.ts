@@ -16,8 +16,8 @@ describe('YpMissingEmail', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-missing-email></yp-missing-email>
+      ${YpTestHelpers.renderCommonHeader()}
       `);
         await aTimeout(100);
     element.open(true, 'Alexman');

@@ -15,8 +15,8 @@ describe('YpSimpleHtmlEditor', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-simple-html-editor></yp-simple-html-editor>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

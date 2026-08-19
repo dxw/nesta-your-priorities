@@ -15,8 +15,8 @@ describe('YpForm', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-form></yp-form>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

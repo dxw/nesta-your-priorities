@@ -22,10 +22,10 @@ describe('YpPageDialog', () => {
 
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-page-dialog
       .page="${page}">
       </yp-page-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

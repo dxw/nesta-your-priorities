@@ -15,8 +15,8 @@ describe('YpEmojiDialog', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-emoji-dialog></yp-emoji-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

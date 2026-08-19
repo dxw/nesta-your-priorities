@@ -15,8 +15,8 @@ describe('YpDataVisualization', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-data-visualization></yp-data-visualization>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

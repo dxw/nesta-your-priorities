@@ -15,8 +15,8 @@ describe('YpAdminConfigDomain', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-admin-config-domain></yp-admin-config-domain>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);
