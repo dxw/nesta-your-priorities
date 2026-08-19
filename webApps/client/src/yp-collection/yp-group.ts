@@ -27,6 +27,7 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { YpGroupType } from "./ypGroupType.js";
 import { YpNavHelpers } from "../common/YpNavHelpers.js";
 import "./yp-xls-download.js";
+import "../yp-page/yp-page-not-available.js";
 
 // TODO: Remove
 interface AcActivity extends LitElement {
@@ -756,6 +757,11 @@ export class YpGroup extends YpCollection {
       }
 
       setTimeout(async () => {
+        // Skip when the ideas list isn't being shown to avoid repeated login form render
+        if (this.isNewPost || this.ideasHiddenFromViewer) {
+          return;
+        }
+
         const checkResults = (await window.serverApi.getHasNonOpenPosts(
           group.id
         )) as YpGetNonOpenPostsResponse | void;
@@ -1334,6 +1340,13 @@ export class YpGroup extends YpCollection {
     }
   }
 
+  get ideasHiddenFromViewer() {
+    return (
+      !!this.collection?.configuration?.onlyAdminsCanViewIdeas &&
+      !YpAccessHelpers.checkGroupAccess(this.collection as YpGroupData)
+    );
+  }
+
   override render() {
     if (!this.collection || !this.collection.configuration) {
       return html`<md-linear-progress indeterminate></md-linear-progress>`;
@@ -1347,6 +1360,10 @@ export class YpGroup extends YpCollection {
           .group="${this.collection as YpGroupData}"
         ></yp-post-edit>
       `;
+    }
+
+    if (this.ideasHiddenFromViewer) {
+      return html`<yp-page-not-available></yp-page-not-available>`;
     }
 
     switch (this.cleanedGroupType) {

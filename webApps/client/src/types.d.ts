@@ -238,6 +238,7 @@ interface YpGroupConfiguration extends YpCollectionConfiguration {
   allowAnonymousUsers?: boolean;
   allowAnonymousAutoLogin?: boolean;
   allowOneTimeLoginWithName?: boolean;
+  onlyAdminsCanViewIdeas?: boolean;
   hideGroupHeader?: boolean;
   hideAllTabs?: boolean;
   disableCollectionUpLink?: boolean;

@@ -870,6 +870,55 @@ auth.role("group.viewUser", function (group, req, done) {
     });
 });
 
+// Same as group.viewUser, except a group can opt in (via
+// configuration.onlyAdminsCanViewIdeas) to restrict viewing of its ideas/posts
+// to the group owner and GroupAdmins only, while group metadata stays visible
+// to everyone via the unchanged group.viewUser role/"view group" action.
+auth.role("group.viewPosts", function (group, req, done) {
+  models.Group.findOne({
+    where: { id: group.id },
+    attributes: ["id", "access", "user_id", "configuration"],
+    include: [
+      {
+        model: models.Community,
+        required: true,
+        attributes: ["id", "access", "user_id", "configuration"],
+      },
+    ],
+  })
+    .then(function (group) {
+      if (!group) {
+        done(null, false);
+      } else if (
+        group.configuration &&
+        group.configuration.onlyAdminsCanViewIdeas
+      ) {
+        if (req.user && group.user_id === req.user.id) {
+          done(null, true);
+        } else if (auth.isAuthenticated(req)) {
+          group.hasGroupAdmins(req.user).then(function (result) {
+            done(null, !!result);
+          });
+        } else {
+          done(null, false);
+        }
+      } else if (
+        group.access === models.Group.ACCESS_PUBLIC &&
+        group.Community.access === models.Community.ACCESS_PUBLIC
+      ) {
+        done(null, true);
+      } else if (req.user && group.user_id === req.user.id) {
+        done(null, true);
+      } else {
+        auth.isGroupMemberOrOpenToCommunityMember(group, req, done);
+      }
+    })
+    .catch(function (error) {
+      log.error("Error in authentication", { error });
+      done(null, false);
+    });
+});
+
 auth.role("group.addTo", function (group, req, done) {
   models.Group.findOne({
     where: { id: group.id },
@@ -1810,6 +1859,7 @@ auth.action("view organization", ["organization.viewUser"]);
 auth.action("view domain", ["domain.viewUser"]);
 auth.action("view community", ["community.viewUser"]);
 auth.action("view group", ["group.viewUser"]);
+auth.action("view group posts", ["group.viewPosts"]);
 auth.action("add to group", ["group.addTo"]);
 auth.action("view post", ["post.viewUser"]);
 auth.action("view category", ["category.viewUser"]);
