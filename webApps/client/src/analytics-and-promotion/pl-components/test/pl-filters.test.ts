@@ -15,8 +15,8 @@ describe('PlausibleFilters', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <pl-filters></pl-filters>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

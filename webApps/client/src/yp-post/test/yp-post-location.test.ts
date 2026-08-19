@@ -15,11 +15,11 @@ describe('YpPostLocation', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-location
         .group="${YpTestHelpers.getGroup()}"
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-location>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

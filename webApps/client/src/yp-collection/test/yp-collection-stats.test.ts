@@ -21,10 +21,10 @@ describe('YpCollectionStats', () => {
     const collectionType = 'domain';
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-collection-stats
         .collection="${YpTestHelpers.getDomain()}"
         .collectionType="${collectionType}"></yp-collection-stats>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100)
   });

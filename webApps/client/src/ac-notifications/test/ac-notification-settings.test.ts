@@ -54,10 +54,10 @@ describe('AcNotificationSettings', () => {
 
 
       element = await fixture(html`
-        ${YpTestHelpers.renderCommonHeader()}
         <ac-notification-settings
           .notificationsSettings="${settings}"
         ></ac-notification-settings>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

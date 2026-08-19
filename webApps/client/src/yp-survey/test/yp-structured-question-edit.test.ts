@@ -19,10 +19,10 @@ describe('YpStructuredQuestionEdit', () => {
     } as YpStructuredQuestionData
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-structured-question-edit
         .question="${question}">
       </yp-structured-question-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

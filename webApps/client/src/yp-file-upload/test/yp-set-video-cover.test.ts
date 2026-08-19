@@ -24,11 +24,11 @@ describe('YpSetVideoCover', () => {
     ];
 
     element = await fixture(html`
-        ${YpTestHelpers.renderCommonHeader()}
         <yp-set-video-cover
           .video="${video}"
           .videoImages="${videoImages}">
         </yp-set-video-cover>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

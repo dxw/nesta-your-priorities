@@ -15,8 +15,8 @@ describe('PlausibleVisitorsGraph', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <pl-visitors-graph></pl-visitors-graph>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

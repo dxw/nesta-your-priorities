@@ -15,8 +15,8 @@ describe('PlausibleGoalGraph', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <pl-goal-graph></pl-goal-graph>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

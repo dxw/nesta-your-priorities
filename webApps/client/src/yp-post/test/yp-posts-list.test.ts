@@ -59,10 +59,10 @@ describe('YpPostslist', () => {
 
     beforeEach(async () => {
       element = await fixture(html`
-        ${YpTestHelpers.renderCommonHeader()}
         <yp-posts-list
           .group="${YpTestHelpers.getGroup()}"
         ></yp-posts-list>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

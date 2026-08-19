@@ -15,8 +15,8 @@ describe('YpAdminTranslations', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-admin-translations></yp-admin-translations>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

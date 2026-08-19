@@ -15,10 +15,10 @@ describe('YpApiActionDialog', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-api-action-dialog
         confirmationText="good morning">
       </yp-api-action-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });
