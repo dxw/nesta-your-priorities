@@ -124,7 +124,33 @@ cd server_api
 
 Worker env defaults align with backend local values above (including NODE_ENV and YP_DEV_DATABASE_*), but worker startup does not export SESSION_SECRET.
 
-## 3) Verify Local Baseline
+## 3) Testing the New vs Legacy Client (`useNewVersion`)
+
+`server_api` actually serves **two independent, separately-built client apps**: an old
+legacy app, and the current Lit SPA in `webApps/client`. Which one a given request gets
+is decided per-request/session by `determineVersion()` in `server_api/src/app.ts`,
+checked in this order:
+
+1. `?useNewVersion=true` or `?useNewVersion=false` query parameter
+2. A sticky session flag (set automatically once the query parameter has been used)
+3. The domain's `configuration.useNewVersion` setting
+4. **Default: `false` (legacy app)** if none of the above are set
+
+Two things this means in practice:
+
+- **The `wds` dev flow above (`localhost:4444`) bypasses this entirely.** It has no
+  backend/session, so it can never reflect `useNewVersion` behaviour. To exercise the
+  new client through the real backend (auth, DB, sessions), hit `localhost:4242` and
+  set `?useNewVersion=true` once — it will stick for the rest of your session.
+- **`server_api/webAppsDist/client/dist` is a git-committed, manually rebuilt
+  artifact, not something compiled live.** It's refreshed by running `npm run build`
+  in `webApps/client` and committing the result (look for "New dist" in git log — a
+  long-standing manual convention; there is no CI that does this automatically). It can
+  go stale for weeks at a time. If testing via `localhost:4242?useNewVersion=true`
+  doesn't reflect your latest `webApps/client/src` changes, rebuild it locally
+  (`cd webApps/client && npm run build`) before assuming the code itself is broken.
+
+## 4) Verify Local Baseline
 
 Backend:
 
@@ -142,9 +168,9 @@ Expected: both return HTTP 200.
 
 Note: the backend endpoint may return an HTML "New Domain" page while still being healthy in local mode. Treat HTTP 200 as the pass condition.
 
-## 4) Recovery and Reset
+## 5) Recovery and Reset
 
-### 4.1 If Backend Fails Due to Stale Local Schema/State
+### 5.1 If Backend Fails Due to Stale Local Schema/State
 
 ```bash
 cd development/docker
@@ -166,7 +192,7 @@ npm run build:dev
 ./startWatchWithEnv.sh
 ```
 
-### 4.2 If Frontend Fails with Rollup arm64 Package Error
+### 5.2 If Frontend Fails with Rollup arm64 Package Error
 
 ```bash
 cd webApps/client
@@ -174,14 +200,14 @@ npm i -D @rollup/rollup-darwin-arm64
 npm run start
 ```
 
-### 4.3 Stop Local Infrastructure
+### 5.3 Stop Local Infrastructure
 
 ```bash
 cd development/docker
 docker compose down
 ```
 
-## 5) Clearing database state
+## 6) Clearing database state
 The database is not stored in the postgres container but a named mount (`db`)
 
 To remove, run command below before re-building Docker containers:
