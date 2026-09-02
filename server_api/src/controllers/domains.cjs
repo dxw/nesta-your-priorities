@@ -782,13 +782,19 @@ router.get('/:id/translatedText', auth.can('view domain'), function(req, res) {
 
 router.get('/:id', auth.can('view domain'), function(req, res) {
   if (isValidDbId(req.params.id)) {
-    getDomain(req, req.params.id, function (error, domain) {
-      if (error) {
-        sendDomainOrError(res, null, 'view', req.user, error);
-      } else {
-        log.info('Domain Viewed', { id: domain ? domain.id : -1, userId: req.user ? req.user.id : null });
-        res.send(domain);
+    auth.hasDomainAdmin(req.params.id, req, function (error, isAdmin) {
+      if (!isAdmin) {
+        res.sendStatus(404);
+        return;
       }
+      getDomain(req, req.params.id, function (error, domain) {
+        if (error) {
+          sendDomainOrError(res, null, 'view', req.user, error);
+        } else {
+          log.info('Domain Viewed', { id: domain ? domain.id : -1, userId: req.user ? req.user.id : null });
+          res.send(domain);
+        }
+      });
     });
   } else {
     res.sendStatus(404);
@@ -954,13 +960,6 @@ router.get('/:id/my_domains', auth.can('view domain'), function(req, res) {
     include: [
       {
         model: models.User,
-        as: 'DomainUsers',
-        attributes: [],
-        where: { id: req.user.id },
-        required: false
-      },
-      {
-        model: models.User,
         as: 'DomainAdmins',
         attributes: [],
         where: { id: req.user.id },
@@ -968,10 +967,7 @@ router.get('/:id/my_domains', auth.can('view domain'), function(req, res) {
       }
     ],
     where: {
-      [models.Sequelize.Op.or]: [
-        { '$DomainUsers.id$': { [models.Sequelize.Op.eq]: req.user.id } },
-        { '$DomainAdmins.id$': { [models.Sequelize.Op.eq]: req.user.id } }
-      ]
+      '$DomainAdmins.id$': { [models.Sequelize.Op.eq]: req.user.id }
     }
   }).then(function(domains) {
     // Deduplicate the domains in case the user is both an admin and a user
