@@ -15,8 +15,8 @@ describe('YpCategoryListView', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-category-list-view></yp-category-list-view>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

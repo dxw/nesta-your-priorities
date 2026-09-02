@@ -15,8 +15,8 @@ describe('YpDrawer', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-drawer></yp-drawer>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

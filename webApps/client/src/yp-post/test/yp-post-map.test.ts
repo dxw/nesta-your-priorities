@@ -15,12 +15,12 @@ describe('YpPostMap', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-map
         .post="${YpTestHelpers.getPost()}"
         collectionId="1"
         collectionType="LEXO"
       ></yp-post-map>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -21,10 +21,10 @@ describe('YpMediaRecorder', () => {
     }
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-media-recorder
         .media="${media}">
       </yp-media-recorder>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

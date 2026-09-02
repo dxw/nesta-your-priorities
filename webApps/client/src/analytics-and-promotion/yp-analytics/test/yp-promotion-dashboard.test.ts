@@ -15,8 +15,8 @@ describe('YpPromotionDashboard', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-promotion-dashboard></yp-promotion-dashboard>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

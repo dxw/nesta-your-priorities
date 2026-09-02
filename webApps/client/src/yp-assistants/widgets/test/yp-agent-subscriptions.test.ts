@@ -15,8 +15,8 @@ describe('YpSubscriptions', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-subscriptions></yp-subscriptions>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

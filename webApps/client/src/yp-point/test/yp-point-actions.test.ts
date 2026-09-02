@@ -15,10 +15,10 @@ describe('YpPointActions', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-point-actions
         .point="${YpTestHelpers.getPoint()}"
       ></yp-point-actions>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

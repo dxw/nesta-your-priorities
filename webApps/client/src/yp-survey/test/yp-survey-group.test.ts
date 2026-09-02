@@ -47,10 +47,10 @@ describe('YpSurveyGroup', () => {
   beforeEach(async () => {
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-survey-group
         surveyGroupId="1">
       </yp-survey-group>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -15,8 +15,8 @@ describe('AoiLlmExplainDialog', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <aoi-llm-explain-dialog></aoi-llm-explain-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

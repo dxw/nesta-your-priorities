@@ -17,10 +17,10 @@ describe('YpPostUserImages', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-user-images
       .post="${YpTestHelpers.getPost()}"
       ></yp-post-user-images>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

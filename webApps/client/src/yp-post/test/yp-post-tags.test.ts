@@ -15,8 +15,8 @@ describe('YpPostTags', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-tags></yp-post-tags>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

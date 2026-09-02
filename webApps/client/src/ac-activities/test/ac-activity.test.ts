@@ -24,11 +24,11 @@ describe('AcActivity', () => {
     } as AcActivityData
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <ac-activity
         .activity="${activity}">
       </ac-activity
       >
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

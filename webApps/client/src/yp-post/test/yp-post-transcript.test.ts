@@ -15,10 +15,10 @@ describe('YpPostTranscript', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-transcript
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-transcript>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

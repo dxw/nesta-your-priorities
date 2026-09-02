@@ -15,8 +15,8 @@ describe('YpAgentBundle', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-agent-bundle></yp-agent-bundle>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

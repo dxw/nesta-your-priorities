@@ -16,10 +16,10 @@ describe('YpApp', () => {
   beforeEach(async () => {
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-app
 
       ></yp-app>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -15,8 +15,8 @@ describe('YpAdminModeration', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-admin-moderation></yp-admin-moderation>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

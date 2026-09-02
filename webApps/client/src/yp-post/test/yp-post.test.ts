@@ -17,10 +17,10 @@ describe('YpPost', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post
         collectionId="1"
       ></yp-post>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

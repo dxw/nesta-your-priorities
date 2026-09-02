@@ -15,8 +15,8 @@ describe('YpAiChatbotItemBase', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-chatbot-item-base></yp-chatbot-item-base>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

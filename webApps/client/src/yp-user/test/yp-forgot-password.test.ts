@@ -16,8 +16,8 @@ describe('YpForgotPassword', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-forgot-password></yp-forgot-password>
+      ${YpTestHelpers.renderCommonHeader()}
       `);
         await aTimeout(100);
     element.open({ email: "robert@citizens.is"});
