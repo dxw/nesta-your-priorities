@@ -659,6 +659,11 @@ export class YpPostEdit extends YpEditBase {
           margin-bottom: 24px;
         }
 
+        .contactInfoExplanation {
+          margin-top: -12px;
+          margin-bottom: 24px;
+        }
+
         .contactInfoField {
           margin-bottom: 12px;
           width: 100%;
@@ -770,6 +775,9 @@ export class YpPostEdit extends YpEditBase {
   renderMoreContactInfo() {
     return html`
       <h2 class="contactInfo">${this.t("contactInformation")}</h2>
+      <p class="contactInfoExplanation">
+        ${this.t("contactInformationExplanation")}
+      </p>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactName"
