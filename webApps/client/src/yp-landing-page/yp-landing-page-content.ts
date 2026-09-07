@@ -140,7 +140,7 @@ export const KIND_OF_THING_CONTENT: {
         "There should be a standard format for care home costs to make comparing easier.",
     },
     {
-      title: "Clearer naming of childcare schemes",
+      title: "Clearer naming of tax-free childcare",
       description:
         "“Tax-Free Childcare” isn't free, and it's not about tax. Call it what it is - the Working Families Childcare Top-Up - so people actually understand what they're entitled to.",
     },
@@ -174,7 +174,7 @@ export const SMALL_IDEA_CONTENT: {
         },
         {
           lead: "And crucially… hard to disagree with",
-          text: "the kind of thing that 80% of people, whatever their politics, would say “yeah, that makes sense”.",
+          text: "the kind of thing that 80% of people, whatever their politics, would say “yeah, that makes sense”",
         },
       ],
     },
@@ -189,8 +189,8 @@ export const SMALL_IDEA_CONTENT: {
           lead: "Overly political",
           text: "no party lines, and no dog whistles",
         },
-        { lead: "Illegal", text: "breaks the law, criminal or otherwise." },
-        { lead: "Harmful", text: "nothing that harms people or animals." },
+        { lead: "Illegal", text: "breaks the law, criminal or otherwise" },
+        { lead: "Harmful", text: "nothing that harms people or animals" },
       ],
     },
   ],
