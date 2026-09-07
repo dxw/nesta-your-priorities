@@ -216,8 +216,9 @@ export class YpLogin extends YpBaseElement {
         }
 
         .createUserInputField {
-          margin: 16px;
+          margin: 8px 0;
           min-width: 340px;
+          width: 100%;
         }
 
         .dontHaveAccountInfo {
@@ -528,10 +529,6 @@ export class YpLogin extends YpBaseElement {
 
           .login-button-row {
             justify-content: center;
-          }
-
-          .createUserInputField {
-            width: 100%;
           }
         }
 

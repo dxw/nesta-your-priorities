@@ -611,7 +611,6 @@ export class YpPostEdit extends YpEditBase {
         }
 
         #description {
-          margin-top: 16px;
           width: 100%;
         }
 
@@ -670,6 +669,8 @@ export class YpPostEdit extends YpEditBase {
           color: var(--md-sys-color-on-surface-variant);
           margin-top: 8px;
           margin-bottom: 4px;
+          padding: 0;
+          width: 100%;
         }
 
         #description {
