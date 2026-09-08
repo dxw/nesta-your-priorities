@@ -611,7 +611,6 @@ export class YpPostEdit extends YpEditBase {
         }
 
         #description {
-          margin-top: 16px;
           width: 100%;
         }
 
@@ -666,6 +665,16 @@ export class YpPostEdit extends YpEditBase {
 
         .contactInfoField {
           margin-bottom: 12px;
+          width: 100%;
+        }
+
+        .fieldLabel {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--md-sys-color-on-surface-variant);
+          margin-top: 8px;
+          margin-bottom: 4px;
+          padding: 0;
           width: 100%;
         }
 
@@ -778,33 +787,40 @@ export class YpPostEdit extends YpEditBase {
       <p class="contactInfoExplanation">
         ${this.t("contactInformationExplanation")}
       </p>
+      <label class="fieldLabel" for="contactName">${this.t("user.name")}</label>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactName"
         name="contactName"
         type="text"
-        .label="${this.t("user.name")}"
+        label=""
         charCounter
       >
       </md-outlined-text-field>
+      <label class="fieldLabel" for="contactEmail">${this.t("user.email")}</label>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactEmail"
         name="contactEmail"
         type="text"
-        .label="${this.t("user.email")}"
+        label=""
         charCounter
       >
       </md-outlined-text-field>
-
-      </md-outlined-text-field>
+      <label
+        class="fieldLabel"
+        for="contactAddress"
+        ?hidden="${!this.group!.configuration.moreContactInformationAddress}"
+      >
+        ${this.t("contactAddress")}
+      </label>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactAddress"
         name="contactAddress"
         type="text"
         ?hidden="${!this.group!.configuration.moreContactInformationAddress}"
-        .label="${this.t("contactAddress")}"
+        label=""
         maxlength="300"
         charCounter
       >
@@ -940,13 +956,16 @@ export class YpPostEdit extends YpEditBase {
                 `
               : this.post
               ? html`
+                  <label class="fieldLabel" for="name">
+                    ${this.titleQuestionText}
+                  </label>
                   <md-outlined-text-field
                     id="name"
                     required
                     minlength="1"
                     name="name"
                     type="text"
-                    .label="${this.titleQuestionText}"
+                    label=""
                     .value="${this.post.name}"
                     maxlength="60"
                     rows="7"
@@ -989,17 +1008,29 @@ export class YpPostEdit extends YpEditBase {
             ${this.group &&
             this.group.configuration &&
             this.group.configuration.usePostTags
-              ? html` <md-outlined-text-field
-                  id="name"
-                  name="tags"
-                  type="text"
-                  .label="${this.t("commaSeperatedTags")}"
-                  .value="${this.post!.public_data!.tags || ''}"
-                >
-                </md-outlined-text-field>`
+              ? html`
+                  <label class="fieldLabel" for="tags">
+                    ${this.t("commaSeperatedTags")}
+                  </label>
+                  <md-outlined-text-field
+                    id="tags"
+                    name="tags"
+                    type="text"
+                    label=""
+                    .value="${this.post!.public_data!.tags || ''}"
+                  >
+                  </md-outlined-text-field>
+                `
               : nothing}
             ${this.postDescriptionLimit
               ? html`
+                  <label
+                    class="fieldLabel"
+                    for="description"
+                    ?hidden="${this.structuredQuestions != null}"
+                  >
+                    ${this.t("post.description")}
+                  </label>
                   <md-outlined-text-field
                     type="textarea"
                     id="description"
@@ -1008,7 +1039,7 @@ export class YpPostEdit extends YpEditBase {
                     minlength="1"
                     name="description"
                     .value="${this.post!.description}"
-                    .label="${this.t("post.description")}"
+                    label=""
                     @change="${this._resizeScrollerIfNeeded}"
                     char-counter
                     rows="5"
@@ -1095,13 +1126,16 @@ export class YpPostEdit extends YpEditBase {
     return this.newPointShown
       ? html`
           <div class="subContainer">
+            <label class="fieldLabel" for="pointFor">
+              ${this.t("point.for")}
+            </label>
             <md-outlined-text-field
               id="pointFor"
               ?required="${!this.group!.configuration.newPointOptional}"
               minlength="1"
               name="pointFor"
               .value="${this.post!.pointFor || ""}"
-              .label="${this.t("point.for")}"
+              label=""
               charCounter
               type="textarea"
               rows="5"
