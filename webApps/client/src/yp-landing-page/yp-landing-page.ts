@@ -187,7 +187,6 @@ export class YpLandingPage extends YpBaseElement {
           max-width: 620px;
           margin: 0 auto 20px;
           font-size: 1.0625rem;
-          font-style: italic;
           line-height: 1.6;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -581,7 +580,6 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .martinCopy p {
-          font-style: italic;
           line-height: 1.6;
         }
 
