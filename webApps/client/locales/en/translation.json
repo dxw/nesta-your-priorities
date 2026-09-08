@@ -864,6 +864,7 @@
   "uploadAttachment": "Upload attachment",
   "contactTelephone": "Telephone",
   "contactInformation": "Contact information",
+  "contactInformationExplanation": "We ask for your email to make sure only real people, not bots, can submit ideas. We won’t contact you unless you opt in. Your postcode is just so we can see where in the country ideas are coming from.",
   "deleteAttachment": "Delete attachment",
   "readMore": "Read more",
   "postDescriptionLimit": "Post description limit",
