@@ -103,7 +103,7 @@ export class YpLandingPage extends YpBaseElement {
           border: 1px dashed rgba(237, 239, 242, 0.5);
           border-radius: 4px;
           color: #edeff2;
-          font-size: 0.75rem;
+          font-size: 1rem;
           font-weight: 600;
           letter-spacing: 0.08em;
           text-transform: uppercase;
@@ -194,7 +194,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .attribution {
           margin: 0 0 32px;
-          font-size: 0.875rem;
+          font-size: 1rem;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
 
@@ -249,7 +249,7 @@ export class YpLandingPage extends YpBaseElement {
           left: 50%;
           transform: translateX(-50%);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -352,7 +352,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .howItWorksCard p {
-          font-size: 0.9375rem;
+          font-size: 1rem;
           margin: 0;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -454,7 +454,7 @@ export class YpLandingPage extends YpBaseElement {
           justify-content: center;
           background: var(--yp-landing-video-background-color, #191923);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -482,7 +482,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .carouselCardBody p {
-          font-size: 0.9375rem;
+          font-size: 1rem;
           margin: 0;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -597,7 +597,7 @@ export class YpLandingPage extends YpBaseElement {
           justify-content: center;
           background: var(--yp-landing-video-background-color, #191923);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -627,7 +627,7 @@ export class YpLandingPage extends YpBaseElement {
           justify-content: center;
           background: var(--yp-landing-video-background-color, #191923);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -704,7 +704,7 @@ export class YpLandingPage extends YpBaseElement {
         .faqAnswer {
           margin: 0;
           padding: 0 24px 20px;
-          font-size: 0.9375rem;
+          font-size: 1rem;
           line-height: 1.6;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -726,7 +726,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .footerEmail {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
-          font-size: 16px;
+          font-size: 1rem;
           text-transform: uppercase;
           color: var(--yp-landing-surface-color, #edeff2);
           text-decoration: none;
@@ -768,12 +768,6 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         @media (max-width: 600px) {
-          p,
-          .leadIn,
-          .navLinks md-text-button {
-            font-size: 0.875rem;
-          }
-
           .nav {
             padding: 12px 16px;
           }
