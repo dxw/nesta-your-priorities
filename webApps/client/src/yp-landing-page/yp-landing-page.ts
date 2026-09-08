@@ -409,7 +409,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .kindOfThingSection {
-          padding: 64px 24px;
+          padding: 0 24px 64px;
         }
 
         .kindOfThingEmphasis {
@@ -780,12 +780,15 @@ export class YpLandingPage extends YpBaseElement {
 
           .getInvolvedDark,
           .smallIdeaSection,
-          .kindOfThingSection,
           .martinSection,
           .aboutUsSection,
           .faqsSection,
           .siteFooter {
             padding: 40px 16px;
+          }
+
+          .kindOfThingSection {
+            padding: 0 16px 40px;
           }
 
           .footerBottomRow {
