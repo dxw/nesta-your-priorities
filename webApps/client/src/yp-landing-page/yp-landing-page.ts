@@ -108,6 +108,14 @@ export class YpLandingPage extends YpBaseElement {
           letter-spacing: 0.08em;
           text-transform: uppercase;
           opacity: 0.85;
+          overflow: hidden;
+        }
+
+        .logoPlaceholder img {
+          display: block;
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
         }
 
         .navLinks {
@@ -625,7 +633,6 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--yp-landing-video-background-color, #191923);
           color: rgba(237, 239, 242, 0.6);
           font-size: 1rem;
           letter-spacing: 0.08em;
@@ -963,8 +970,8 @@ export class YpLandingPage extends YpBaseElement {
   renderNav() {
     return html`
       <nav class="nav" aria-label="Landing page sections">
-        <div class="logoPlaceholder" aria-label="Site logo placeholder">
-          ${LOGO_PLACEHOLDER_LABEL}
+        <div class="logoPlaceholder">
+          <img src="/images/home/logo_crop.png" alt=Institute of Small Ideas logo">
         </div>
         <div class="navLinks">
           ${NAV_LINKS.map(
@@ -1125,7 +1132,12 @@ export class YpLandingPage extends YpBaseElement {
                     (idea) => html`
                       <div class="carouselCard">
                         <div class="carouselCardImage" aria-hidden="true">
-                          ${IMAGE_PLACEHOLDER_LABEL}
+                          ${idea.image
+                            ? html`<img
+                                src="${idea.image}"
+                                alt="${idea.alt}"
+                              />`
+                            : IMAGE_PLACEHOLDER_LABEL}
                         </div>
                         <div class="carouselCardBody yp-hard-shadow-box">
                           <h3>${idea.title}</h3>
@@ -1192,7 +1204,7 @@ export class YpLandingPage extends YpBaseElement {
           <div class="sectionInner martinGrid">
             <h2 class="bigHeading martinHeading">${MARTIN_CONTENT.heading}</h2>
             <div class="martinImage" aria-hidden="true">
-              ${IMAGE_PLACEHOLDER_LABEL}
+            <img src="/images/home/martin_crop.jpg" alt="Photo of Martin Lewis" />
             </div>
             <div class="martinCopy">
               ${MARTIN_CONTENT.paragraphs.map(
@@ -1207,7 +1219,7 @@ export class YpLandingPage extends YpBaseElement {
         <div class="aboutUsSection">
           <div class="sectionInner aboutUsGrid">
             <div class="aboutUsLogo" aria-hidden="true">
-              ${LOGO_IMAGE_PLACEHOLDER_LABEL}
+              <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
             </div>
             <div class="aboutUsCopy">
               <h2 class="bigHeading">${ABOUT_US_CONTENT.heading}</h2>

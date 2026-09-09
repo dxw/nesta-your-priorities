@@ -8,6 +8,8 @@ export interface YpLandingPageNavLink {
 export interface YpLandingPageExample {
   title: string;
   description: string;
+  image?: string;
+  alt?: string;
 }
 
 export interface YpLandingPageCriteriaItem {
@@ -113,36 +115,50 @@ export const KIND_OF_THING_CONTENT: {
       title: "Universal allergy symbols",
       description:
         "One standard allergy symbol system, on every menu, everywhere - because working out if a dish is safe should be simple.",
+      image: "/images/home/desert_crop.jpg",
+      alt: "",
     },
     {
       title: "Non-branded school uniform",
       description:
         "Every state-funded school to allow non-branded uniform and PE kits to reduce costs.",
+      image: "/images/home/uniform_crop.jpg",
+      alt: "",
     },
     {
       title: "Real-time sewage alerts",
       description:
         "Real-time sewage alerts visible at every beach (not just the ones water companies choose to monitor). We should know before we get in!",
+      image: "/images/home/beach_flag_crop.jpg",
+      alt: "",
     },
     {
       title: "Consistent council forms",
       description:
         "Severe Mental Impairment council tax relief is the same wherever you live, so why does each council use a different form with different requirements? One form, everywhere.",
+      image: "/images/home/laptop_crop.jpg",
+      alt: "",
     },
     {
       title: "Fairer car parking charges",
       description:
         "Payment meters should let you pay only for the time you're actually parked - not a guess made before you get out of the car.",
+      image: "/images/home/parking_crop.jpg",
+      alt: "",
     },
     {
       title: "Easy-to-understand care home costs",
       description:
         "There should be a standard format for care home costs to make comparing easier.",
+      image: "/images/home/home_crop.jpg",
+      alt: "",
     },
     {
       title: "Clearer naming of tax-free childcare",
       description:
         "“Tax-Free Childcare” isn't free, and it's not about tax. Call it what it is - the Working Families Childcare Top-Up - so people actually understand what they're entitled to.",
+      image: "/images/home/play_crop.jpg",
+      alt: "",
     },
   ],
 };
