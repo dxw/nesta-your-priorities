@@ -14,9 +14,11 @@ describe('YpAppNavDrawer', () => {
   });
 
   beforeEach(async () => {
+    // <yp-app-nav-drawer> must render first: fixture() returns wrapper.firstElementChild,
+    // so a header rendered before it would silently become `element` instead.
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-app-nav-drawer></yp-app-nav-drawer>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);
@@ -29,6 +31,47 @@ describe('YpAppNavDrawer', () => {
 
   it('passes the a11y audit', async () => {
     await expect(element).shadowDom.to.be.accessible();
+  });
+
+  describe('_reset() my-domains list', () => {
+    it('only includes domains the user administers, not domains they merely belong to', () => {
+      element.memberships = {
+        GroupUsers: [],
+        CommunityUsers: [],
+        DomainUsers: [
+          { id: 1, name: 'Member-only Domain' } as YpDomainData,
+          { id: 2, name: 'Admin Domain' } as YpDomainData,
+        ],
+      } as YpMemberships;
+      element.adminRights = {
+        GroupAdmins: [],
+        CommunityAdmins: [],
+        DomainAdmins: [{ id: 2, name: 'Admin Domain' } as YpDomainData],
+        OrganizationAdmins: [],
+      };
+
+      element._reset();
+
+      expect(element.myDomains!.map((d) => d.id)).to.deep.equal([2]);
+    });
+
+    it('is empty when the user has no domain admin rights, even if they belong to domains', () => {
+      element.memberships = {
+        GroupUsers: [],
+        CommunityUsers: [],
+        DomainUsers: [{ id: 1, name: 'Member-only Domain' } as YpDomainData],
+      } as YpMemberships;
+      element.adminRights = {
+        GroupAdmins: [],
+        CommunityAdmins: [],
+        DomainAdmins: [],
+        OrganizationAdmins: [],
+      };
+
+      element._reset();
+
+      expect(element.myDomains).to.deep.equal([]);
+    });
   });
 
   // TODO: Add targeted behavior tests for:

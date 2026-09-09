@@ -195,12 +195,9 @@ export class YpAppNavDrawer extends YpBaseElement {
         0,
         500
       ) as YpCommunityData[];
-
-      this.myDomains = this.memberships.DomainUsers.slice(
-        0,
-        3
-      ) as YpDomainData[];
     }
+
+    this.myDomains = [];
 
     if (this.adminRights) {
       if (
@@ -218,6 +215,16 @@ export class YpAppNavDrawer extends YpBaseElement {
       ) {
         adminCommunities = this.adminRights
           .CommunityAdmins as YpCommunityData[];
+      }
+
+      if (
+        this.adminRights.DomainAdmins &&
+        this.adminRights.DomainAdmins.length > 0
+      ) {
+        this.myDomains = this.adminRights.DomainAdmins.slice(
+          0,
+          3
+        ) as YpDomainData[];
       }
     }
 

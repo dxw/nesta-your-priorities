@@ -182,12 +182,18 @@ export class YpServerApi extends YpServerApiBase {
     );
   }
 
-  public getCollection(collectionType: string, collectionId: number) {
+  public getCollection(
+    collectionType: string,
+    collectionId: number,
+    showUserError = true
+  ) {
     return this.fetchWrapper(
       this.baseUrlPath +
       `/${YpServerApi.transformCollectionTypeToApi(
         collectionType
-      )}/${collectionId}`
+      )}/${collectionId}`,
+      {},
+      showUserError
     );
   }
 
