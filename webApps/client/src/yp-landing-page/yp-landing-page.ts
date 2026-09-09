@@ -352,6 +352,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .howItWorksCard p {
           font-size: 1rem;
+          line-height: 1.5;
           margin: 0;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -374,7 +375,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .leadIn {
-          max-width: 480px;
+          max-width: 100%;
           margin: 0;
           color: var(--yp-landing-accent-text-color, #c82cc3);
           font-weight: 700;
@@ -482,6 +483,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .carouselCardBody p {
           font-size: 1rem;
+          line-height: 1.5;
           margin: 0;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
