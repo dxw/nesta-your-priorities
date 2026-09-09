@@ -641,6 +641,23 @@ export class YpPostEdit extends YpEditBase {
           margin-top: 4px;
         }
 
+        .layout ul {
+          margin-left: 0;
+          padding-left: 20px;
+        }
+
+        .agreeCheckboxLabel {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 8px 0;
+        }
+
+        .agreeCheckboxLabel md-checkbox {
+          flex-shrink: 0;
+          margin-left: 0;
+        }
+
         section {
           width: 100%;
         }
@@ -829,12 +846,12 @@ export class YpPostEdit extends YpEditBase {
 
   <h2>Want to help or stay in touch? (optional)</h2>
 
-  <label>
+  <label class="agreeCheckboxLabel">
   <md-checkbox id="agreeMedia" name="agreeMedia"></md-checkbox>
   I'd consider talking to the media about my idea.
   </label>
 
-  <label>
+  <label class="agreeCheckboxLabel">
   <md-checkbox id="agreeEmail" name="agreeEmail"></md-checkbox>
   Please keep me posted on how the Institute of Small Ideas campaign is going.
   </label>
@@ -2841,7 +2858,13 @@ export class YpPostEdit extends YpEditBase {
     setTimeout(() => {
       const nameElement = this.$$("#name");
       if (nameElement) {
-        nameElement.focus();
+        // md-outlined-text-field's own focus() calls the native input's
+        // focus() directly without forwarding FocusOptions, so
+        // preventScroll has no effect there - restore the scroll position
+        // ourselves instead of relying on it.
+        nameElement.focus({ preventScroll: true });
+        window.scrollTo(0, 0);
+        requestAnimationFrame(() => window.scrollTo(0, 0));
       }
     }, 250);
 

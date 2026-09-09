@@ -94,6 +94,17 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
           ) !important;
         }
 
+        .fieldLabel {
+          display: block;
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--md-sys-color-on-surface-variant);
+          margin-top: 8px;
+          margin-bottom: 4px;
+          padding: 0;
+          width: 100%;
+        }
+
         a {
         }
 
@@ -345,10 +356,17 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
       : undefined;
     const ariaLabel = skipLabel ? this.questionAriaLabel : undefined;
     return html`
+      ${!skipLabel
+        ? html`
+            <label class="fieldLabel" for="structuredQuestion_${this.index}">
+              ${unsafeHTML(this.textWithIndex)}
+            </label>
+          `
+        : nothing}
       <md-outlined-text-field
         id="structuredQuestion_${this.index}"
         .value="${(this.question.value as string) || ""}"
-        .label="${!skipLabel ? this.textWithIndex : ""}"
+        label=""
         name="${this.formName || ""}"
         ?use-small-font="${this.useSmallFont}"
         .title="${this.question.text}"
@@ -413,11 +431,21 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         : undefined;
       const ariaLabel = skipLabel ? this.questionAriaLabel : undefined;
       return html`
+        ${!skipLabel
+          ? html`
+              <label
+                class="fieldLabel"
+                for="structuredQuestion_${this.index}"
+              >
+                ${unsafeHTML(this.textWithIndex)}
+              </label>
+            `
+          : nothing}
         <md-outlined-text-field
           id="structuredQuestion_${this.index}"
           data-type="text"
           type="textarea"
-          .label="${!skipLabel ? this.textWithIndex : ""}"
+          label=""
           .value="${(this.question.value as string) || ""}"
           minlength="2"
           ?charCounter="${this.question.charCounter != undefined
@@ -846,12 +874,18 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
     );
   }
 
-  override focus() {
+  override focus(options?: FocusOptions) {
     if (this.isInputField) {
       const item = this.$$("#structuredQuestion_" + this.index);
       if (item) {
         setTimeout(() => {
-          item.focus();
+          // md-outlined-text-field's own focus() calls the native input's
+          // focus() directly without forwarding FocusOptions, so
+          // preventScroll has no effect there - restore the scroll position
+          // ourselves instead of relying on it.
+          item.focus(options);
+          window.scrollTo(0, 0);
+          requestAnimationFrame(() => window.scrollTo(0, 0));
         }, 250);
       }
     }
@@ -1287,7 +1321,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
 
     setTimeout(() => {
       if (this.question.questionIndex === 1 && !this.dontFocusFirstQuestion) {
-        this.focus();
+        this.focus({ preventScroll: true });
       }
     }, 500);
   }
