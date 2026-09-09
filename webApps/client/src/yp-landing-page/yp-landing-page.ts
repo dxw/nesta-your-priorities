@@ -417,8 +417,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .carouselViewport {
-          margin: 0 -24px;
-          padding: 0 24px 8px;
+          margin: 0;
+          padding: 0 0 8px;
           overflow-x: auto;
           scroll-snap-type: x proximity;
           -webkit-overflow-scrolling: touch;
@@ -900,11 +900,7 @@ export class YpLandingPage extends YpBaseElement {
     const maxScrollLeft = scrollWidth - clientWidth;
     this.carouselThumbLeftPercent =
       (scrollLeft / maxScrollLeft) * (100 - this.carouselThumbWidthPercent);
-    // scroll-snap-type combined with this viewport's own left padding means
-    // the browser settles at rest on scrollLeft === padding-left, not 0.
-    const restScrollLeft =
-      parseFloat(getComputedStyle(viewport).paddingLeft) || 0;
-    this.carouselCanScrollLeft = scrollLeft > restScrollLeft + 1;
+    this.carouselCanScrollLeft = scrollLeft > 1;
     this.carouselCanScrollRight = scrollLeft < maxScrollLeft - 1;
   };
 
