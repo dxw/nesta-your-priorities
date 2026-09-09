@@ -421,8 +421,8 @@ export class YpPostEdit extends YpEditBase {
 
         @media (max-width: 960px) {
           .topHeader {
-            margin-left: 8px;
-            margin-right: 8px;
+            margin-left: 0;
+            margin-right: 0;
           }
         }
 
@@ -582,10 +582,11 @@ export class YpPostEdit extends YpEditBase {
           }
 
           .frameContainer {
+            box-sizing: border-box;
             max-width: 100%;
             width: 100%;
             margin: 0;
-            padding: 0;
+            padding: 0 16px;
             border-radius: 0;
             border: none;
           }
