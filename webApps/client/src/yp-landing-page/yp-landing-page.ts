@@ -100,8 +100,6 @@ export class YpLandingPage extends YpBaseElement {
           height: 100px;
           width: 249px;
           padding: 0 16px;
-          border: 1px dashed rgba(237, 239, 242, 0.5);
-          border-radius: 4px;
           color: #edeff2;
           font-size: 1rem;
           font-weight: 600;
