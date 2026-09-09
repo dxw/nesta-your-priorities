@@ -103,7 +103,7 @@ export class YpLandingPage extends YpBaseElement {
           border: 1px dashed rgba(237, 239, 242, 0.5);
           border-radius: 4px;
           color: #edeff2;
-          font-size: 0.75rem;
+          font-size: 1rem;
           font-weight: 600;
           letter-spacing: 0.08em;
           text-transform: uppercase;
@@ -165,7 +165,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .eyebrow {
           margin: 0 0 16px;
-          color: var(--yp-landing-accent-text-color, #c82cc3);
+          color: var(--yp-landing-accent-text-color, #c124bc);
           font-size: clamp(1rem, 0.75rem + 1vw, 1.125rem);
           font-weight: 700;
           line-height: 1;
@@ -187,14 +187,13 @@ export class YpLandingPage extends YpBaseElement {
           max-width: 620px;
           margin: 0 auto 20px;
           font-size: 1.0625rem;
-          font-style: italic;
           line-height: 1.6;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
 
         .attribution {
           margin: 0 0 32px;
-          font-size: 0.875rem;
+          font-size: 1rem;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
 
@@ -249,7 +248,7 @@ export class YpLandingPage extends YpBaseElement {
           left: 50%;
           transform: translateX(-50%);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -321,7 +320,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .getInvolvedDark .eyebrow {
-          color: var(--yp-landing-accent-color, #e144dc);
+          color: var(--yp-landing-surface-color, #edeff2);
         }
 
         .howItWorksHeading {
@@ -352,7 +351,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .howItWorksCard p {
-          font-size: 0.9375rem;
+          font-size: 1rem;
+          line-height: 1.5;
           margin: 0;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -375,9 +375,9 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .leadIn {
-          max-width: 480px;
+          max-width: 100%;
           margin: 0;
-          color: var(--yp-landing-accent-text-color, #c82cc3);
+          color: var(--yp-landing-accent-text-color, #c124bc);
           font-weight: 700;
           font-size: 1rem;
         }
@@ -410,7 +410,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .kindOfThingSection {
-          padding: 64px 24px;
+          padding: 0 24px 64px;
         }
 
         .kindOfThingEmphasis {
@@ -418,8 +418,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .carouselViewport {
-          margin: 0 -24px;
-          padding: 0 24px 8px;
+          margin: 0;
+          padding: 0 0 8px;
           overflow-x: auto;
           scroll-snap-type: x proximity;
           -webkit-overflow-scrolling: touch;
@@ -454,7 +454,7 @@ export class YpLandingPage extends YpBaseElement {
           justify-content: center;
           background: var(--yp-landing-video-background-color, #191923);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -482,7 +482,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .carouselCardBody p {
-          font-size: 0.9375rem;
+          font-size: 1rem;
+          line-height: 1.5;
           margin: 0;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -581,7 +582,6 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .martinCopy p {
-          font-style: italic;
           line-height: 1.6;
         }
 
@@ -597,7 +597,7 @@ export class YpLandingPage extends YpBaseElement {
           justify-content: center;
           background: var(--yp-landing-video-background-color, #191923);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -627,7 +627,7 @@ export class YpLandingPage extends YpBaseElement {
           justify-content: center;
           background: var(--yp-landing-video-background-color, #191923);
           color: rgba(237, 239, 242, 0.6);
-          font-size: 0.75rem;
+          font-size: 1rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
@@ -704,7 +704,7 @@ export class YpLandingPage extends YpBaseElement {
         .faqAnswer {
           margin: 0;
           padding: 0 24px 20px;
-          font-size: 0.9375rem;
+          font-size: 1rem;
           line-height: 1.6;
           color: var(--yp-landing-body-text-color, #2e4057);
         }
@@ -726,7 +726,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .footerEmail {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
-          font-size: 16px;
+          font-size: 1rem;
           text-transform: uppercase;
           color: var(--yp-landing-surface-color, #edeff2);
           text-decoration: none;
@@ -768,12 +768,6 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         @media (max-width: 600px) {
-          p,
-          .leadIn,
-          .navLinks md-text-button {
-            font-size: 0.875rem;
-          }
-
           .nav {
             padding: 12px 16px;
           }
@@ -788,12 +782,15 @@ export class YpLandingPage extends YpBaseElement {
 
           .getInvolvedDark,
           .smallIdeaSection,
-          .kindOfThingSection,
           .martinSection,
           .aboutUsSection,
           .faqsSection,
           .siteFooter {
             padding: 40px 16px;
+          }
+
+          .kindOfThingSection {
+            padding: 0 16px 40px;
           }
 
           .footerBottomRow {
@@ -905,11 +902,7 @@ export class YpLandingPage extends YpBaseElement {
     const maxScrollLeft = scrollWidth - clientWidth;
     this.carouselThumbLeftPercent =
       (scrollLeft / maxScrollLeft) * (100 - this.carouselThumbWidthPercent);
-    // scroll-snap-type combined with this viewport's own left padding means
-    // the browser settles at rest on scrollLeft === padding-left, not 0.
-    const restScrollLeft =
-      parseFloat(getComputedStyle(viewport).paddingLeft) || 0;
-    this.carouselCanScrollLeft = scrollLeft > restScrollLeft + 1;
+    this.carouselCanScrollLeft = scrollLeft > 1;
     this.carouselCanScrollRight = scrollLeft < maxScrollLeft - 1;
   };
 
