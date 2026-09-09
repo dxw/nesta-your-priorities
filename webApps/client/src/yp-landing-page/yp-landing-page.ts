@@ -165,7 +165,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .eyebrow {
           margin: 0 0 16px;
-          color: var(--yp-landing-accent-text-color, #c82cc3);
+          color: var(--yp-landing-accent-text-color, #c124bc);
           font-size: clamp(1rem, 0.75rem + 1vw, 1.125rem);
           font-weight: 700;
           line-height: 1;
@@ -320,7 +320,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .getInvolvedDark .eyebrow {
-          color: var(--yp-landing-accent-color, #e144dc);
+          color: var(--yp-landing-surface-color, #edeff2);
         }
 
         .howItWorksHeading {
@@ -377,7 +377,7 @@ export class YpLandingPage extends YpBaseElement {
         .leadIn {
           max-width: 100%;
           margin: 0;
-          color: var(--yp-landing-accent-text-color, #c82cc3);
+          color: var(--yp-landing-accent-text-color, #c124bc);
           font-weight: 700;
           font-size: 1rem;
         }
