@@ -64,6 +64,37 @@ export class YpLandingPage extends YpBaseElement {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
 
+        /* Double outline meets contrast requirement on both light & dark backgrounds */
+        button:focus-visible,
+        a:focus-visible,
+        md-text-button:focus-visible,
+        [tabindex]:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #191923;
+        }
+
+        /* Sits inside a white .yp-hard-shadow-box card that already has black border, 
+         * so accent colour is needed to differentiate
+         */
+        .shareIdeaButton:focus-visible {
+          box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #c124bc;
+        }
+
+        /*
+         * Already surrounded by black, but on bright background, so accent colour indicator
+         * has better contrast when used on inner element on white background
+         */
+        .faqQuestion:focus-visible {
+          outline: 3px solid #c124bc;
+          outline-offset: -6px;
+          box-shadow: none;
+        }
+
+        /* Only ever shown on navy background, so single white line is clearer than double outline */
+        .navLinks md-text-button:focus-visible {
+          box-shadow: 0 0 0 3px #ffffff;
+        }
+
         .logoPlaceholder,
         .intro h1,
         h2,
