@@ -959,7 +959,7 @@ export class YpLandingPage extends YpBaseElement {
     return html`
       <nav class="nav" aria-label="Landing page sections">
         <div class="logoPlaceholder">
-          <img src="/images/home/logo_crop.png" alt=Institute of Small Ideas logo">
+          <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
         </div>
         <div class="navLinks">
           ${NAV_LINKS.map(
