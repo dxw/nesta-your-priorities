@@ -176,6 +176,44 @@ describe('YpLandingPage', () => {
 
       expect(scrolledBy?.left).to.be.lessThan(0);
     });
+
+    it('moves focus to the other arrow when the focused arrow becomes disabled', async () => {
+      const { leftArrow, rightArrow } = getArrows();
+
+      // Simulate having scrolled away from the start, so both arrows are enabled.
+      (element as any).carouselCanScrollLeft = true;
+      await element.updateComplete;
+
+      rightArrow.focus();
+      expect(element.shadowRoot!.activeElement).to.equal(rightArrow);
+
+      // Simulate the scroll reaching the right-hand end, which disables this
+      // (currently focused) button. Browsers drop focus to <body> when a
+      // focused element becomes disabled, so without a fix the keyboard user
+      // would silently lose their place on the page.
+      (element as any).carouselCanScrollRight = false;
+      await element.updateComplete;
+
+      expect(rightArrow.disabled).to.be.true;
+      expect(element.shadowRoot!.activeElement).to.equal(leftArrow);
+    });
+
+    it('moves focus to the carousel viewport when the other arrow is also disabled', async () => {
+      const { rightArrow } = getArrows();
+      const viewport = element.shadowRoot!.querySelector(
+        '.carouselViewport'
+      ) as HTMLElement;
+
+      // Left arrow remains disabled (its default before any scrolling).
+      rightArrow.focus();
+      expect(element.shadowRoot!.activeElement).to.equal(rightArrow);
+
+      (element as any).carouselCanScrollRight = false;
+      await element.updateComplete;
+
+      expect(rightArrow.disabled).to.be.true;
+      expect(element.shadowRoot!.activeElement).to.equal(viewport);
+    });
   });
 
   describe('sections', () => {

@@ -46,6 +46,7 @@ export class YpLandingPage extends YpBaseElement {
   private carouselDragging = false;
   private carouselDragStartX = 0;
   private carouselDragStartScrollLeft = 0;
+  private pendingArrowFocusRedirect: "left" | "right" | null = null;
 
   @state()
   private openFaqIndexes = new Set<number>();
@@ -79,7 +80,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .skipLink {
-          position: absolute;
+          position: fixed;
           top: -48px;
           left: 8px;
           z-index: 10;
@@ -419,13 +420,27 @@ export class YpLandingPage extends YpBaseElement {
 
         .criteriaBox ul {
           margin: 0;
-          padding-left: 20px;
+          padding-left: 0;
+          list-style: none;
         }
 
         .criteriaBox li {
+          position: relative;
+          padding-left: 20px;
           margin-bottom: 12px;
           line-height: 1.5;
           color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .criteriaBox li::before {
+          content: "";
+          position: absolute;
+          left: 4px;
+          top: 0.65em;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: currentColor;
         }
 
         .criteriaBox li:last-child {
@@ -666,12 +681,26 @@ export class YpLandingPage extends YpBaseElement {
 
         .aboutUsLeadershipList {
           margin: 0 0 16px;
-          padding-left: 20px;
+          padding-left: 0;
+          list-style: none;
         }
 
         .aboutUsLeadershipList li {
+          position: relative;
+          padding-left: 20px;
           line-height: 1.6;
           color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .aboutUsLeadershipList li::before {
+          content: "";
+          position: absolute;
+          left: 4px;
+          top: 0.65em;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: currentColor;
         }
 
         .aboutUsActions {
@@ -911,6 +940,49 @@ export class YpLandingPage extends YpBaseElement {
     this._updateCarouselThumb();
   }
 
+  override willUpdate(changedProperties: Map<string, unknown>) {
+    super.willUpdate(changedProperties);
+    if (
+      changedProperties.has("carouselCanScrollLeft") &&
+      changedProperties.get("carouselCanScrollLeft") === true &&
+      !this.carouselCanScrollLeft
+    ) {
+      this._flagArrowFocusRedirectIfActive("left");
+    }
+    if (
+      changedProperties.has("carouselCanScrollRight") &&
+      changedProperties.get("carouselCanScrollRight") === true &&
+      !this.carouselCanScrollRight
+    ) {
+      this._flagArrowFocusRedirectIfActive("right");
+    }
+  }
+
+  private _flagArrowFocusRedirectIfActive(direction: "left" | "right") {
+    const button = this.$$(
+      direction === "left" ? ".carouselArrowLeft" : ".carouselArrowRight"
+    );
+    if (button && this.shadowRoot?.activeElement === button) {
+      this.pendingArrowFocusRedirect = direction;
+    }
+  }
+
+  override updated(changedProperties: Map<string, unknown>) {
+    super.updated(changedProperties);
+    if (this.pendingArrowFocusRedirect) {
+      const direction = this.pendingArrowFocusRedirect;
+      this.pendingArrowFocusRedirect = null;
+      const fallbackArrow = this.$$(
+        direction === "left" ? ".carouselArrowRight" : ".carouselArrowLeft"
+      ) as HTMLButtonElement | null;
+      const target =
+        fallbackArrow && !fallbackArrow.disabled
+          ? fallbackArrow
+          : (this.$$(".carouselViewport") as HTMLElement | null);
+      target?.focus();
+    }
+  }
+
   private _updateCarouselThumb = () => {
     const viewport = this.$$(".carouselViewport") as HTMLElement | null;
     if (!viewport) return;
@@ -990,10 +1062,14 @@ export class YpLandingPage extends YpBaseElement {
         <div class="logoPlaceholder">
           <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
         </div>
+        <button class="skipLink" @click="${this._skipToContent}">
+          Skip to content
+        </button>
         <div class="navLinks">
           ${NAV_LINKS.map(
             (link) => html`
               <md-text-button
+                aria-label="${link.label}"
                 @click="${() => this._scrollToSection(link.id)}"
               >
                 ${link.label}
@@ -1040,9 +1116,6 @@ export class YpLandingPage extends YpBaseElement {
 
   override render() {
     return html`
-      <button class="skipLink" @click="${this._skipToContent}">
-        Skip to content
-      </button>
       ${this.renderNav()}
 
       <main>
@@ -1050,7 +1123,7 @@ export class YpLandingPage extends YpBaseElement {
           <section class="intro" id="intro" tabindex="-1">
             <div class="introCopy">
               <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
-              <h1>${INTRO_CONTENT.heading}</h1>
+              <h1 aria-label="${INTRO_CONTENT.heading}">${INTRO_CONTENT.heading}</h1>
               <p class="quote">${INTRO_CONTENT.quote}</p>
               <p class="attribution">
                 <strong>${INTRO_CONTENT.attributionName}</strong>
@@ -1058,6 +1131,7 @@ export class YpLandingPage extends YpBaseElement {
               </p>
               <button
                 class="shareIdeaButton yp-hard-shadow-box"
+                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                 @click="${this._shareYourIdea}"
               >
                 ${SHARE_IDEA_BUTTON_LABEL}
@@ -1071,26 +1145,30 @@ export class YpLandingPage extends YpBaseElement {
         <section id="get-involved">
           <div class="getInvolvedDark">
             <div class="sectionInner">
-              <h2 class="bigHeading">${GET_INVOLVED_CONTENT.heading}</h2>
+              <h2 class="bigHeading" aria-label="${GET_INVOLVED_CONTENT.heading}">${GET_INVOLVED_CONTENT.heading}</h2>
               <p class="eyebrow">${GET_INVOLVED_CONTENT.eyebrow}</p>
               ${GET_INVOLVED_CONTENT.paragraphs.map(
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
               <button
                 class="shareIdeaButton yp-hard-shadow-box"
+                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                 @click="${this._shareYourIdea}"
               >
                 ${SHARE_IDEA_BUTTON_LABEL}
               </button>
 
-              <h2 class="bigHeading howItWorksHeading">
+              <h2
+                class="bigHeading howItWorksHeading"
+                aria-label="${HOW_IT_WORKS_CONTENT.heading}"
+              >
                 ${HOW_IT_WORKS_CONTENT.heading}
               </h2>
               <div class="howItWorksGrid">
                 ${HOW_IT_WORKS_CONTENT.steps.map(
                   (step) => html`
                     <div class="howItWorksCard yp-hard-shadow-box">
-                      <h3>${step.title}</h3>
+                      <h3 aria-label="${step.title}">${step.title}</h3>
                       <p>${step.description}</p>
                     </div>
                   `
@@ -1103,11 +1181,12 @@ export class YpLandingPage extends YpBaseElement {
             <div class="sectionInner">
               <div class="smallIdeaHeader">
                 <div>
-                  <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
+                  <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
                   <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                 </div>
                 <button
                   class="shareIdeaButton yp-hard-shadow-box"
+                  aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                   @click="${this._shareYourIdea}"
                 >
                   ${SHARE_IDEA_BUTTON_LABEL}
@@ -1117,7 +1196,7 @@ export class YpLandingPage extends YpBaseElement {
                 ${SMALL_IDEA_CONTENT.criteria.map(
                   (group) => html`
                     <div class="criteriaBox">
-                      <h3>${group.heading}</h3>
+                      <h3 aria-label="${group.heading}">${group.heading}</h3>
                       <ul>
                         ${group.items.map(
                           (item) => html`
@@ -1136,7 +1215,7 @@ export class YpLandingPage extends YpBaseElement {
 
           <div class="kindOfThingSection">
             <div class="sectionInner">
-              <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
+              <h2 class="bigHeading" aria-label="${KIND_OF_THING_CONTENT.heading}">${KIND_OF_THING_CONTENT.heading}</h2>
               ${KIND_OF_THING_CONTENT.paragraphs.map(
                 (paragraph) => html`
                   <p class="${paragraph.bold ? "kindOfThingEmphasis" : ""}">
@@ -1145,34 +1224,6 @@ export class YpLandingPage extends YpBaseElement {
                 `
               )}
               <div class="carouselWrapper">
-                <div
-                  class="carouselViewport"
-                  role="region"
-                  aria-label="${CAROUSEL_REGION_LABEL}"
-                  tabindex="0"
-                  @scroll="${this._updateCarouselThumb}"
-                >
-                  <div class="carouselTrack">
-                    ${KIND_OF_THING_CONTENT.examples.map(
-                      (idea) => html`
-                        <div class="carouselCard">
-                          <div class="carouselCardImage" aria-hidden="true">
-                            ${idea.image
-                              ? html`<img
-                                  src="${idea.image}"
-                                  alt="${idea.alt}"
-                                />`
-                              : IMAGE_PLACEHOLDER_LABEL}
-                          </div>
-                          <div class="carouselCardBody yp-hard-shadow-box">
-                            <h3>${idea.title}</h3>
-                            <p>${idea.description}</p>
-                          </div>
-                        </div>
-                      `
-                    )}
-                  </div>
-                </div>
                 <button
                   class="carouselArrow carouselArrowLeft"
                   aria-label="Show previous examples"
@@ -1207,6 +1258,34 @@ export class YpLandingPage extends YpBaseElement {
                     />
                   </svg>
                 </button>
+                <div
+                  class="carouselViewport"
+                  role="region"
+                  aria-label="${CAROUSEL_REGION_LABEL}"
+                  tabindex="0"
+                  @scroll="${this._updateCarouselThumb}"
+                >
+                  <div class="carouselTrack">
+                    ${KIND_OF_THING_CONTENT.examples.map(
+                      (idea) => html`
+                        <div class="carouselCard">
+                          <div class="carouselCardImage" aria-hidden="true">
+                            ${idea.image
+                              ? html`<img
+                                  src="${idea.image}"
+                                  alt="${idea.alt}"
+                                />`
+                              : IMAGE_PLACEHOLDER_LABEL}
+                          </div>
+                          <div class="carouselCardBody yp-hard-shadow-box">
+                            <h3 aria-label="${idea.title}">${idea.title}</h3>
+                            <p>${idea.description}</p>
+                          </div>
+                        </div>
+                      `
+                    )}
+                  </div>
+                </div>
               </div>
               <div
                 class="carouselScrollTrack"
@@ -1227,7 +1306,7 @@ export class YpLandingPage extends YpBaseElement {
 
           <div class="martinSection">
             <div class="sectionInner martinGrid">
-              <h2 class="bigHeading martinHeading">${MARTIN_CONTENT.heading}</h2>
+              <h2 class="bigHeading martinHeading" aria-label="${MARTIN_CONTENT.heading}">${MARTIN_CONTENT.heading}</h2>
               <div class="martinImage" aria-hidden="true">
               <img src="/images/home/martin_crop.jpg" alt="Photo of Martin Lewis" />
               </div>
@@ -1247,7 +1326,7 @@ export class YpLandingPage extends YpBaseElement {
                 <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
               </div>
               <div class="aboutUsCopy">
-                <h2 class="bigHeading">${ABOUT_US_CONTENT.heading}</h2>
+                <h2 class="bigHeading" aria-label="${ABOUT_US_CONTENT.heading}">${ABOUT_US_CONTENT.heading}</h2>
                 ${ABOUT_US_CONTENT.paragraphs.map(
                   (paragraph) => html`<p>${paragraph}</p>`
                 )}
@@ -1260,6 +1339,7 @@ export class YpLandingPage extends YpBaseElement {
                 <div class="aboutUsActions">
                   <button
                     class="shareIdeaButton yp-hard-shadow-box"
+                    aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                     @click="${this._shareYourIdea}"
                   >
                     ${SHARE_IDEA_BUTTON_LABEL}
@@ -1273,7 +1353,7 @@ export class YpLandingPage extends YpBaseElement {
         <section id="faqs">
           <div class="faqsSection">
             <div class="sectionInner">
-              <h2 class="bigHeading">${FAQS_CONTENT.heading}</h2>
+              <h2 class="bigHeading" aria-label="${FAQS_CONTENT.heading}">${FAQS_CONTENT.heading}</h2>
               <div class="faqList">
                 ${FAQS_CONTENT.items.map((item, index) => {
                   const isOpen = this.openFaqIndexes.has(index);
@@ -1281,6 +1361,7 @@ export class YpLandingPage extends YpBaseElement {
                     <div class="faqItem yp-hard-shadow-box">
                       <button
                         class="faqQuestion"
+                        aria-label="${item.question}"
                         aria-expanded="${isOpen}"
                         aria-controls="faq-answer-${index}"
                         @click="${() => this._toggleFaq(index)}"
@@ -1308,9 +1389,10 @@ export class YpLandingPage extends YpBaseElement {
 
       <footer class="siteFooter">
         <div class="sectionInner">
-          <h2 class="footerHeading">${FOOTER_CONTENT.heading}</h2>
+          <h2 class="footerHeading" aria-label="${FOOTER_CONTENT.heading}">${FOOTER_CONTENT.heading}</h2>
           <a
             class="footerEmail"
+            aria-label="${FOOTER_CONTENT.emailAddress}"
             href="mailto:${FOOTER_CONTENT.emailAddress}"
           >
             ${FOOTER_CONTENT.emailAddress}
@@ -1322,6 +1404,7 @@ export class YpLandingPage extends YpBaseElement {
             </p>
             <a
               class="footerPrivacyLink"
+              aria-label="${FOOTER_CONTENT.privacyPolicyLabel}"
               href="${FOOTER_CONTENT.privacyPolicyUrl}"
               target="_blank"
               rel="noopener noreferrer"
