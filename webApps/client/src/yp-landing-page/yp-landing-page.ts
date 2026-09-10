@@ -7,7 +7,6 @@ import { YpHardShadowStyles } from "../common/YpHardShadowStyles.js";
 import {
   YpLandingSectionId,
   LOGO_PLACEHOLDER_LABEL,
-  VIDEO_PLACEHOLDER_LABEL,
   IMAGE_PLACEHOLDER_LABEL,
   LOGO_IMAGE_PLACEHOLDER_LABEL,
   SHARE_IDEA_BUTTON_LABEL,
@@ -68,7 +67,6 @@ export class YpLandingPage extends YpBaseElement {
         .intro h1,
         h2,
         .shareIdeaButton,
-        .videoPlaceholderLabel,
         .howItWorksCard h3,
         .criteriaBox h3,
         .carouselCardBody h3 {
@@ -242,24 +240,22 @@ export class YpLandingPage extends YpBaseElement {
           background: var(--yp-landing-video-background-color, #191923);
         }
 
-        .videoPlaceholder video {
+        .videoPlaceholder iframe,
+        .videoPlaceholder img {
           width: 100%;
           height: 100%;
+        }
+
+        .videoPlaceholder iframe {
+          border: 0;
+        }
+
+        .videoPlaceholder img {
           object-fit: cover;
         }
 
-        .videoPlaceholderLabel {
-          position: absolute;
-          bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          color: rgba(237, 239, 242, 0.6);
-          font-size: 1rem;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-
         .playButton {
+          position: absolute;
           width: 64px;
           height: 64px;
           border: none;
@@ -869,12 +865,6 @@ export class YpLandingPage extends YpBaseElement {
   _playVideo() {
     window.appGlobals.activity("click", "landingPageVideoPlay");
     this.videoPlaying = true;
-    this.updateComplete.then(() => {
-      const video = this.$$("#introVideo") as HTMLVideoElement | null;
-      if (video && video.currentSrc) {
-        video.play().catch(() => {});
-      }
-    });
   }
 
   override connectedCallback() {
@@ -987,19 +977,24 @@ export class YpLandingPage extends YpBaseElement {
   }
 
   renderIntroVideo() {
+    const youtubeVideoId = "dQw4w9WgXcQ"; // TODO: USE ACTUAL VIDEO LINK
+
     return html`
       <div class="videoPlaceholder">
-        <video
-          id="introVideo"
-          preload="none"
-          playsinline
-          ?hidden="${!this.videoPlaying}"
-        ></video>
-        ${!this.videoPlaying
+        ${this.videoPlaying
           ? html`
-              <div class="videoPlaceholderLabel">
-                ${VIDEO_PLACEHOLDER_LABEL}
-              </div>
+              <iframe
+                src="https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1"
+                title="The Institute for Small Ideas video"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            `
+          : html`
+              <img
+                src="https://img.youtube.com/vi/${youtubeVideoId}/maxresdefault.jpg"
+                alt="The Institute for Small Ideas video thumbnail"
+              />
               <button
                 class="playButton"
                 aria-label="Play video"
@@ -1009,8 +1004,7 @@ export class YpLandingPage extends YpBaseElement {
                   <path fill="currentColor" d="M8 5v14l11-7z" />
                 </svg>
               </button>
-            `
-          : ""}
+            `}
       </div>
     `;
   }
