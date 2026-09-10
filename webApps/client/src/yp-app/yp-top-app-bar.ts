@@ -243,7 +243,14 @@ export class YpTopAppBar extends YpBaseElement {
           left: 0;
           right: 0;
           transition: top 0.3s;
-          z-index: 1;
+          /* Higher than 1 on purpose: Material web components (outlined
+             text fields/selects) render internal outline/label layers with
+             z-index:1 but no ancestor establishing a real stacking context,
+             so those layers leak into the root stacking context at the same
+             level as this bar - and being later in the DOM, they'd paint on
+             top of it. Still well below overlays that should cover this bar
+             (open select menus ~20, drawers ~200, snackbars ~1000). */
+          z-index: 10;
           max-width: 100vw;
         }
 
