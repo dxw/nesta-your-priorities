@@ -87,10 +87,7 @@ export class YpPostListItem extends YpBaseElement {
         .share {
           margin-left: 16px;
           align-self: flex-end;
-          /* The vote icon buttons don't fill their own 48px-tall container
-             (an 8px gap is left at the bottom), so bottom-aligning this
-             8px too to match their actual rendered position, not the
-             container's full height. */
+          /* Icon buttons don't fill whole container - bottom aligning to match actual position. */
           margin-bottom: 8px;
         }
 
