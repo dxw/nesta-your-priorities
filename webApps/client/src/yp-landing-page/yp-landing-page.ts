@@ -58,7 +58,7 @@ export class YpLandingPage extends YpBaseElement {
         :host {
           display: block;
           width: 100%;
-          background-color: var(--yp-landing-surface-color, #edeff2);
+          background-color: var(--yp-landing-surface-color, #ffffff);
           color: var(--yp-landing-heading-text-color, #191923);
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
@@ -206,7 +206,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .shareIdeaButton {
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
           color: var(--yp-landing-heading-text-color, #191923);
           padding: 12px 28px;
           font-size: clamp(1rem, 1.4vw, 1.25rem);
@@ -318,11 +318,11 @@ export class YpLandingPage extends YpBaseElement {
 
         .getInvolvedDark h2,
         .getInvolvedDark p {
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .getInvolvedDark .eyebrow {
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .howItWorksHeading {
@@ -337,7 +337,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .howItWorksCard {
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
           padding: 20px;
         }
 
@@ -469,7 +469,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .carouselCardBody {
           flex: 1;
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
           padding: 20px;
         }
 
@@ -562,7 +562,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .martinSection h2,
         .martinSection p {
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .martinGrid {
@@ -673,7 +673,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .faqItem {
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
         }
 
         .faqQuestion {
@@ -722,14 +722,14 @@ export class YpLandingPage extends YpBaseElement {
           letter-spacing: -0.01em;
           text-transform: uppercase;
           margin: 0 0 12px;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .footerEmail {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
           font-size: 1rem;
           text-transform: uppercase;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
           text-decoration: none;
         }
 
@@ -752,14 +752,14 @@ export class YpLandingPage extends YpBaseElement {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
           font-size: 12px;
           text-transform: uppercase;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .footerPrivacyLink {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
           font-size: 12px;
           text-transform: uppercase;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
           text-decoration: none;
         }
 
