@@ -68,7 +68,11 @@ import { YpDrawer } from "./yp-drawer.js";
 import { YpSnackbar } from "./yp-snackbar.js";
 import { PsAppGlobals } from "../policySynth/PsAppGlobals.js";
 import { PsServerApi } from "../policySynth/PsServerApi.js";
-import { YpTopAppBar } from "./yp-top-app-bar.js";
+import {
+  YpTopAppBar,
+  YP_TOP_APP_BAR_TITLE_EXPAND_THRESHOLD,
+} from "./yp-top-app-bar.js";
+import { YpTopAppBarTokens } from "./YpTopAppBarTokens.js";
 import { YpGroupType } from "../yp-collection/ypGroupType.js";
 import { YpUserEdit } from "../yp-user/yp-user-edit.js";
 
@@ -533,7 +537,7 @@ export class YpApp extends YpBaseElement {
   }
 
   static override get styles() {
-    return [super.styles, YpAppStyles];
+    return [super.styles, YpTopAppBarTokens, YpAppStyles];
   }
 
   _haveCopiedNotification() {
@@ -858,12 +862,12 @@ export class YpApp extends YpBaseElement {
     return this.currentTitle || titleString;
   }
 
-  // Mirrors yp-top-app-bar's own isTitleLong check - when the title is long
-  // the bar renders at --top-app-bar-expanded-height (80px) instead of
-  // --top-app-bar-height (60px), so .mainPage needs a taller margin-top to
-  // avoid its content clipping under the bar.
+  // Make space for yp-top-app-bar's expanded height rendered when title is over threshold
   get isTopBarExpanded(): boolean {
-    return this.topBarTitleString.trim().length > 16;
+    return (
+      this.topBarTitleString.trim().length >
+      YP_TOP_APP_BAR_TITLE_EXPAND_THRESHOLD
+    );
   }
 
   renderTopBar() {
