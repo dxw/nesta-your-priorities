@@ -288,8 +288,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .playButton svg {
-          width: 22px;
-          height: 22px;
+          width: 1.75rem;
+          height: 1.75rem;
           margin-left: 2px;
         }
 
@@ -555,8 +555,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .carouselArrow svg {
-          width: 20px;
-          height: 20px;
+          width: 1.5rem;
+          height: 1.5rem;
         }
 
         .carouselArrowLeft {
