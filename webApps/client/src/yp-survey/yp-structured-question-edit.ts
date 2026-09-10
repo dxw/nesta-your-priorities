@@ -874,16 +874,14 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
     );
   }
 
-  override focus(options?: FocusOptions) {
+  override focus() {
     if (this.isInputField) {
       const item = this.$$("#structuredQuestion_" + this.index);
       if (item) {
         setTimeout(() => {
-          // md-outlined-text-field's own focus() calls the native input's
-          // focus() directly without forwarding FocusOptions, so
-          // preventScroll has no effect there - restore the scroll position
-          // ourselves instead of relying on it.
-          item.focus(options);
+        // md-outlined-text-field's own focus() causes auto-scroll to first text input
+        // This forces scroll back to top of page, so user can see intro content.
+          item.focus();
           window.scrollTo(0, 0);
           requestAnimationFrame(() => window.scrollTo(0, 0));
         }, 250);
@@ -1321,7 +1319,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
 
     setTimeout(() => {
       if (this.question.questionIndex === 1 && !this.dontFocusFirstQuestion) {
-        this.focus({ preventScroll: true });
+        this.focus();
       }
     }, 500);
   }
