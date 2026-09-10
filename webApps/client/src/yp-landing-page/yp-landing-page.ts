@@ -281,7 +281,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--yp-landing-accent-color, #e144dc);
+          background: var(--yp-landing-accent-color, #c124bc);
           color: #edeff2;
           cursor: pointer;
           box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
@@ -528,7 +528,7 @@ export class YpLandingPage extends YpBaseElement {
           left: 0;
           height: 100%;
           border-radius: 3px;
-          background: var(--yp-landing-accent-color, #e144dc);
+          background: var(--yp-landing-accent-color, #c124bc);
           pointer-events: none;
         }
 
@@ -547,7 +547,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--yp-landing-accent-color, #e144dc);
+          background: var(--yp-landing-accent-color, #c124bc);
           color: #edeff2;
           cursor: pointer;
           box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
@@ -717,7 +717,7 @@ export class YpLandingPage extends YpBaseElement {
           flex-shrink: 0;
           font-size: 1.5rem;
           line-height: 1;
-          color: var(--yp-landing-accent-color, #e144dc);
+          color: var(--yp-landing-accent-color, #c124bc);
         }
 
         .faqAnswer {
