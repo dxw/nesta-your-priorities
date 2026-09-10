@@ -86,9 +86,12 @@ export class YpLandingPage extends YpBaseElement {
           background: var(--yp-landing-heading-text-color, #191923);
           color: #ffffff;
           padding: 12px 20px;
+          border: none;
           border-radius: 4px;
           text-decoration: none;
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 1rem;
+          cursor: pointer;
           transition: top 0.1s ease;
         }
 
@@ -856,6 +859,14 @@ export class YpLandingPage extends YpBaseElement {
     ];
   }
 
+  _skipToContent() {
+    const intro = this.$$("#intro") as HTMLElement | null;
+    if (intro) {
+      intro.scrollIntoView({ behavior: "smooth", block: "start" });
+      intro.focus();
+    }
+  }
+
   _scrollToSection(sectionId: YpLandingSectionId) {
     const section = this.$$("#" + sectionId);
     if (section) {
@@ -1029,69 +1040,22 @@ export class YpLandingPage extends YpBaseElement {
 
   override render() {
     return html`
-      <a class="skipLink" href="#intro">Skip to content</a>
-      <div class="hero">
-        ${this.renderNav()}
+      <button class="skipLink" @click="${this._skipToContent}">
+        Skip to content
+      </button>
+      ${this.renderNav()}
 
-        <section class="intro" id="intro" tabindex="-1">
-          <div class="introCopy">
-            <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
-            <h1>${INTRO_CONTENT.heading}</h1>
-            <p class="quote">${INTRO_CONTENT.quote}</p>
-            <p class="attribution">
-              <strong>${INTRO_CONTENT.attributionName}</strong>
-              &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
-            </p>
-            <button
-              class="shareIdeaButton yp-hard-shadow-box"
-              @click="${this._shareYourIdea}"
-            >
-              ${SHARE_IDEA_BUTTON_LABEL}
-            </button>
-          </div>
-        </section>
-      </div>
-
-      ${this.renderIntroVideo()}
-
-      <section id="get-involved">
-        <div class="getInvolvedDark">
-          <div class="sectionInner">
-            <h2 class="bigHeading">${GET_INVOLVED_CONTENT.heading}</h2>
-            <p class="eyebrow">${GET_INVOLVED_CONTENT.eyebrow}</p>
-            ${GET_INVOLVED_CONTENT.paragraphs.map(
-              (paragraph) => html`<p>${paragraph}</p>`
-            )}
-            <button
-              class="shareIdeaButton yp-hard-shadow-box"
-              @click="${this._shareYourIdea}"
-            >
-              ${SHARE_IDEA_BUTTON_LABEL}
-            </button>
-
-            <h2 class="bigHeading howItWorksHeading">
-              ${HOW_IT_WORKS_CONTENT.heading}
-            </h2>
-            <div class="howItWorksGrid">
-              ${HOW_IT_WORKS_CONTENT.steps.map(
-                (step) => html`
-                  <div class="howItWorksCard yp-hard-shadow-box">
-                    <h3>${step.title}</h3>
-                    <p>${step.description}</p>
-                  </div>
-                `
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div class="smallIdeaSection">
-          <div class="sectionInner">
-            <div class="smallIdeaHeader">
-              <div>
-                <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
-                <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
-              </div>
+      <main>
+        <div class="hero">
+          <section class="intro" id="intro" tabindex="-1">
+            <div class="introCopy">
+              <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
+              <h1>${INTRO_CONTENT.heading}</h1>
+              <p class="quote">${INTRO_CONTENT.quote}</p>
+              <p class="attribution">
+                <strong>${INTRO_CONTENT.attributionName}</strong>
+                &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
+              </p>
               <button
                 class="shareIdeaButton yp-hard-shadow-box"
                 @click="${this._shareYourIdea}"
@@ -1099,151 +1063,49 @@ export class YpLandingPage extends YpBaseElement {
                 ${SHARE_IDEA_BUTTON_LABEL}
               </button>
             </div>
-            <div class="criteriaGrid">
-              ${SMALL_IDEA_CONTENT.criteria.map(
-                (group) => html`
-                  <div class="criteriaBox">
-                    <h3>${group.heading}</h3>
-                    <ul>
-                      ${group.items.map(
-                        (item) => html`
-                          <li>
-                            <strong>${item.lead}</strong> &ndash; ${item.text}
-                          </li>
-                        `
-                      )}
-                    </ul>
-                  </div>
-                `
-              )}
-            </div>
-          </div>
+          </section>
         </div>
 
-        <div class="kindOfThingSection">
-          <div class="sectionInner">
-            <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
-            ${KIND_OF_THING_CONTENT.paragraphs.map(
-              (paragraph) => html`
-                <p class="${paragraph.bold ? "kindOfThingEmphasis" : ""}">
-                  ${paragraph.text}
-                </p>
-              `
-            )}
-            <div class="carouselWrapper">
-              <div
-                class="carouselViewport"
-                role="region"
-                aria-label="${CAROUSEL_REGION_LABEL}"
-                tabindex="0"
-                @scroll="${this._updateCarouselThumb}"
-              >
-                <div class="carouselTrack">
-                  ${KIND_OF_THING_CONTENT.examples.map(
-                    (idea) => html`
-                      <div class="carouselCard">
-                        <div class="carouselCardImage" aria-hidden="true">
-                          ${idea.image
-                            ? html`<img
-                                src="${idea.image}"
-                                alt="${idea.alt}"
-                              />`
-                            : IMAGE_PLACEHOLDER_LABEL}
-                        </div>
-                        <div class="carouselCardBody yp-hard-shadow-box">
-                          <h3>${idea.title}</h3>
-                          <p>${idea.description}</p>
-                        </div>
-                      </div>
-                    `
-                  )}
-                </div>
-              </div>
-              <button
-                class="carouselArrow carouselArrowLeft"
-                aria-label="Show previous examples"
-                ?disabled="${!this.carouselCanScrollLeft}"
-                @click="${() => this._scrollCarousel(-1)}"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M15 6l-6 6 6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                class="carouselArrow carouselArrowRight"
-                aria-label="Show more examples"
-                ?disabled="${!this.carouselCanScrollRight}"
-                @click="${() => this._scrollCarousel(1)}"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M9 6l6 6-6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div
-              class="carouselScrollTrack"
-              aria-hidden="true"
-              @pointerdown="${this._onCarouselTrackPointerDown}"
-              @pointermove="${this._onCarouselTrackPointerMove}"
-              @pointerup="${this._onCarouselTrackPointerUp}"
-              @pointercancel="${this._onCarouselTrackPointerUp}"
-            >
-              <div
-                class="carouselScrollThumb"
-                style="width: ${this.carouselThumbWidthPercent}%; left: ${this
-                  .carouselThumbLeftPercent}%;"
-              ></div>
-            </div>
-          </div>
-        </div>
+        ${this.renderIntroVideo()}
 
-        <div class="martinSection">
-          <div class="sectionInner martinGrid">
-            <h2 class="bigHeading martinHeading">${MARTIN_CONTENT.heading}</h2>
-            <div class="martinImage" aria-hidden="true">
-            <img src="/images/home/martin_crop.jpg" alt="Photo of Martin Lewis" />
-            </div>
-            <div class="martinCopy">
-              ${MARTIN_CONTENT.paragraphs.map(
+        <section id="get-involved">
+          <div class="getInvolvedDark">
+            <div class="sectionInner">
+              <h2 class="bigHeading">${GET_INVOLVED_CONTENT.heading}</h2>
+              <p class="eyebrow">${GET_INVOLVED_CONTENT.eyebrow}</p>
+              ${GET_INVOLVED_CONTENT.paragraphs.map(
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
-            </div>
-          </div>
-        </div>
-      </section>
+              <button
+                class="shareIdeaButton yp-hard-shadow-box"
+                @click="${this._shareYourIdea}"
+              >
+                ${SHARE_IDEA_BUTTON_LABEL}
+              </button>
 
-      <section id="about-us">
-        <div class="aboutUsSection">
-          <div class="sectionInner aboutUsGrid">
-            <div class="aboutUsLogo" aria-hidden="true">
-              <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
-            </div>
-            <div class="aboutUsCopy">
-              <h2 class="bigHeading">${ABOUT_US_CONTENT.heading}</h2>
-              ${ABOUT_US_CONTENT.paragraphs.map(
-                (paragraph) => html`<p>${paragraph}</p>`
-              )}
-              <p>${ABOUT_US_CONTENT.ledByLabel}</p>
-              <ul class="aboutUsLeadershipList">
-                ${ABOUT_US_CONTENT.leaders.map(
-                  (leader) => html`<li>${leader}</li>`
+              <h2 class="bigHeading howItWorksHeading">
+                ${HOW_IT_WORKS_CONTENT.heading}
+              </h2>
+              <div class="howItWorksGrid">
+                ${HOW_IT_WORKS_CONTENT.steps.map(
+                  (step) => html`
+                    <div class="howItWorksCard yp-hard-shadow-box">
+                      <h3>${step.title}</h3>
+                      <p>${step.description}</p>
+                    </div>
+                  `
                 )}
-              </ul>
-              <div class="aboutUsActions">
+              </div>
+            </div>
+          </div>
+
+          <div class="smallIdeaSection">
+            <div class="sectionInner">
+              <div class="smallIdeaHeader">
+                <div>
+                  <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
+                  <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
+                </div>
                 <button
                   class="shareIdeaButton yp-hard-shadow-box"
                   @click="${this._shareYourIdea}"
@@ -1251,45 +1113,198 @@ export class YpLandingPage extends YpBaseElement {
                   ${SHARE_IDEA_BUTTON_LABEL}
                 </button>
               </div>
+              <div class="criteriaGrid">
+                ${SMALL_IDEA_CONTENT.criteria.map(
+                  (group) => html`
+                    <div class="criteriaBox">
+                      <h3>${group.heading}</h3>
+                      <ul>
+                        ${group.items.map(
+                          (item) => html`
+                            <li>
+                              <strong>${item.lead}</strong> &ndash; ${item.text}
+                            </li>
+                          `
+                        )}
+                      </ul>
+                    </div>
+                  `
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section id="faqs">
-        <div class="faqsSection">
-          <div class="sectionInner">
-            <h2 class="bigHeading">${FAQS_CONTENT.heading}</h2>
-            <div class="faqList">
-              ${FAQS_CONTENT.items.map((item, index) => {
-                const isOpen = this.openFaqIndexes.has(index);
-                return html`
-                  <div class="faqItem yp-hard-shadow-box">
-                    <button
-                      class="faqQuestion"
-                      aria-expanded="${isOpen}"
-                      aria-controls="faq-answer-${index}"
-                      @click="${() => this._toggleFaq(index)}"
-                    >
-                      <span>${item.question}</span>
-                      <span class="faqToggleIcon" aria-hidden="true">
-                        ${isOpen ? "−" : "+"}
-                      </span>
-                    </button>
-                    <p
-                      class="faqAnswer"
-                      id="faq-answer-${index}"
-                      ?hidden="${!isOpen}"
-                    >
-                      ${item.answer || FAQ_ANSWER_PENDING_LABEL}
-                    </p>
+          <div class="kindOfThingSection">
+            <div class="sectionInner">
+              <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
+              ${KIND_OF_THING_CONTENT.paragraphs.map(
+                (paragraph) => html`
+                  <p class="${paragraph.bold ? "kindOfThingEmphasis" : ""}">
+                    ${paragraph.text}
+                  </p>
+                `
+              )}
+              <div class="carouselWrapper">
+                <div
+                  class="carouselViewport"
+                  role="region"
+                  aria-label="${CAROUSEL_REGION_LABEL}"
+                  tabindex="0"
+                  @scroll="${this._updateCarouselThumb}"
+                >
+                  <div class="carouselTrack">
+                    ${KIND_OF_THING_CONTENT.examples.map(
+                      (idea) => html`
+                        <div class="carouselCard">
+                          <div class="carouselCardImage" aria-hidden="true">
+                            ${idea.image
+                              ? html`<img
+                                  src="${idea.image}"
+                                  alt="${idea.alt}"
+                                />`
+                              : IMAGE_PLACEHOLDER_LABEL}
+                          </div>
+                          <div class="carouselCardBody yp-hard-shadow-box">
+                            <h3>${idea.title}</h3>
+                            <p>${idea.description}</p>
+                          </div>
+                        </div>
+                      `
+                    )}
                   </div>
-                `;
-              })}
+                </div>
+                <button
+                  class="carouselArrow carouselArrowLeft"
+                  aria-label="Show previous examples"
+                  ?disabled="${!this.carouselCanScrollLeft}"
+                  @click="${() => this._scrollCarousel(-1)}"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M15 6l-6 6 6 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  class="carouselArrow carouselArrowRight"
+                  aria-label="Show more examples"
+                  ?disabled="${!this.carouselCanScrollRight}"
+                  @click="${() => this._scrollCarousel(1)}"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M9 6l6 6-6 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="carouselScrollTrack"
+                aria-hidden="true"
+                @pointerdown="${this._onCarouselTrackPointerDown}"
+                @pointermove="${this._onCarouselTrackPointerMove}"
+                @pointerup="${this._onCarouselTrackPointerUp}"
+                @pointercancel="${this._onCarouselTrackPointerUp}"
+              >
+                <div
+                  class="carouselScrollThumb"
+                  style="width: ${this.carouselThumbWidthPercent}%; left: ${this
+                    .carouselThumbLeftPercent}%;"
+                ></div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+
+          <div class="martinSection">
+            <div class="sectionInner martinGrid">
+              <h2 class="bigHeading martinHeading">${MARTIN_CONTENT.heading}</h2>
+              <div class="martinImage" aria-hidden="true">
+              <img src="/images/home/martin_crop.jpg" alt="Photo of Martin Lewis" />
+              </div>
+              <div class="martinCopy">
+                ${MARTIN_CONTENT.paragraphs.map(
+                  (paragraph) => html`<p>${paragraph}</p>`
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about-us">
+          <div class="aboutUsSection">
+            <div class="sectionInner aboutUsGrid">
+              <div class="aboutUsLogo" aria-hidden="true">
+                <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
+              </div>
+              <div class="aboutUsCopy">
+                <h2 class="bigHeading">${ABOUT_US_CONTENT.heading}</h2>
+                ${ABOUT_US_CONTENT.paragraphs.map(
+                  (paragraph) => html`<p>${paragraph}</p>`
+                )}
+                <p>${ABOUT_US_CONTENT.ledByLabel}</p>
+                <ul class="aboutUsLeadershipList">
+                  ${ABOUT_US_CONTENT.leaders.map(
+                    (leader) => html`<li>${leader}</li>`
+                  )}
+                </ul>
+                <div class="aboutUsActions">
+                  <button
+                    class="shareIdeaButton yp-hard-shadow-box"
+                    @click="${this._shareYourIdea}"
+                  >
+                    ${SHARE_IDEA_BUTTON_LABEL}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="faqs">
+          <div class="faqsSection">
+            <div class="sectionInner">
+              <h2 class="bigHeading">${FAQS_CONTENT.heading}</h2>
+              <div class="faqList">
+                ${FAQS_CONTENT.items.map((item, index) => {
+                  const isOpen = this.openFaqIndexes.has(index);
+                  return html`
+                    <div class="faqItem yp-hard-shadow-box">
+                      <button
+                        class="faqQuestion"
+                        aria-expanded="${isOpen}"
+                        aria-controls="faq-answer-${index}"
+                        @click="${() => this._toggleFaq(index)}"
+                      >
+                        <span>${item.question}</span>
+                        <span class="faqToggleIcon" aria-hidden="true">
+                          ${isOpen ? "−" : "+"}
+                        </span>
+                      </button>
+                      <p
+                        class="faqAnswer"
+                        id="faq-answer-${index}"
+                        ?hidden="${!isOpen}"
+                      >
+                        ${item.answer || FAQ_ANSWER_PENDING_LABEL}
+                      </p>
+                    </div>
+                  `;
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <footer class="siteFooter">
         <div class="sectionInner">
