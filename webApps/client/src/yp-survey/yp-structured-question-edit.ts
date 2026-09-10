@@ -96,7 +96,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
 
         .fieldLabel {
           display: block;
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
           font-weight: 500;
           color: var(--md-sys-color-on-surface-variant);
           margin-top: 8px;
@@ -126,7 +126,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         }
 
         .subTitle [use-small-font] {
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
         }
 
         hr {
@@ -247,7 +247,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         }
 
         .longQuestion[has-content] {
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
         }
 
         .longQuestion[has-focus] {

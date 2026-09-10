@@ -278,7 +278,7 @@ export class YpPost extends YpCollection {
             max-width: 100%;
             width: 100%;
             margin: 0;
-            padding: 0 16px;
+            padding: 0 var(--yp-mobile-gutter);
             border-radius: 0;
             border: none;
           }

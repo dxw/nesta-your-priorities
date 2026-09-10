@@ -43,6 +43,11 @@ export class YpBaseElement extends LitElement {
     return [
       Layouts,
       css`
+        :host {
+          --yp-min-font-size: 1rem;
+          --yp-mobile-gutter: 16px;
+        }
+
         [hidden] {
           display: none !important;
         }

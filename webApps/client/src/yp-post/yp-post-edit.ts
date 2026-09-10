@@ -413,8 +413,8 @@ export class YpPostEdit extends YpEditBase {
 
         md-filled-button,
         md-outlined-button {
-          --md-filled-button-label-text-size: 1rem;
-          --md-outlined-button-label-text-size: 1rem;
+          --md-filled-button-label-text-size: var(--yp-min-font-size);
+          --md-outlined-button-label-text-size: var(--yp-min-font-size);
         }
 
         .topHeader {
@@ -592,7 +592,7 @@ export class YpPostEdit extends YpEditBase {
             max-width: 100%;
             width: 100%;
             margin: 0;
-            padding: 0 16px;
+            padding: 0 var(--yp-mobile-gutter);
             border-radius: 0;
             border: none;
           }
@@ -601,7 +601,7 @@ export class YpPostEdit extends YpEditBase {
           }
 
           md-primary-tab {
-            font-size: 1rem;
+            font-size: var(--yp-min-font-size);
           }
         }
 
@@ -622,7 +622,7 @@ export class YpPostEdit extends YpEditBase {
         }
 
         .imageSizeInfo {
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
           padding-bottom: 16px;
         }
 
@@ -631,7 +631,7 @@ export class YpPostEdit extends YpEditBase {
         }
 
         .optional {
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
         }
 
         .icon {
@@ -693,7 +693,7 @@ export class YpPostEdit extends YpEditBase {
         }
 
         .fieldLabel {
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
           font-weight: 500;
           color: var(--md-sys-color-on-surface-variant);
           margin-top: 8px;
@@ -747,7 +747,7 @@ export class YpPostEdit extends YpEditBase {
 
         .videoUploadDisclamer {
           margin-top: 6px;
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
           padding: 0;
           max-width: 200px;
         }
@@ -794,7 +794,7 @@ export class YpPostEdit extends YpEditBase {
 
         .validationMessage {
           color: var(--md-sys-color-error);
-          font-size: 1rem;
+          font-size: var(--yp-min-font-size);
           margin: 4px 0 24px;
         }
       `,

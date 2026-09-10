@@ -509,8 +509,8 @@ export abstract class YpCollection extends YpBaseElementWithLogin {
 
         @media (max-width: 600px) {
           .mainContent {
-            margin-left: 16px;
-            margin-right: 16px;
+            margin-left: var(--yp-mobile-gutter);
+            margin-right: var(--yp-mobile-gutter);
           }
         }
 
