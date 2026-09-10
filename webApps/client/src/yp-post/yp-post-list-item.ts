@@ -156,7 +156,7 @@ export class YpPostListItem extends YpBaseElement {
         }
 
         .description[largefont] {
-          font-size: 15px;
+          font-size: 1rem;
         }
 
         .postActions {
