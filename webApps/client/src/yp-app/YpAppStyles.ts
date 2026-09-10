@@ -153,6 +153,10 @@ export const YpAppStyles = css`
     margin-top: 0;
   }
 
+  .mainPage[expandedTopBar]:not([agentBundle]):not([isLandingPage]) {
+    margin-top: 80px;
+  }
+
   #helpIconButton {
     margin-right: 4px;
   }

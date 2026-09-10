@@ -844,6 +844,28 @@ export class YpApp extends YpBaseElement {
     `;
   }
 
+  get topBarTitleString(): string {
+    let titleString =
+      this.goForwardToPostId && this.goForwardPostName
+        ? this.goForwardPostName
+        : (this.showBack ? this.headerTitle : "") || "";
+
+    //TODO: Refactor this logic
+    if (this.keepOpenForGroup || this.closePostHeader) {
+      titleString = "";
+    }
+
+    return this.currentTitle || titleString;
+  }
+
+  // Mirrors yp-top-app-bar's own isTitleLong check - when the title is long
+  // the bar renders at --top-app-bar-expanded-height (80px) instead of
+  // --top-app-bar-height (60px), so .mainPage needs a taller margin-top to
+  // avoid its content clipping under the bar.
+  get isTopBarExpanded(): boolean {
+    return this.topBarTitleString.trim().length > 16;
+  }
+
   renderTopBar() {
     let titleString =
       this.goForwardToPostId && this.goForwardPostName
@@ -898,6 +920,7 @@ export class YpApp extends YpBaseElement {
         ?agentBundle="${this.page === "agent_bundle" ||
         window.appGlobals.originalQueryParameters.forAgentBundle}"
         ?isLandingPage="${!this.page}"
+        ?expandedTopBar="${this.isTopBarExpanded}"
         ?hidden="${this.appMode !== "main"}"
       >
         ${this.renderPage()}
