@@ -78,6 +78,24 @@ export class YpLandingPage extends YpBaseElement {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
 
+        .skipLink {
+          position: absolute;
+          top: -48px;
+          left: 8px;
+          z-index: 10;
+          background: var(--yp-landing-heading-text-color, #191923);
+          color: #ffffff;
+          padding: 12px 20px;
+          border-radius: 4px;
+          text-decoration: none;
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          transition: top 0.1s ease;
+        }
+
+        .skipLink:focus {
+          top: 8px;
+        }
+
         .nav {
           position: sticky;
           top: 0;
@@ -1011,10 +1029,11 @@ export class YpLandingPage extends YpBaseElement {
 
   override render() {
     return html`
+      <a class="skipLink" href="#intro">Skip to content</a>
       <div class="hero">
         ${this.renderNav()}
 
-        <section class="intro" id="intro">
+        <section class="intro" id="intro" tabindex="-1">
           <div class="introCopy">
             <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
             <h1>${INTRO_CONTENT.heading}</h1>
