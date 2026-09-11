@@ -2600,9 +2600,20 @@ router.post(
                     ...getFingerprintDataFromBody(req.body, "endorsement"),
                   });
                 } else {
+                  const normalizedValue = Number(req.body.value);
+                  if (!Number.isInteger(normalizedValue) || ![1, -1, 0].includes(normalizedValue)) {
+                    log.error("Endorsement validation failed", {
+                      context: "endorse",
+                      post: req.params.id,
+                      user: toJson(req.user),
+                      value: req.body.value,
+                    });
+                    res.sendStatus(400);
+                    return;
+                  }
                   endorsement = models.Endorsement.build({
                     post_id: req.params.id,
-                    value: req.body.value,
+                    value: normalizedValue,
                     user_id: req.user.id,
                     data: {
                       ...getFingerprintDataFromBody(req.body, "endorsement"),
