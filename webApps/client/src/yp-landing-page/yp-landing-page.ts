@@ -46,6 +46,7 @@ export class YpLandingPage extends YpBaseElement {
   private carouselDragging = false;
   private carouselDragStartX = 0;
   private carouselDragStartScrollLeft = 0;
+  private pendingArrowFocusRedirect: "left" | "right" | null = null;
 
   @state()
   private openFaqIndexes = new Set<number>();
@@ -58,9 +59,42 @@ export class YpLandingPage extends YpBaseElement {
         :host {
           display: block;
           width: 100%;
-          background-color: var(--yp-landing-surface-color, #edeff2);
+          background-color: var(--yp-landing-surface-color, #ffffff);
           color: var(--yp-landing-heading-text-color, #191923);
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+        }
+
+        /* Double outline meets contrast requirement on both light & dark backgrounds */
+        button:focus-visible,
+        a:focus-visible,
+        [tabindex]:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #191923;
+        }
+
+        /* Sits inside a white .yp-hard-shadow-box card that already has black border, 
+         * so accent colour is needed to differentiate
+         */
+        .shareIdeaButton:focus-visible {
+          box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #c124bc;
+        }
+
+        /*
+         * Already surrounded by black, but on bright background, so accent colour indicator
+         * has better contrast when used on inner element on white background
+         */
+        .faqQuestion:focus-visible {
+          outline: 3px solid #c124bc;
+          outline-offset: -6px;
+          box-shadow: none;
+        }
+
+        /*
+         * md-text-button's focus indicator comes from internal <md-focus-ring part="focus-ring"> 
+         * box-shadow on the host has no visible effect. ::part() is supported hook to style from outside
+         */
+        .navLinks md-text-button::part(focus-ring) {
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .logoPlaceholder,
@@ -76,6 +110,27 @@ export class YpLandingPage extends YpBaseElement {
         .navLinks md-text-button,
         .eyebrow {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+        }
+
+        .skipLink {
+          position: fixed;
+          top: -48px;
+          left: 8px;
+          z-index: 10;
+          background: var(--yp-landing-heading-text-color, #191923);
+          color: #ffffff;
+          padding: 12px 20px;
+          border: none;
+          border-radius: 4px;
+          text-decoration: none;
+          font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
+          font-size: 1rem;
+          cursor: pointer;
+          transition: top 0.1s ease;
+        }
+
+        .skipLink:focus {
+          top: 8px;
         }
 
         .nav {
@@ -206,7 +261,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .shareIdeaButton {
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
           color: var(--yp-landing-heading-text-color, #191923);
           padding: 12px 28px;
           font-size: clamp(1rem, 1.4vw, 1.25rem);
@@ -263,15 +318,15 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--yp-landing-accent-color, #e144dc);
+          background: var(--yp-landing-accent-color, #c124bc);
           color: #edeff2;
           cursor: pointer;
           box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
         }
 
         .playButton svg {
-          width: 22px;
-          height: 22px;
+          width: 1.75rem;
+          height: 1.75rem;
           margin-left: 2px;
         }
 
@@ -318,11 +373,11 @@ export class YpLandingPage extends YpBaseElement {
 
         .getInvolvedDark h2,
         .getInvolvedDark p {
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .getInvolvedDark .eyebrow {
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .howItWorksHeading {
@@ -337,7 +392,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .howItWorksCard {
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
           padding: 20px;
         }
 
@@ -398,13 +453,27 @@ export class YpLandingPage extends YpBaseElement {
 
         .criteriaBox ul {
           margin: 0;
-          padding-left: 20px;
+          padding-left: 0;
+          list-style: none;
         }
 
         .criteriaBox li {
+          position: relative;
+          padding-left: 20px;
           margin-bottom: 12px;
           line-height: 1.5;
           color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .criteriaBox li::before {
+          content: "";
+          position: absolute;
+          left: 4px;
+          top: 0.65em;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: currentColor;
         }
 
         .criteriaBox li:last-child {
@@ -469,7 +538,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .carouselCardBody {
           flex: 1;
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
           padding: 20px;
         }
 
@@ -510,7 +579,7 @@ export class YpLandingPage extends YpBaseElement {
           left: 0;
           height: 100%;
           border-radius: 3px;
-          background: var(--yp-landing-accent-color, #e144dc);
+          background: var(--yp-landing-accent-color, #c124bc);
           pointer-events: none;
         }
 
@@ -529,7 +598,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--yp-landing-accent-color, #e144dc);
+          background: var(--yp-landing-accent-color, #c124bc);
           color: #edeff2;
           cursor: pointer;
           box-shadow: 0 8px 20px rgba(25, 25, 35, 0.35);
@@ -537,8 +606,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .carouselArrow svg {
-          width: 20px;
-          height: 20px;
+          width: 1.5rem;
+          height: 1.5rem;
         }
 
         .carouselArrowLeft {
@@ -562,7 +631,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .martinSection h2,
         .martinSection p {
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .martinGrid {
@@ -645,12 +714,26 @@ export class YpLandingPage extends YpBaseElement {
 
         .aboutUsLeadershipList {
           margin: 0 0 16px;
-          padding-left: 20px;
+          padding-left: 0;
+          list-style: none;
         }
 
         .aboutUsLeadershipList li {
+          position: relative;
+          padding-left: 20px;
           line-height: 1.6;
           color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .aboutUsLeadershipList li::before {
+          content: "";
+          position: absolute;
+          left: 4px;
+          top: 0.65em;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: currentColor;
         }
 
         .aboutUsActions {
@@ -673,7 +756,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .faqItem {
-          background: var(--yp-landing-surface-color, #edeff2);
+          background: var(--yp-landing-surface-color, #ffffff);
         }
 
         .faqQuestion {
@@ -699,7 +782,7 @@ export class YpLandingPage extends YpBaseElement {
           flex-shrink: 0;
           font-size: 1.5rem;
           line-height: 1;
-          color: var(--yp-landing-accent-color, #e144dc);
+          color: var(--yp-landing-accent-color, #c124bc);
         }
 
         .faqAnswer {
@@ -722,14 +805,14 @@ export class YpLandingPage extends YpBaseElement {
           letter-spacing: -0.01em;
           text-transform: uppercase;
           margin: 0 0 12px;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .footerEmail {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
           font-size: 1rem;
           text-transform: uppercase;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
           text-decoration: none;
         }
 
@@ -752,14 +835,14 @@ export class YpLandingPage extends YpBaseElement {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
           font-size: 12px;
           text-transform: uppercase;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .footerPrivacyLink {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
           font-size: 12px;
           text-transform: uppercase;
-          color: var(--yp-landing-surface-color, #edeff2);
+          color: var(--yp-landing-surface-color, #ffffff);
           text-decoration: none;
         }
 
@@ -838,6 +921,14 @@ export class YpLandingPage extends YpBaseElement {
     ];
   }
 
+  _skipToContent() {
+    const intro = this.$$("#intro") as HTMLElement | null;
+    if (intro) {
+      intro.scrollIntoView({ behavior: "smooth", block: "start" });
+      intro.focus();
+    }
+  }
+
   _scrollToSection(sectionId: YpLandingSectionId) {
     const section = this.$$("#" + sectionId);
     if (section) {
@@ -880,6 +971,49 @@ export class YpLandingPage extends YpBaseElement {
   override firstUpdated(changedProperties: Map<string, unknown>) {
     super.firstUpdated(changedProperties);
     this._updateCarouselThumb();
+  }
+
+  override willUpdate(changedProperties: Map<string, unknown>) {
+    super.willUpdate(changedProperties);
+    if (
+      changedProperties.has("carouselCanScrollLeft") &&
+      changedProperties.get("carouselCanScrollLeft") === true &&
+      !this.carouselCanScrollLeft
+    ) {
+      this._flagArrowFocusRedirectIfActive("left");
+    }
+    if (
+      changedProperties.has("carouselCanScrollRight") &&
+      changedProperties.get("carouselCanScrollRight") === true &&
+      !this.carouselCanScrollRight
+    ) {
+      this._flagArrowFocusRedirectIfActive("right");
+    }
+  }
+
+  private _flagArrowFocusRedirectIfActive(direction: "left" | "right") {
+    const button = this.$$(
+      direction === "left" ? ".carouselArrowLeft" : ".carouselArrowRight"
+    );
+    if (button && this.shadowRoot?.activeElement === button) {
+      this.pendingArrowFocusRedirect = direction;
+    }
+  }
+
+  override updated(changedProperties: Map<string, unknown>) {
+    super.updated(changedProperties);
+    if (this.pendingArrowFocusRedirect) {
+      const direction = this.pendingArrowFocusRedirect;
+      this.pendingArrowFocusRedirect = null;
+      const fallbackArrow = this.$$(
+        direction === "left" ? ".carouselArrowRight" : ".carouselArrowLeft"
+      ) as HTMLButtonElement | null;
+      const target =
+        fallbackArrow && !fallbackArrow.disabled
+          ? fallbackArrow
+          : (this.$$(".carouselViewport") as HTMLElement | null);
+      target?.focus();
+    }
   }
 
   private _updateCarouselThumb = () => {
@@ -959,12 +1093,16 @@ export class YpLandingPage extends YpBaseElement {
     return html`
       <nav class="nav" aria-label="Landing page sections">
         <div class="logoPlaceholder">
-          <img src="/images/home/logo_crop.png" alt=Institute of Small Ideas logo">
+          <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
         </div>
+        <button class="skipLink" @click="${this._skipToContent}">
+          Skip to content
+        </button>
         <div class="navLinks">
           ${NAV_LINKS.map(
             (link) => html`
               <md-text-button
+                aria-label="${link.label}"
                 @click="${() => this._scrollToSection(link.id)}"
               >
                 ${link.label}
@@ -1011,272 +1149,283 @@ export class YpLandingPage extends YpBaseElement {
 
   override render() {
     return html`
-      <div class="hero">
-        ${this.renderNav()}
+      ${this.renderNav()}
 
-        <section class="intro" id="intro">
-          <div class="introCopy">
-            <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
-            <h1>${INTRO_CONTENT.heading}</h1>
-            <p class="quote">${INTRO_CONTENT.quote}</p>
-            <p class="attribution">
-              <strong>${INTRO_CONTENT.attributionName}</strong>
-              &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
-            </p>
-            <button
-              class="shareIdeaButton yp-hard-shadow-box"
-              @click="${this._shareYourIdea}"
-            >
-              ${SHARE_IDEA_BUTTON_LABEL}
-            </button>
-          </div>
-        </section>
-      </div>
-
-      ${this.renderIntroVideo()}
-
-      <section id="get-involved">
-        <div class="getInvolvedDark">
-          <div class="sectionInner">
-            <h2 class="bigHeading">${GET_INVOLVED_CONTENT.heading}</h2>
-            <p class="eyebrow">${GET_INVOLVED_CONTENT.eyebrow}</p>
-            ${GET_INVOLVED_CONTENT.paragraphs.map(
-              (paragraph) => html`<p>${paragraph}</p>`
-            )}
-            <button
-              class="shareIdeaButton yp-hard-shadow-box"
-              @click="${this._shareYourIdea}"
-            >
-              ${SHARE_IDEA_BUTTON_LABEL}
-            </button>
-
-            <h2 class="bigHeading howItWorksHeading">
-              ${HOW_IT_WORKS_CONTENT.heading}
-            </h2>
-            <div class="howItWorksGrid">
-              ${HOW_IT_WORKS_CONTENT.steps.map(
-                (step) => html`
-                  <div class="howItWorksCard yp-hard-shadow-box">
-                    <h3>${step.title}</h3>
-                    <p>${step.description}</p>
-                  </div>
-                `
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div class="smallIdeaSection">
-          <div class="sectionInner">
-            <div class="smallIdeaHeader">
-              <div>
-                <h2 class="bigHeading">${SMALL_IDEA_CONTENT.heading}</h2>
-                <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
-              </div>
+      <main>
+        <div class="hero">
+          <section class="intro" id="intro" tabindex="-1">
+            <div class="introCopy">
+              <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
+              <h1 aria-label="${INTRO_CONTENT.heading}">${INTRO_CONTENT.heading}</h1>
+              <p class="quote">${INTRO_CONTENT.quote}</p>
+              <p class="attribution">
+                <strong>${INTRO_CONTENT.attributionName}</strong>
+                &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
+              </p>
               <button
                 class="shareIdeaButton yp-hard-shadow-box"
+                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                 @click="${this._shareYourIdea}"
               >
                 ${SHARE_IDEA_BUTTON_LABEL}
               </button>
             </div>
-            <div class="criteriaGrid">
-              ${SMALL_IDEA_CONTENT.criteria.map(
-                (group) => html`
-                  <div class="criteriaBox">
-                    <h3>${group.heading}</h3>
-                    <ul>
-                      ${group.items.map(
-                        (item) => html`
-                          <li>
-                            <strong>${item.lead}</strong> &ndash; ${item.text}
-                          </li>
-                        `
-                      )}
-                    </ul>
-                  </div>
-                `
-              )}
-            </div>
-          </div>
+          </section>
         </div>
 
-        <div class="kindOfThingSection">
-          <div class="sectionInner">
-            <h2 class="bigHeading">${KIND_OF_THING_CONTENT.heading}</h2>
-            ${KIND_OF_THING_CONTENT.paragraphs.map(
-              (paragraph) => html`
-                <p class="${paragraph.bold ? "kindOfThingEmphasis" : ""}">
-                  ${paragraph.text}
-                </p>
-              `
-            )}
-            <div class="carouselWrapper">
-              <div
-                class="carouselViewport"
-                role="region"
-                aria-label="${CAROUSEL_REGION_LABEL}"
-                tabindex="0"
-                @scroll="${this._updateCarouselThumb}"
-              >
-                <div class="carouselTrack">
-                  ${KIND_OF_THING_CONTENT.examples.map(
-                    (idea) => html`
-                      <div class="carouselCard">
-                        <div class="carouselCardImage" aria-hidden="true">
-                          ${idea.image
-                            ? html`<img
-                                src="${idea.image}"
-                                alt="${idea.alt}"
-                              />`
-                            : IMAGE_PLACEHOLDER_LABEL}
-                        </div>
-                        <div class="carouselCardBody yp-hard-shadow-box">
-                          <h3>${idea.title}</h3>
-                          <p>${idea.description}</p>
-                        </div>
-                      </div>
-                    `
-                  )}
-                </div>
-              </div>
-              <button
-                class="carouselArrow carouselArrowLeft"
-                aria-label="Show previous examples"
-                ?disabled="${!this.carouselCanScrollLeft}"
-                @click="${() => this._scrollCarousel(-1)}"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M15 6l-6 6 6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                class="carouselArrow carouselArrowRight"
-                aria-label="Show more examples"
-                ?disabled="${!this.carouselCanScrollRight}"
-                @click="${() => this._scrollCarousel(1)}"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M9 6l6 6-6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div
-              class="carouselScrollTrack"
-              aria-hidden="true"
-              @pointerdown="${this._onCarouselTrackPointerDown}"
-              @pointermove="${this._onCarouselTrackPointerMove}"
-              @pointerup="${this._onCarouselTrackPointerUp}"
-              @pointercancel="${this._onCarouselTrackPointerUp}"
-            >
-              <div
-                class="carouselScrollThumb"
-                style="width: ${this.carouselThumbWidthPercent}%; left: ${this
-                  .carouselThumbLeftPercent}%;"
-              ></div>
-            </div>
-          </div>
-        </div>
+        ${this.renderIntroVideo()}
 
-        <div class="martinSection">
-          <div class="sectionInner martinGrid">
-            <h2 class="bigHeading martinHeading">${MARTIN_CONTENT.heading}</h2>
-            <div class="martinImage" aria-hidden="true">
-            <img src="/images/home/martin_crop.jpg" alt="Photo of Martin Lewis" />
-            </div>
-            <div class="martinCopy">
-              ${MARTIN_CONTENT.paragraphs.map(
+        <section id="get-involved">
+          <div class="getInvolvedDark">
+            <div class="sectionInner">
+              <h2 class="bigHeading" aria-label="${GET_INVOLVED_CONTENT.heading}">${GET_INVOLVED_CONTENT.heading}</h2>
+              <p class="eyebrow">${GET_INVOLVED_CONTENT.eyebrow}</p>
+              ${GET_INVOLVED_CONTENT.paragraphs.map(
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
-            </div>
-          </div>
-        </div>
-      </section>
+              <button
+                class="shareIdeaButton yp-hard-shadow-box"
+                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+                @click="${this._shareYourIdea}"
+              >
+                ${SHARE_IDEA_BUTTON_LABEL}
+              </button>
 
-      <section id="about-us">
-        <div class="aboutUsSection">
-          <div class="sectionInner aboutUsGrid">
-            <div class="aboutUsLogo" aria-hidden="true">
-              <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
-            </div>
-            <div class="aboutUsCopy">
-              <h2 class="bigHeading">${ABOUT_US_CONTENT.heading}</h2>
-              ${ABOUT_US_CONTENT.paragraphs.map(
-                (paragraph) => html`<p>${paragraph}</p>`
-              )}
-              <p>${ABOUT_US_CONTENT.ledByLabel}</p>
-              <ul class="aboutUsLeadershipList">
-                ${ABOUT_US_CONTENT.leaders.map(
-                  (leader) => html`<li>${leader}</li>`
+              <h2
+                class="bigHeading howItWorksHeading"
+                aria-label="${HOW_IT_WORKS_CONTENT.heading}"
+              >
+                ${HOW_IT_WORKS_CONTENT.heading}
+              </h2>
+              <div class="howItWorksGrid">
+                ${HOW_IT_WORKS_CONTENT.steps.map(
+                  (step) => html`
+                    <div class="howItWorksCard yp-hard-shadow-box">
+                      <h3 aria-label="${step.title}">${step.title}</h3>
+                      <p>${step.description}</p>
+                    </div>
+                  `
                 )}
-              </ul>
-              <div class="aboutUsActions">
+              </div>
+            </div>
+          </div>
+
+          <div class="smallIdeaSection">
+            <div class="sectionInner">
+              <div class="smallIdeaHeader">
+                <div>
+                  <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
+                  <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
+                </div>
                 <button
                   class="shareIdeaButton yp-hard-shadow-box"
+                  aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                   @click="${this._shareYourIdea}"
                 >
                   ${SHARE_IDEA_BUTTON_LABEL}
                 </button>
               </div>
+              <div class="criteriaGrid">
+                ${SMALL_IDEA_CONTENT.criteria.map(
+                  (group) => html`
+                    <div class="criteriaBox">
+                      <h3 aria-label="${group.heading}">${group.heading}</h3>
+                      <ul>
+                        ${group.items.map(
+                          (item) => html`
+                            <li>
+                              <strong>${item.lead}</strong> &ndash; ${item.text}
+                            </li>
+                          `
+                        )}
+                      </ul>
+                    </div>
+                  `
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section id="faqs">
-        <div class="faqsSection">
-          <div class="sectionInner">
-            <h2 class="bigHeading">${FAQS_CONTENT.heading}</h2>
-            <div class="faqList">
-              ${FAQS_CONTENT.items.map((item, index) => {
-                const isOpen = this.openFaqIndexes.has(index);
-                return html`
-                  <div class="faqItem yp-hard-shadow-box">
-                    <button
-                      class="faqQuestion"
-                      aria-expanded="${isOpen}"
-                      aria-controls="faq-answer-${index}"
-                      @click="${() => this._toggleFaq(index)}"
-                    >
-                      <span>${item.question}</span>
-                      <span class="faqToggleIcon" aria-hidden="true">
-                        ${isOpen ? "−" : "+"}
-                      </span>
-                    </button>
-                    <p
-                      class="faqAnswer"
-                      id="faq-answer-${index}"
-                      ?hidden="${!isOpen}"
-                    >
-                      ${item.answer || FAQ_ANSWER_PENDING_LABEL}
-                    </p>
+          <div class="kindOfThingSection">
+            <div class="sectionInner">
+              <h2 class="bigHeading" aria-label="${KIND_OF_THING_CONTENT.heading}">${KIND_OF_THING_CONTENT.heading}</h2>
+              ${KIND_OF_THING_CONTENT.paragraphs.map(
+                (paragraph) => html`
+                  <p class="${paragraph.bold ? "kindOfThingEmphasis" : ""}">
+                    ${paragraph.text}
+                  </p>
+                `
+              )}
+              <div class="carouselWrapper">
+                <button
+                  class="carouselArrow carouselArrowLeft"
+                  aria-label="Show previous examples"
+                  ?disabled="${!this.carouselCanScrollLeft}"
+                  @click="${() => this._scrollCarousel(-1)}"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M15 6l-6 6 6 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  class="carouselArrow carouselArrowRight"
+                  aria-label="Show more examples"
+                  ?disabled="${!this.carouselCanScrollRight}"
+                  @click="${() => this._scrollCarousel(1)}"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M9 6l6 6-6 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div
+                  class="carouselViewport"
+                  role="region"
+                  aria-label="${CAROUSEL_REGION_LABEL}"
+                  tabindex="0"
+                  @scroll="${this._updateCarouselThumb}"
+                >
+                  <div class="carouselTrack">
+                    ${KIND_OF_THING_CONTENT.examples.map(
+                      (idea) => html`
+                        <div class="carouselCard">
+                          <div class="carouselCardImage" aria-hidden="true">
+                            ${idea.image
+                              ? html`<img
+                                  src="${idea.image}"
+                                  alt="${idea.alt}"
+                                />`
+                              : IMAGE_PLACEHOLDER_LABEL}
+                          </div>
+                          <div class="carouselCardBody yp-hard-shadow-box">
+                            <h3 aria-label="${idea.title}">${idea.title}</h3>
+                            <p>${idea.description}</p>
+                          </div>
+                        </div>
+                      `
+                    )}
                   </div>
-                `;
-              })}
+                </div>
+              </div>
+              <div
+                class="carouselScrollTrack"
+                aria-hidden="true"
+                @pointerdown="${this._onCarouselTrackPointerDown}"
+                @pointermove="${this._onCarouselTrackPointerMove}"
+                @pointerup="${this._onCarouselTrackPointerUp}"
+                @pointercancel="${this._onCarouselTrackPointerUp}"
+              >
+                <div
+                  class="carouselScrollThumb"
+                  style="width: ${this.carouselThumbWidthPercent}%; left: ${this
+                    .carouselThumbLeftPercent}%;"
+                ></div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+
+          <div class="martinSection">
+            <div class="sectionInner martinGrid">
+              <h2 class="bigHeading martinHeading" aria-label="${MARTIN_CONTENT.heading}">${MARTIN_CONTENT.heading}</h2>
+              <div class="martinImage" aria-hidden="true">
+              <img src="/images/home/martin_crop.jpg" alt="Photo of Martin Lewis" />
+              </div>
+              <div class="martinCopy">
+                ${MARTIN_CONTENT.paragraphs.map(
+                  (paragraph) => html`<p>${paragraph}</p>`
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about-us">
+          <div class="aboutUsSection">
+            <div class="sectionInner aboutUsGrid">
+              <div class="aboutUsLogo" aria-hidden="true">
+                <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
+              </div>
+              <div class="aboutUsCopy">
+                <h2 class="bigHeading" aria-label="${ABOUT_US_CONTENT.heading}">${ABOUT_US_CONTENT.heading}</h2>
+                ${ABOUT_US_CONTENT.paragraphs.map(
+                  (paragraph) => html`<p>${paragraph}</p>`
+                )}
+                <p>${ABOUT_US_CONTENT.ledByLabel}</p>
+                <ul class="aboutUsLeadershipList">
+                  ${ABOUT_US_CONTENT.leaders.map(
+                    (leader) => html`<li>${leader}</li>`
+                  )}
+                </ul>
+                <div class="aboutUsActions">
+                  <button
+                    class="shareIdeaButton yp-hard-shadow-box"
+                    aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+                    @click="${this._shareYourIdea}"
+                  >
+                    ${SHARE_IDEA_BUTTON_LABEL}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="faqs">
+          <div class="faqsSection">
+            <div class="sectionInner">
+              <h2 class="bigHeading" aria-label="${FAQS_CONTENT.heading}">${FAQS_CONTENT.heading}</h2>
+              <div class="faqList">
+                ${FAQS_CONTENT.items.map((item, index) => {
+                  const isOpen = this.openFaqIndexes.has(index);
+                  return html`
+                    <div class="faqItem yp-hard-shadow-box">
+                      <button
+                        class="faqQuestion"
+                        aria-label="${item.question}"
+                        aria-expanded="${isOpen}"
+                        aria-controls="faq-answer-${index}"
+                        @click="${() => this._toggleFaq(index)}"
+                      >
+                        <span>${item.question}</span>
+                        <span class="faqToggleIcon" aria-hidden="true">
+                          ${isOpen ? "−" : "+"}
+                        </span>
+                      </button>
+                      <p
+                        class="faqAnswer"
+                        id="faq-answer-${index}"
+                        ?hidden="${!isOpen}"
+                      >
+                        ${item.answer || FAQ_ANSWER_PENDING_LABEL}
+                      </p>
+                    </div>
+                  `;
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <footer class="siteFooter">
         <div class="sectionInner">
-          <h2 class="footerHeading">${FOOTER_CONTENT.heading}</h2>
+          <h2 class="footerHeading" aria-label="${FOOTER_CONTENT.heading}">${FOOTER_CONTENT.heading}</h2>
           <a
             class="footerEmail"
+            aria-label="${FOOTER_CONTENT.emailAddress}"
             href="mailto:${FOOTER_CONTENT.emailAddress}"
           >
             ${FOOTER_CONTENT.emailAddress}
@@ -1288,6 +1437,7 @@ export class YpLandingPage extends YpBaseElement {
             </p>
             <a
               class="footerPrivacyLink"
+              aria-label="${FOOTER_CONTENT.privacyPolicyLabel}"
               href="${FOOTER_CONTENT.privacyPolicyUrl}"
               target="_blank"
               rel="noopener noreferrer"
