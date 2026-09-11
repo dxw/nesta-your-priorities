@@ -662,6 +662,14 @@ export class YpPostEdit extends YpEditBase {
         .agreeCheckboxLabel md-checkbox {
           flex-shrink: 0;
           margin-left: 0;
+          --md-focus-ring-color: var(--md-sys-color-primary);
+          --md-focus-ring-width: 2px;
+          --md-focus-ring-outward-offset: 1px;
+        }
+
+        .agreeCheckboxLabel md-checkbox::part(focus-ring) {
+          width: 32px;
+          height: 32px;
         }
 
         section {
