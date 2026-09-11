@@ -856,12 +856,12 @@ export class YpPostEdit extends YpEditBase {
 
   <label class="agreeCheckboxLabel">
   <md-checkbox id="agreeMedia" name="agreeMedia" aria-label="I'd consider talking to the media about my idea."></md-checkbox>
-  I'd consider talking to the media about my idea.
+  <span aria-hidden="true">I'd consider talking to the media about my idea.</span>
   </label>
 
   <label class="agreeCheckboxLabel">
   <md-checkbox id="agreeEmail" name="agreeEmail" aria-label="Please keep me posted on how the Institute of Small Ideas campaign is going."></md-checkbox>
-  Please keep me posted on how the Institute of Small Ideas campaign is going.
+  <span aria-hidden="true">Please keep me posted on how the Institute of Small Ideas campaign is going.</span>
   </label>
 
 <div>By submitting your idea, you agree to our <a href="https://www.nesta.org.uk/privacy/">privacy policy</a>.</div>
