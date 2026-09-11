@@ -1575,9 +1575,9 @@ export class YpPostEdit extends YpEditBase {
 
   renderHeader() {
     return html`
-      <div class="topHeader">
+      <h1 class="topHeader">
         ${this.editHeaderText ? this.editHeaderText : ""}
-     </div>
+     </h1>
       <div class="layout">
 
 <h2>Before you send in your idea, here's what counts.</h2>
