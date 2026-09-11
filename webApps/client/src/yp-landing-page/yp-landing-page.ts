@@ -67,7 +67,6 @@ export class YpLandingPage extends YpBaseElement {
         /* Double outline meets contrast requirement on both light & dark backgrounds */
         button:focus-visible,
         a:focus-visible,
-        md-text-button:focus-visible,
         [tabindex]:focus-visible {
           outline: none;
           box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #191923;
@@ -90,9 +89,12 @@ export class YpLandingPage extends YpBaseElement {
           box-shadow: none;
         }
 
-        /* Only ever shown on navy background, so single white line is clearer than double outline */
-        .navLinks md-text-button:focus-visible {
-          box-shadow: 0 0 0 3px #ffffff;
+        /*
+         * md-text-button's focus indicator comes from internal <md-focus-ring part="focus-ring"> 
+         * box-shadow on the host has no visible effect. ::part() is supported hook to style from outside
+         */
+        .navLinks md-text-button::part(focus-ring) {
+          color: var(--yp-landing-surface-color, #ffffff);
         }
 
         .logoPlaceholder,
