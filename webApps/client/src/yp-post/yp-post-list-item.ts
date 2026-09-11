@@ -58,12 +58,11 @@ export class YpPostListItem extends YpBaseElement {
           .outerContainer {
             border-bottom: 1px solid var(--md-sys-color-outline-variant);
             border-radius: 0;
-            padding: 0 0 28px;
+            padding-bottom: 28px;
           }
 
           .innerContainer {
             border-radius: 4px;
-            padding: 0px;
           }
 
           :host([is-last-item]) .outerContainer {
@@ -87,6 +86,9 @@ export class YpPostListItem extends YpBaseElement {
 
         .share {
           margin-left: 16px;
+          align-self: flex-end;
+          /* Icon buttons don't fill whole container - bottom aligning to match actual position. */
+          margin-bottom: 8px;
         }
 
         .post-name[largefont] {
@@ -156,7 +158,7 @@ export class YpPostListItem extends YpBaseElement {
         }
 
         .description[largefont] {
-          font-size: 15px;
+          font-size: var(--yp-min-font-size);
         }
 
         .postActions {

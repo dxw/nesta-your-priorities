@@ -68,7 +68,11 @@ import { YpDrawer } from "./yp-drawer.js";
 import { YpSnackbar } from "./yp-snackbar.js";
 import { PsAppGlobals } from "../policySynth/PsAppGlobals.js";
 import { PsServerApi } from "../policySynth/PsServerApi.js";
-import { YpTopAppBar } from "./yp-top-app-bar.js";
+import {
+  YpTopAppBar,
+  YP_TOP_APP_BAR_TITLE_EXPAND_THRESHOLD,
+} from "./yp-top-app-bar.js";
+import { YpTopAppBarTokens } from "./YpTopAppBarTokens.js";
 import { YpGroupType } from "../yp-collection/ypGroupType.js";
 import { YpUserEdit } from "../yp-user/yp-user-edit.js";
 
@@ -533,7 +537,7 @@ export class YpApp extends YpBaseElement {
   }
 
   static override get styles() {
-    return [super.styles, YpAppStyles];
+    return [super.styles, YpTopAppBarTokens, YpAppStyles];
   }
 
   _haveCopiedNotification() {
@@ -844,6 +848,28 @@ export class YpApp extends YpBaseElement {
     `;
   }
 
+  get topBarTitleString(): string {
+    let titleString =
+      this.goForwardToPostId && this.goForwardPostName
+        ? this.goForwardPostName
+        : (this.showBack ? this.headerTitle : "") || "";
+
+    //TODO: Refactor this logic
+    if (this.keepOpenForGroup || this.closePostHeader) {
+      titleString = "";
+    }
+
+    return this.currentTitle || titleString;
+  }
+
+  // Make space for yp-top-app-bar's expanded height rendered when title is over threshold
+  get isTopBarExpanded(): boolean {
+    return (
+      this.topBarTitleString.trim().length >
+      YP_TOP_APP_BAR_TITLE_EXPAND_THRESHOLD
+    );
+  }
+
   renderTopBar() {
     let titleString =
       this.goForwardToPostId && this.goForwardPostName
@@ -898,6 +924,7 @@ export class YpApp extends YpBaseElement {
         ?agentBundle="${this.page === "agent_bundle" ||
         window.appGlobals.originalQueryParameters.forAgentBundle}"
         ?isLandingPage="${!this.page}"
+        ?expandedTopBar="${this.isTopBarExpanded}"
         ?hidden="${this.appMode !== "main"}"
       >
         ${this.renderPage()}

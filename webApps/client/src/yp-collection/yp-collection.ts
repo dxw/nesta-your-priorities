@@ -507,6 +507,13 @@ export abstract class YpCollection extends YpBaseElementWithLogin {
           }
         }
 
+        @media (max-width: 600px) {
+          .mainContent {
+            margin-left: var(--yp-mobile-gutter);
+            margin-right: var(--yp-mobile-gutter);
+          }
+        }
+
         .createFab[is-map] {
           right: inherit;
           left: 28px;

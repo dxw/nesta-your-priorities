@@ -17,12 +17,16 @@ import "@material/web/menu/menu-item.js";
 import { YpBaseElement } from "../common/yp-base-element";
 import { Corner } from "@material/web/menu/menu.js";
 import { YpNavHelpers } from "../common/YpNavHelpers";
+import { YpTopAppBarTokens } from "./YpTopAppBarTokens";
 
 interface BreadcrumbItem {
   name: string;
   url: string;
   isLink: boolean;
 }
+
+// Above this length, top app bar has increased height and yp-app leaves more space for it
+export const YP_TOP_APP_BAR_TITLE_EXPAND_THRESHOLD = 16;
 
 @customElement("yp-top-app-bar")
 export class YpTopAppBar extends YpBaseElement {
@@ -217,12 +221,8 @@ export class YpTopAppBar extends YpBaseElement {
   static override get styles() {
     return [
       super.styles,
+      YpTopAppBarTokens,
       css`
-        :host {
-          --top-app-bar-height: 60px;
-          --top-app-bar-expanded-height: 80px;
-        }
-
         a {
           color: var(--md-sys-color-on-surface);
           text-decoration: none;
@@ -243,7 +243,8 @@ export class YpTopAppBar extends YpBaseElement {
           left: 0;
           right: 0;
           transition: top 0.3s;
-          z-index: 1;
+          /* Prevent material components' outlines with z-index: 1 from painting over top bar */
+          z-index: 10;
           max-width: 100vw;
         }
 
@@ -372,7 +373,8 @@ export class YpTopAppBar extends YpBaseElement {
   override updated(changedProperties: PropertyValues) {
     super.updated(changedProperties);
     if (changedProperties.has("titleString")) {
-      this.isTitleLong = this.titleString.trim().length > 16;
+      this.isTitleLong =
+        this.titleString.trim().length > YP_TOP_APP_BAR_TITLE_EXPAND_THRESHOLD;
     }
   }
 

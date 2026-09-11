@@ -94,6 +94,17 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
           ) !important;
         }
 
+        .fieldLabel {
+          display: block;
+          font-size: var(--yp-min-font-size);
+          font-weight: 500;
+          color: var(--md-sys-color-on-surface-variant);
+          margin-top: 8px;
+          margin-bottom: 4px;
+          padding: 0;
+          width: 100%;
+        }
+
         a {
         }
 
@@ -115,7 +126,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         }
 
         .subTitle [use-small-font] {
-          font-size: 14px;
+          font-size: var(--yp-min-font-size);
         }
 
         hr {
@@ -236,7 +247,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         }
 
         .longQuestion[has-content] {
-          font-size: 12px;
+          font-size: var(--yp-min-font-size);
         }
 
         .longQuestion[has-focus] {
@@ -345,10 +356,17 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
       : undefined;
     const ariaLabel = skipLabel ? this.questionAriaLabel : undefined;
     return html`
+      ${!skipLabel
+        ? html`
+            <label class="fieldLabel" for="structuredQuestion_${this.index}">
+              ${unsafeHTML(this.textWithIndex)}
+            </label>
+          `
+        : nothing}
       <md-outlined-text-field
         id="structuredQuestion_${this.index}"
         .value="${(this.question.value as string) || ""}"
-        .label="${!skipLabel ? this.textWithIndex : ""}"
+        label=""
         name="${this.formName || ""}"
         ?use-small-font="${this.useSmallFont}"
         .title="${this.question.text}"
@@ -413,11 +431,21 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         : undefined;
       const ariaLabel = skipLabel ? this.questionAriaLabel : undefined;
       return html`
+        ${!skipLabel
+          ? html`
+              <label
+                class="fieldLabel"
+                for="structuredQuestion_${this.index}"
+              >
+                ${unsafeHTML(this.textWithIndex)}
+              </label>
+            `
+          : nothing}
         <md-outlined-text-field
           id="structuredQuestion_${this.index}"
           data-type="text"
           type="textarea"
-          .label="${!skipLabel ? this.textWithIndex : ""}"
+          label=""
           .value="${(this.question.value as string) || ""}"
           minlength="2"
           ?charCounter="${this.question.charCounter != undefined
@@ -851,7 +879,11 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
       const item = this.$$("#structuredQuestion_" + this.index);
       if (item) {
         setTimeout(() => {
+        // md-outlined-text-field's own focus() causes auto-scroll to first text input
+        // This forces scroll back to top of page, so user can see intro content.
           item.focus();
+          window.scrollTo(0, 0);
+          requestAnimationFrame(() => window.scrollTo(0, 0));
         }, 250);
       }
     }

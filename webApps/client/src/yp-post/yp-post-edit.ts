@@ -411,6 +411,12 @@ export class YpPostEdit extends YpEditBase {
           text-align: left;
         }
 
+        md-filled-button,
+        md-outlined-button {
+          --md-filled-button-label-text-size: var(--yp-min-font-size);
+          --md-outlined-button-label-text-size: var(--yp-min-font-size);
+        }
+
         .topHeader {
           font-size: 36px;
           font-weight: 700;
@@ -421,8 +427,8 @@ export class YpPostEdit extends YpEditBase {
 
         @media (max-width: 960px) {
           .topHeader {
-            margin-left: 8px;
-            margin-right: 8px;
+            margin-left: 0;
+            margin-right: 0;
           }
         }
 
@@ -582,10 +588,11 @@ export class YpPostEdit extends YpEditBase {
           }
 
           .frameContainer {
+            box-sizing: border-box;
             max-width: 100%;
             width: 100%;
             margin: 0;
-            padding: 0;
+            padding: 0 var(--yp-mobile-gutter);
             border-radius: 0;
             border: none;
           }
@@ -594,7 +601,7 @@ export class YpPostEdit extends YpEditBase {
           }
 
           md-primary-tab {
-            font-size: 12px;
+            font-size: var(--yp-min-font-size);
           }
         }
 
@@ -615,7 +622,7 @@ export class YpPostEdit extends YpEditBase {
         }
 
         .imageSizeInfo {
-          font-size: 12px;
+          font-size: var(--yp-min-font-size);
           padding-bottom: 16px;
         }
 
@@ -624,7 +631,7 @@ export class YpPostEdit extends YpEditBase {
         }
 
         .optional {
-          font-size: 12px;
+          font-size: var(--yp-min-font-size);
         }
 
         .icon {
@@ -638,6 +645,23 @@ export class YpPostEdit extends YpEditBase {
         md-checkbox {
           margin-left: 8px;
           margin-top: 4px;
+        }
+
+        .layout ul {
+          margin-left: 0;
+          padding-left: 20px;
+        }
+
+        .agreeCheckboxLabel {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 8px 0;
+        }
+
+        .agreeCheckboxLabel md-checkbox {
+          flex-shrink: 0;
+          margin-left: 0;
         }
 
         section {
@@ -669,7 +693,7 @@ export class YpPostEdit extends YpEditBase {
         }
 
         .fieldLabel {
-          font-size: 14px;
+          font-size: var(--yp-min-font-size);
           font-weight: 500;
           color: var(--md-sys-color-on-surface-variant);
           margin-top: 8px;
@@ -723,7 +747,7 @@ export class YpPostEdit extends YpEditBase {
 
         .videoUploadDisclamer {
           margin-top: 6px;
-          font-size: 12px;
+          font-size: var(--yp-min-font-size);
           padding: 0;
           max-width: 200px;
         }
@@ -770,7 +794,7 @@ export class YpPostEdit extends YpEditBase {
 
         .validationMessage {
           color: var(--md-sys-color-error);
-          font-size: 14px;
+          font-size: var(--yp-min-font-size);
           margin: 4px 0 24px;
         }
       `,
@@ -828,12 +852,12 @@ export class YpPostEdit extends YpEditBase {
 
   <h2>Want to help or stay in touch? (optional)</h2>
 
-  <label>
+  <label class="agreeCheckboxLabel">
   <md-checkbox id="agreeMedia" name="agreeMedia"></md-checkbox>
   I'd consider talking to the media about my idea.
   </label>
 
-  <label>
+  <label class="agreeCheckboxLabel">
   <md-checkbox id="agreeEmail" name="agreeEmail"></md-checkbox>
   Please keep me posted on how the Institute of Small Ideas campaign is going.
   </label>
@@ -2840,7 +2864,11 @@ export class YpPostEdit extends YpEditBase {
     setTimeout(() => {
       const nameElement = this.$$("#name");
       if (nameElement) {
+        // md-outlined-text-field's own focus() causes auto-scroll to first text input
+        // This forces scroll back to top of page, so user can see intro content.
         nameElement.focus();
+        window.scrollTo(0, 0);
+        requestAnimationFrame(() => window.scrollTo(0, 0));
       }
     }, 250);
 
