@@ -343,6 +343,7 @@ export class YpPostListItem extends YpBaseElement {
                 <a
                   href="${ifDefined(this._getPostLink(this.post))}"
                   @click="${this.goToPostIfNotHeader}"
+                  aria-label="${this.post.name}"
                   id="mainArea"
                 >
                   <div class="layout horizontal ${!this.wide ? "wrap" : ""}">
@@ -512,10 +513,6 @@ export class YpPostListItem extends YpBaseElement {
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-  }
-
-  clickOnA() {
-    this.$$("#mainArea")?.click();
   }
 
   _getPostLink(post: YpPostData) {
