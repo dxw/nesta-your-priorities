@@ -1609,9 +1609,11 @@ export class YpPostEdit extends YpEditBase {
         <div
           class="layout vertical center-center frameContainer thankYouContainer"
         >
-          <div class="thankYouMessage">${this.thankYouMessage}</div>
+          <div class="thankYouMessage" role="status">${this.thankYouMessage}</div>
           <div class="layout horizontal center-center thankYouActions">
-            <md-filled-button @click="${this._submitAnotherIdea}"
+            <md-filled-button
+              id="submitAnotherIdeaButton"
+              @click="${this._submitAnotherIdea}"
               >${this.t("submitAnotherIdea")}</md-filled-button
             >
             <md-outlined-button @click="${this._returnToHomepage}"
@@ -2670,7 +2672,7 @@ export class YpPostEdit extends YpEditBase {
     }
   }
 
-  _finishRedirect(post: YpPostData) {
+  async _finishRedirect(post: YpPostData) {
     this.fire("yp-reset-keep-open-for-page");
     window.appGlobals.activity("completed", "newPost");
 
@@ -2695,6 +2697,8 @@ export class YpPostEdit extends YpEditBase {
     if (this.newPost) {
       this.thankYouMessage = text;
       this.submissionCompleted = true;
+      await this.updateComplete;
+      (this.$$("#submitAnotherIdeaButton") as HTMLElement | null)?.focus();
     } else {
       YpNavHelpers.redirectTo("/post/" + (post ? post.id : this.post?.id));
     }
