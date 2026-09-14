@@ -280,8 +280,7 @@ export class YpPostEdit extends YpEditBase {
       if (!questionElement) {
         return;
       }
-      const isRequired = questionElement.question?.required === true;
-      if (isRequired && !questionElement.reportValidity()) {
+      if (!questionElement.reportValidity()) {
         valid = false;
         if (!hasFoundOne) {
           questionElement.scrollIntoView();

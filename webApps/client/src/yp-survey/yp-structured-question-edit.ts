@@ -385,6 +385,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         }}"
         ?required="${this.question.required}"
         maxlength="${ifDefined(this.question.maxLength || undefined)}"
+        minlength="${ifDefined(this.question.minLength || undefined)}"
         aria-labelledby="${ifDefined(questionIntroId)}"
         aria-describedby="${ifDefined(subtitleId)}"
         aria-label="${ifDefined(ariaLabel)}"
@@ -447,7 +448,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
           type="textarea"
           label=""
           .value="${(this.question.value as string) || ""}"
-          minlength="2"
+          minlength="${ifDefined(this.question.minLength || undefined)}"
           ?charCounter="${this.question.charCounter != undefined
             ? this.question.charCounter
             : true}"
@@ -864,18 +865,35 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
   }
 
   reportValidity(): boolean {
-    if (!this.question.required) {
-      this.classList.remove("error");
-      return true;
-    }
-
     if (this.isInputField) {
       const item = this.$$(
         "#structuredQuestion_" + this.index
       ) as TextField | null;
-      const valid = item ? item.reportValidity() : true;
+      if (!item) {
+        return true;
+      }
+
+      const value = item.value || "";
+      if (
+        this.question.minLength &&
+        value.length > 0 &&
+        value.length < this.question.minLength
+      ) {
+        item.setCustomValidity(
+          `Your answer must be at least ${this.question.minLength} characters long`
+        );
+      } else {
+        item.setCustomValidity("");
+      }
+
+      const valid = item.reportValidity();
       this.classList.remove("error");
       return valid;
+    }
+
+    if (!this.question.required) {
+      this.classList.remove("error");
+      return true;
     }
 
     const valid = this.checkValidity();
