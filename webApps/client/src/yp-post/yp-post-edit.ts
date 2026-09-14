@@ -266,9 +266,8 @@ export class YpPostEdit extends YpEditBase {
       if (!questionElement) {
         return;
       }
-      questionElement.classList.remove("error");
       const isRequired = questionElement.question?.required === true;
-      if (isRequired && !questionElement.checkValidity()) {
+      if (isRequired && !questionElement.reportValidity()) {
         valid = false;
         if (!hasFoundOne) {
           questionElement.scrollIntoView();
@@ -278,7 +277,6 @@ export class YpPostEdit extends YpEditBase {
         if (!firstInvalidQuestion && questionElement.question?.text) {
           firstInvalidQuestion = questionElement.question.text;
         }
-        questionElement.classList.add("error");
       }
       questionElement.requestUpdate();
     });

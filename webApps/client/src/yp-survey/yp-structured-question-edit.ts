@@ -863,6 +863,26 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
     return value !== undefined && value !== null;
   }
 
+  reportValidity(): boolean {
+    if (!this.question.required) {
+      this.classList.remove("error");
+      return true;
+    }
+
+    if (this.isInputField) {
+      const item = this.$$(
+        "#structuredQuestion_" + this.index
+      ) as TextField | null;
+      const valid = item ? item.reportValidity() : true;
+      this.classList.remove("error");
+      return valid;
+    }
+
+    const valid = this.checkValidity();
+    this.classList.toggle("error", !valid);
+    return valid;
+  }
+
   get isInputField() {
     return (
       this.question.type &&
