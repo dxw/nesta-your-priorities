@@ -259,6 +259,20 @@ export class YpPostEdit extends YpEditBase {
       nameElement.focus();
     }
 
+    for (const contactFieldId of ["contactName", "contactEmail"]) {
+      const contactElement = this.$$(
+        "#" + contactFieldId
+      ) as TextField | null;
+      if (contactElement && !contactElement.reportValidity()) {
+        valid = false;
+        if (!hasFoundOne) {
+          contactElement.scrollIntoView();
+          contactElement.focus();
+          hasFoundOne = true;
+        }
+      }
+    }
+
     this.liveQuestionIds.forEach((liveIndex) => {
       const questionElement = this.$$(
         "#structuredQuestionContainer_" + liveIndex
@@ -825,6 +839,8 @@ export class YpPostEdit extends YpEditBase {
         name="contactName"
         type="text"
         label=""
+        required
+        minlength="1"
         charCounter
       >
       </md-outlined-text-field>
@@ -835,6 +851,8 @@ export class YpPostEdit extends YpEditBase {
         name="contactEmail"
         type="text"
         label=""
+        required
+        minlength="1"
         charCounter
       >
       </md-outlined-text-field>
@@ -2122,14 +2140,7 @@ export class YpPostEdit extends YpEditBase {
     }
     this.submitDisabled = true;
 
-    const hasStructuredQuestions =
-      (this.group &&
-        this.group.configuration &&
-        this.group.configuration.structuredQuestionsJson &&
-        this.group.configuration.structuredQuestionsJson.length > 0) ||
-      (this.structuredQuestions && this.structuredQuestions.length > 0);
-
-    if (hasStructuredQuestions && !this.customValidation()) {
+    if (!this.customValidation()) {
       this.submitDisabled = false;
       this.fire("yp-form-invalid");
       return;
