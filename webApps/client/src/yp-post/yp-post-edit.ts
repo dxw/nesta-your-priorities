@@ -2325,10 +2325,8 @@ export class YpPostEdit extends YpEditBase {
   }
 
   _formInvalid() {
-    if (
-      this.newPointShown &&
-      !(this.$$("#pointFor") as TextField).checkValidity()
-    ) {
+    const pointFor = this.$$("#pointFor") as TextField | null;
+    if (this.newPointShown && pointFor && !pointFor.checkValidity()) {
       this.selected = 1;
     } else {
       this.selected = 0;
