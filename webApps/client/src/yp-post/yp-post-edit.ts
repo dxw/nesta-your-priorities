@@ -250,6 +250,15 @@ export class YpPostEdit extends YpEditBase {
     let valid = true;
     let hasFoundOne = false;
     let firstInvalidQuestion: string | undefined;
+
+    const nameElement = this.$$("#name") as TextField | null;
+    if (nameElement && !nameElement.reportValidity()) {
+      valid = false;
+      hasFoundOne = true;
+      nameElement.scrollIntoView();
+      nameElement.focus();
+    }
+
     this.liveQuestionIds.forEach((liveIndex) => {
       const questionElement = this.$$(
         "#structuredQuestionContainer_" + liveIndex
