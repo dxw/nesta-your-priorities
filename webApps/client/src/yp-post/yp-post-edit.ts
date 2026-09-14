@@ -2333,13 +2333,6 @@ export class YpPostEdit extends YpEditBase {
     } else {
       this.selected = 0;
     }
-    //TODO: Check this
-    //    if (this.$$("#name")) (this.$$("#name") as TextField).autoValidate = true;
-    //    if (this.$$("#description"))
-    //      (this.$$("#description") as TextField).autoValidate = true;
-    //    if (this.newPointShown) {
-    //      (this.$$("#pointFor") as TextField).autoValidate = true;
-    //    }
   }
 
   _structuredAnswersChanged() {

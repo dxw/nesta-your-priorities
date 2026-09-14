@@ -918,26 +918,6 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
     }
   }
 
-  checkRadioButtonValidity() {
-    if (!this.question.required) return true;
-    const radio = this.$$("#structuredQuestion_" + this.index) as Radio;
-
-    if (radio.checked) return true;
-
-    let valid = false;
-
-    this.question.radioButtons?.forEach((button, buttonIndex) => {
-      const radioButtonElement = this.$$(
-        "#structuredQuestionRadioGroup_" + this.index + "_" + buttonIndex
-      ) as Radio;
-      if (radioButtonElement && radioButtonElement.checked) {
-        valid = true;
-      }
-    });
-
-    return valid;
-  }
-
   getAnswer(suppressNotFoundError = false): YpStructuredAnswer | undefined {
     const item = this.$$("#structuredQuestion_" + this.index);
 
