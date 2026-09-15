@@ -763,10 +763,6 @@ export class YpPostEdit extends YpEditBase {
 
           .videoCam {
           }
-
-          yp-structured-question-edit {
-            max-width: calc(100vw - 64px);
-          }
         }
 
         .postCoverVideoInfo {
