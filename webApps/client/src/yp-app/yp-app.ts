@@ -644,7 +644,8 @@ export class YpApp extends YpBaseElement {
         window.appGlobals.myDomains.length < 2}"
         slot="actionItems"
         ?hidden="${!this.user ||
-        this.page === "agent_bundle"}"
+        this.page === "agent_bundle" ||
+        this.user.profile_data?.isAnonymousUser}"
         class="topActionItem"
         @click="${this._openNavDrawer}"
         aria-label="${this.t("navigationMenu")}"
@@ -797,28 +798,32 @@ export class YpApp extends YpBaseElement {
 
       ${this.user
         ? html`
-            <div style="position: relative;">
-              <md-filled-tonal-icon-button
-                id="notificationButton"
-                class="layout horizontal topActionItem"
-                @click="${this._openNotificationDrawer}"
-                slot="actionItems"
-                aria-label="${this.t("notifications")}"
-                aria-haspopup="dialog"
-                aria-controls="notificationDrawer"
-                aria-expanded="${this.notificationDrawerOpened ? "true" : "false"}"
-              >
-                <md-icon>notifications</md-icon>
-              </md-filled-tonal-icon-button>
-              <md-badge
-                id="notificationBadge"
-                class="activeBadge"
-                ?has-static-theme="${this.hasStaticBadgeTheme}"
-                .value="${this.numberOfUnViewedNotifications}"
-                ?hidden="${!this.numberOfUnViewedNotifications}"
-              >
-              </md-badge>
-            </div>
+            ${this.user.profile_data?.isAnonymousUser
+              ? nothing
+              : html`
+                  <div style="position: relative;">
+                    <md-filled-tonal-icon-button
+                      id="notificationButton"
+                      class="layout horizontal topActionItem"
+                      @click="${this._openNotificationDrawer}"
+                      slot="actionItems"
+                      aria-label="${this.t("notifications")}"
+                      aria-haspopup="dialog"
+                      aria-controls="notificationDrawer"
+                      aria-expanded="${this.notificationDrawerOpened ? "true" : "false"}"
+                    >
+                      <md-icon>notifications</md-icon>
+                    </md-filled-tonal-icon-button>
+                    <md-badge
+                      id="notificationBadge"
+                      class="activeBadge"
+                      ?has-static-theme="${this.hasStaticBadgeTheme}"
+                      .value="${this.numberOfUnViewedNotifications}"
+                      ?hidden="${!this.numberOfUnViewedNotifications}"
+                    >
+                    </md-badge>
+                  </div>
+                `}
             <md-icon-button
               id="userMenuButton"
               class="userIcon"
@@ -832,6 +837,16 @@ export class YpApp extends YpBaseElement {
               <yp-user-image id="userImage" small .user="${this.user}">
               </yp-user-image>
             </md-icon-button>
+            ${this.user.profile_data?.isAnonymousUser
+              ? html`
+                  <md-text-button
+                    slot="actionItems"
+                    class="topActionItem userImageNotificationContainer"
+                    @click="${this._login}"
+                    >${this.t("user.login")}
+                  </md-text-button>
+                `
+              : nothing}
           `
         : window.appUser?.hasCompletedInitialLoginCheck
         ? html`

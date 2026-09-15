@@ -474,10 +474,18 @@ export class YpGroup extends YpCollection {
   async _newPost() {
     window.appGlobals.activity("open", "newPost");
     if (!(await window.appUser.ensureLoginChecked())) {
-      window.appUser.loginForNewPost(
-        this.collectionId!,
-        this.collection?.configuration as YpGroupConfiguration
-      );
+      if (
+        await window.appUser.silentAnonymousLoginIfAllowed(
+          this.collection as YpGroupData
+        )
+      ) {
+        YpNavHelpers.redirectTo("/group/" + this.collectionId + "/new_post");
+      } else {
+        window.appUser.loginForNewPost(
+          this.collectionId!,
+          this.collection?.configuration as YpGroupConfiguration
+        );
+      }
     } else {
       YpNavHelpers.redirectTo("/group/" + this.collectionId + "/new_post");
     }

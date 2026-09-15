@@ -318,6 +318,35 @@ export class YpAppUser extends YpCodeBase {
     }, 1);
   }
 
+  /**
+   * Silently establishes an anonymous session for `group` - no login modal shown.
+   * Gated on the admin-configurable "Allow anonymous auto login" toggle (which can only be enabled alongside "Allow anonymous users").
+   * Resolves false without doing anything if the user is already logged in, or the group doesn't have both flags enabled.
+   */
+  async silentAnonymousLoginIfAllowed(
+    group: YpGroupData | undefined
+  ): Promise<boolean> {
+    if (
+      this.loggedIn() ||
+      !group ||
+      !group.configuration ||
+      !group.configuration.allowAnonymousUsers ||
+      !group.configuration.allowAnonymousAutoLogin
+    ) {
+      return false;
+    }
+
+    window.appGlobals.currentAnonymousGroup = group;
+
+    return new Promise<boolean>((resolve) => {
+      window.appDialogs.getDialogAsync("userLogin", async (dialog: YpLogin) => {
+        dialog.setup(this._handleLogin.bind(this), window.appGlobals.domain!);
+        const success = await dialog.anonymousLogin();
+        resolve(!!success);
+      });
+    });
+  }
+
   _closeUserLogin() {
     window.appDialogs.closeDialog("userLogin");
   }

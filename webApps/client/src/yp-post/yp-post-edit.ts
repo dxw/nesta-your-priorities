@@ -2773,7 +2773,12 @@ export class YpPostEdit extends YpEditBase {
     group: YpGroupData,
     params: any | undefined = undefined
   ) {
-    if (window.appUser && (await window.appUser.ensureLoginChecked()) === true) {
+    const isLoggedInOrAnonymousAllowed =
+      window.appUser &&
+      ((await window.appUser.ensureLoginChecked()) === true ||
+        (await window.appUser.silentAnonymousLoginIfAllowed(group)));
+
+    if (isLoggedInOrAnonymousAllowed) {
       this._setupGroup(group);
       if (newItem) {
         this.new = true;
