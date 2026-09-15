@@ -832,6 +832,16 @@ export class YpApp extends YpBaseElement {
               <yp-user-image id="userImage" small .user="${this.user}">
               </yp-user-image>
             </md-icon-button>
+            ${this.user.profile_data?.isAnonymousUser
+              ? html`
+                  <md-text-button
+                    slot="actionItems"
+                    class="topActionItem userImageNotificationContainer"
+                    @click="${this._login}"
+                    >${this.t("user.login")}
+                  </md-text-button>
+                `
+              : nothing}
           `
         : window.appUser?.hasCompletedInitialLoginCheck
         ? html`
