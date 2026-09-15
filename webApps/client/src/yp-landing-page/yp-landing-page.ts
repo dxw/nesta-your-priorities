@@ -287,6 +287,8 @@ export class YpLandingPage extends YpBaseElement {
         .videoPlaceholder {
           position: relative;
           width: 100%;
+          max-width: 1100px;
+          margin: 0 auto 64px;
           aspect-ratio: 16 / 9;
           max-height: 80vh;
           display: flex;
@@ -858,6 +860,11 @@ export class YpLandingPage extends YpBaseElement {
 
           section {
             padding: 32px 16px;
+          }
+
+          .videoPlaceholder {
+            max-width: none;
+            margin-bottom: 0;
           }
 
           .introCopy {
