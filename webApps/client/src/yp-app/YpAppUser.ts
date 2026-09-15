@@ -318,6 +318,32 @@ export class YpAppUser extends YpCodeBase {
     }, 1);
   }
 
+  async silentAnonymousLoginIfAllowed(
+    group: YpGroupData | undefined
+  ): Promise<boolean> {
+    if (
+      this.loggedIn() ||
+      !group ||
+      !group.configuration ||
+      !(
+        group.configuration.allowAnonymousUsers ||
+        group.configuration.allowOneTimeLoginWithName
+      )
+    ) {
+      return false;
+    }
+
+    window.appGlobals.currentAnonymousGroup = group;
+
+    return new Promise<boolean>((resolve) => {
+      window.appDialogs.getDialogAsync("userLogin", async (dialog: YpLogin) => {
+        dialog.setup(this._handleLogin.bind(this), window.appGlobals.domain!);
+        const success = await dialog.anonymousLogin();
+        resolve(!!success);
+      });
+    });
+  }
+
   _closeUserLogin() {
     window.appDialogs.closeDialog("userLogin");
   }
