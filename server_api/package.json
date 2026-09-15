@@ -53,7 +53,7 @@
     "express-useragent": "^2.2.0",
     "farmhash": "^5.0.1",
     "form-data": "^4.0.4",
-    "html-to-docx": "1.1.2",
+    "html-to-docx": "^1.8.0",
     "i18next": "^26.3.1",
     "i18next-fs-backend": "^2.6.6",
     "image-size": "^2.0.4",
@@ -137,6 +137,9 @@
     "express-session": {
       "cookie": "0.7.2",
       "on-headers": "1.1.0"
+    },
+    "html-to-docx": {
+      "image-size": "$image-size"
     },
     "@grpc/grpc-js": "1.14.4",
     "@newrelic/security-agent": "3.0.4",
