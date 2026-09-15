@@ -385,6 +385,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         }}"
         ?required="${this.question.required}"
         maxlength="${ifDefined(this.question.maxLength || undefined)}"
+        minlength="${ifDefined(this.question.minLength || undefined)}"
         aria-labelledby="${ifDefined(questionIntroId)}"
         aria-describedby="${ifDefined(subtitleId)}"
         aria-label="${ifDefined(ariaLabel)}"
@@ -447,7 +448,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
           type="textarea"
           label=""
           .value="${(this.question.value as string) || ""}"
-          minlength="2"
+          minlength="${ifDefined(this.question.minLength || undefined)}"
           ?charCounter="${this.question.charCounter != undefined
             ? this.question.charCounter
             : true}"
@@ -863,6 +864,43 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
     return value !== undefined && value !== null;
   }
 
+  reportValidity(): boolean {
+    if (this.isInputField) {
+      const item = this.$$(
+        "#structuredQuestion_" + this.index
+      ) as TextField | null;
+      if (!item) {
+        return true;
+      }
+
+      const value = item.value || "";
+      if (
+        this.question.minLength &&
+        value.length > 0 &&
+        value.length < this.question.minLength
+      ) {
+        item.setCustomValidity(
+          `Your answer must be at least ${this.question.minLength} characters long`
+        );
+      } else {
+        item.setCustomValidity("");
+      }
+
+      const valid = item.reportValidity();
+      this.classList.remove("error");
+      return valid;
+    }
+
+    if (!this.question.required) {
+      this.classList.remove("error");
+      return true;
+    }
+
+    const valid = this.checkValidity();
+    this.classList.toggle("error", !valid);
+    return valid;
+  }
+
   get isInputField() {
     return (
       this.question.type &&
@@ -896,26 +934,6 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
       console.warn("No value for cleanValue");
       return "";
     }
-  }
-
-  checkRadioButtonValidity() {
-    if (!this.question.required) return true;
-    const radio = this.$$("#structuredQuestion_" + this.index) as Radio;
-
-    if (radio.checked) return true;
-
-    let valid = false;
-
-    this.question.radioButtons?.forEach((button, buttonIndex) => {
-      const radioButtonElement = this.$$(
-        "#structuredQuestionRadioGroup_" + this.index + "_" + buttonIndex
-      ) as Radio;
-      if (radioButtonElement && radioButtonElement.checked) {
-        valid = true;
-      }
-    });
-
-    return valid;
   }
 
   getAnswer(suppressNotFoundError = false): YpStructuredAnswer | undefined {

@@ -184,6 +184,7 @@ interface YpStructuredQuestionData {
   type: YpStructuredQuestionType;
   subType?: string;
   maxLength?: number;
+  minLength?: number;
   value?: string | number | boolean;
   questionIndex?: number;
   required?: boolean;

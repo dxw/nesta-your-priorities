@@ -250,6 +250,29 @@ export class YpPostEdit extends YpEditBase {
     let valid = true;
     let hasFoundOne = false;
     let firstInvalidQuestion: string | undefined;
+
+    const nameElement = this.$$("#name") as TextField | null;
+    if (nameElement && !nameElement.reportValidity()) {
+      valid = false;
+      hasFoundOne = true;
+      nameElement.scrollIntoView();
+      nameElement.focus();
+    }
+
+    for (const contactFieldId of ["contactName", "contactEmail"]) {
+      const contactElement = this.$$(
+        "#" + contactFieldId
+      ) as TextField | null;
+      if (contactElement && !contactElement.reportValidity()) {
+        valid = false;
+        if (!hasFoundOne) {
+          contactElement.scrollIntoView();
+          contactElement.focus();
+          hasFoundOne = true;
+        }
+      }
+    }
+
     this.liveQuestionIds.forEach((liveIndex) => {
       const questionElement = this.$$(
         "#structuredQuestionContainer_" + liveIndex
@@ -257,9 +280,7 @@ export class YpPostEdit extends YpEditBase {
       if (!questionElement) {
         return;
       }
-      questionElement.classList.remove("error");
-      const isRequired = questionElement.question?.required === true;
-      if (isRequired && !questionElement.checkValidity()) {
+      if (!questionElement.reportValidity()) {
         valid = false;
         if (!hasFoundOne) {
           questionElement.scrollIntoView();
@@ -269,7 +290,6 @@ export class YpPostEdit extends YpEditBase {
         if (!firstInvalidQuestion && questionElement.question?.text) {
           firstInvalidQuestion = questionElement.question.text;
         }
-        questionElement.classList.add("error");
       }
       questionElement.requestUpdate();
     });
@@ -827,6 +847,8 @@ export class YpPostEdit extends YpEditBase {
         type="text"
         autocomplete="name"
         label=""
+        required
+        minlength="1"
         aria-label="${this.t("user.name")}"
         charCounter
       >
@@ -839,6 +861,8 @@ export class YpPostEdit extends YpEditBase {
         type="text"
         autocomplete="home email"
         label=""
+        required
+        minlength="1"
         aria-label="${this.t("user.email")}"
         charCounter
       >
@@ -2133,14 +2157,7 @@ export class YpPostEdit extends YpEditBase {
     }
     this.submitDisabled = true;
 
-    const hasStructuredQuestions =
-      (this.group &&
-        this.group.configuration &&
-        this.group.configuration.structuredQuestionsJson &&
-        this.group.configuration.structuredQuestionsJson.length > 0) ||
-      (this.structuredQuestions && this.structuredQuestions.length > 0);
-
-    if (hasStructuredQuestions && !this.customValidation()) {
+    if (!this.customValidation()) {
       this.submitDisabled = false;
       this.fire("yp-form-invalid");
       return;
@@ -2336,21 +2353,12 @@ export class YpPostEdit extends YpEditBase {
   }
 
   _formInvalid() {
-    if (
-      this.newPointShown &&
-      !(this.$$("#pointFor") as TextField).checkValidity()
-    ) {
+    const pointFor = this.$$("#pointFor") as TextField | null;
+    if (this.newPointShown && pointFor && !pointFor.checkValidity()) {
       this.selected = 1;
     } else {
       this.selected = 0;
     }
-    //TODO: Check this
-    //    if (this.$$("#name")) (this.$$("#name") as TextField).autoValidate = true;
-    //    if (this.$$("#description"))
-    //      (this.$$("#description") as TextField).autoValidate = true;
-    //    if (this.newPointShown) {
-    //      (this.$$("#pointFor") as TextField).autoValidate = true;
-    //    }
   }
 
   _structuredAnswersChanged() {

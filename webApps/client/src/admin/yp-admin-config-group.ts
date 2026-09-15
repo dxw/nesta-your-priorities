@@ -1178,7 +1178,7 @@ export class YpAdminConfigGroup extends YpAdminConfigBase {
           maxRows: 8,
           value: this.group.configuration.structuredQuestions,
           translationToken: "structuredQuestions",
-          onChange: "_structuredQuestionsChanged",
+          onChange: this._structuredQuestionsChanged,
         },
         {
           text: "structuredQuestionsJsonErrorInfo",

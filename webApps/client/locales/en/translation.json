@@ -622,7 +622,7 @@
   "maxDaysBackForRecommendations": "Max days back for recommendations",
   "recommendationToastInfo": "Press fast forward or swipe left to see recommended posts for this group.",
   "structuredQuestions": "Structured questions",
-  "structuredQuestionsInfo": "Use comma to separate questions and max character lengths. Keep questions to less than 32 characters for display on mobiles. Example: Question 1,200,Question 2,600,Question 3,600",
+  "structuredQuestionsInfo": "Enter a JSON array of question objects, e.g. [{\"text\":\"Question 1\",\"type\":\"textfield\",\"required\":true,\"maxLength\":200},{\"text\":\"Question 2\",\"type\":\"radios\",\"radioButtons\":[{\"text\":\"Option A\"},{\"text\":\"Option B\"}]}]. Common 'type' values: textfield, textfieldlong, textarea, textarealong, radios etc. Per-question options: 'required' (true/false), 'maxLength' (number), 'minLength' (number), 'charCounter' (true/false) to show live char count, 'description' adds helper text under the question. 'radios' and 'checkboxes' questions need a 'radioButtons'/'checkboxes' array of {\"text\":\"Option label\"} objects.",
   "backToPost": "Back to post",
   "forwardToPost": "Forward to recommended post",
   "hostnameTaken": "This hostname is already taken",
