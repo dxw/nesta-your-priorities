@@ -682,6 +682,14 @@ export class YpPostEdit extends YpEditBase {
         .agreeCheckboxLabel md-checkbox {
           flex-shrink: 0;
           margin-left: 0;
+          --md-focus-ring-color: var(--md-sys-color-primary);
+          --md-focus-ring-width: 2px;
+          --md-focus-ring-outward-offset: 1px;
+        }
+
+        .agreeCheckboxLabel md-checkbox::part(focus-ring) {
+          width: 32px;
+          height: 32px;
         }
 
         section {
@@ -831,33 +839,36 @@ export class YpPostEdit extends YpEditBase {
       <p class="contactInfoExplanation">
         ${this.t("contactInformationExplanation")}
       </p>
-      <label class="fieldLabel" for="contactName">${this.t("user.name")}</label>
+      <label class="fieldLabel">${this.t("user.name")}</label>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactName"
         name="contactName"
         type="text"
+        autocomplete="name"
         label=""
         required
         minlength="1"
+        aria-label="${this.t("user.name")}"
         charCounter
       >
       </md-outlined-text-field>
-      <label class="fieldLabel" for="contactEmail">${this.t("user.email")}</label>
+      <label class="fieldLabel">${this.t("user.email")}</label>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactEmail"
         name="contactEmail"
         type="text"
+        autocomplete="home email"
         label=""
         required
         minlength="1"
+        aria-label="${this.t("user.email")}"
         charCounter
       >
       </md-outlined-text-field>
       <label
         class="fieldLabel"
-        for="contactAddress"
         ?hidden="${!this.group!.configuration.moreContactInformationAddress}"
       >
         ${this.t("contactAddress")}
@@ -867,8 +878,10 @@ export class YpPostEdit extends YpEditBase {
         id="contactAddress"
         name="contactAddress"
         type="text"
+        autocomplete="postal-code"
         ?hidden="${!this.group!.configuration.moreContactInformationAddress}"
         label=""
+        aria-label="${this.t("contactAddress")}"
         maxlength="300"
         charCounter
       >
@@ -877,13 +890,13 @@ export class YpPostEdit extends YpEditBase {
   <h2>Want to help or stay in touch? (optional)</h2>
 
   <label class="agreeCheckboxLabel">
-  <md-checkbox id="agreeMedia" name="agreeMedia"></md-checkbox>
-  I'd consider talking to the media about my idea.
+  <md-checkbox id="agreeMedia" name="agreeMedia" aria-label="I'd consider talking to the media about my idea."></md-checkbox>
+  <span aria-hidden="true">I'd consider talking to the media about my idea.</span>
   </label>
 
   <label class="agreeCheckboxLabel">
-  <md-checkbox id="agreeEmail" name="agreeEmail"></md-checkbox>
-  Please keep me posted on how the Institute of Small Ideas campaign is going.
+  <md-checkbox id="agreeEmail" name="agreeEmail" aria-label="Please keep me posted on how the Institute of Small Ideas campaign is going."></md-checkbox>
+  <span aria-hidden="true">Please keep me posted on how the Institute of Small Ideas campaign is going.</span>
   </label>
 
 <div>By submitting your idea, you agree to our <a href="https://www.nesta.org.uk/privacy/">privacy policy</a>.</div>
@@ -1004,7 +1017,7 @@ export class YpPostEdit extends YpEditBase {
                 `
               : this.post
               ? html`
-                  <label class="fieldLabel" for="name">
+                  <label class="fieldLabel">
                     ${this.titleQuestionText}
                   </label>
                   <md-outlined-text-field
@@ -1014,6 +1027,7 @@ export class YpPostEdit extends YpEditBase {
                     name="name"
                     type="text"
                     label=""
+                    aria-label="${this.titleQuestionText}"
                     .value="${this.post.name}"
                     maxlength="60"
                     rows="7"
@@ -1057,7 +1071,7 @@ export class YpPostEdit extends YpEditBase {
             this.group.configuration &&
             this.group.configuration.usePostTags
               ? html`
-                  <label class="fieldLabel" for="tags">
+                  <label class="fieldLabel">
                     ${this.t("commaSeperatedTags")}
                   </label>
                   <md-outlined-text-field
@@ -1065,6 +1079,7 @@ export class YpPostEdit extends YpEditBase {
                     name="tags"
                     type="text"
                     label=""
+                    aria-label="${this.t("commaSeperatedTags")}"
                     .value="${this.post!.public_data!.tags || ''}"
                   >
                   </md-outlined-text-field>
@@ -1074,7 +1089,6 @@ export class YpPostEdit extends YpEditBase {
               ? html`
                   <label
                     class="fieldLabel"
-                    for="description"
                     ?hidden="${this.structuredQuestions != null}"
                   >
                     ${this.t("post.description")}
@@ -1088,6 +1102,7 @@ export class YpPostEdit extends YpEditBase {
                     name="description"
                     .value="${this.post!.description}"
                     label=""
+                    aria-label="${this.t("post.description")}"
                     @change="${this._resizeScrollerIfNeeded}"
                     char-counter
                     rows="5"
@@ -1174,7 +1189,7 @@ export class YpPostEdit extends YpEditBase {
     return this.newPointShown
       ? html`
           <div class="subContainer">
-            <label class="fieldLabel" for="pointFor">
+            <label class="fieldLabel">
               ${this.t("point.for")}
             </label>
             <md-outlined-text-field
@@ -1184,6 +1199,7 @@ export class YpPostEdit extends YpEditBase {
               name="pointFor"
               .value="${this.post!.pointFor || ""}"
               label=""
+              aria-label="${this.t("point.for")}"
               charCounter
               type="textarea"
               rows="5"
@@ -1594,9 +1610,9 @@ export class YpPostEdit extends YpEditBase {
 
   renderHeader() {
     return html`
-      <div class="topHeader">
+      <h1 class="topHeader">
         ${this.editHeaderText ? this.editHeaderText : ""}
-     </div>
+     </h1>
       <div class="layout">
 
 <h2>Before you send in your idea, here's what counts.</h2>
@@ -1628,9 +1644,11 @@ export class YpPostEdit extends YpEditBase {
         <div
           class="layout vertical center-center frameContainer thankYouContainer"
         >
-          <div class="thankYouMessage">${this.thankYouMessage}</div>
+          <div class="thankYouMessage" role="status">${this.thankYouMessage}</div>
           <div class="layout horizontal center-center thankYouActions">
-            <md-filled-button @click="${this._submitAnotherIdea}"
+            <md-filled-button
+              id="submitAnotherIdeaButton"
+              @click="${this._submitAnotherIdea}"
               >${this.t("submitAnotherIdea")}</md-filled-button
             >
             <md-outlined-button @click="${this._returnToHomepage}"
@@ -2673,7 +2691,7 @@ export class YpPostEdit extends YpEditBase {
     }
   }
 
-  _finishRedirect(post: YpPostData) {
+  async _finishRedirect(post: YpPostData) {
     this.fire("yp-reset-keep-open-for-page");
     window.appGlobals.activity("completed", "newPost");
 
@@ -2698,6 +2716,8 @@ export class YpPostEdit extends YpEditBase {
     if (this.newPost) {
       this.thankYouMessage = text;
       this.submissionCompleted = true;
+      await this.updateComplete;
+      (this.$$("#submitAnotherIdeaButton") as HTMLElement | null)?.focus();
     } else {
       YpNavHelpers.redirectTo("/post/" + (post ? post.id : this.post?.id));
     }

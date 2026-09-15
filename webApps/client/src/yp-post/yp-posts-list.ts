@@ -14,7 +14,7 @@ import "./yp-post-list-item.js";
 import "./yp-post-list-gallery-item.js";
 
 import { ShadowStyles } from "../common/ShadowStyles.js";
-import { YpPostCard } from "./yp-post-card.js";
+import { YpPostListGalleryItem } from "./yp-post-list-gallery-item.js";
 import { YpPostsFilter } from "./yp-posts-filter.js";
 import { nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -419,6 +419,7 @@ export class YpPostsList extends YpBaseElement {
             ? html`
                 <lit-virtualizer
                   id="list"
+                  role="list"
                   .items=${this.posts}
                   .layout="${this.effectiveGrid
                     ? grid({
@@ -440,15 +441,10 @@ export class YpPostsList extends YpBaseElement {
   }
 
   renderPostItem(post: YpPostData, index?: number | undefined): TemplateResult {
-    const tabindex = index !== undefined ? index + 1 : 0;
     if (this.effectiveGrid) {
       return html`
         <yp-post-card
-          aria-label="${post.name}"
-          role="link"
-          @keydown="${this._postItemKeydown.bind(this)}"
-          @click="${this._selectedItemChanged.bind(this)}"
-          tabindex="0"
+          role="listitem"
           id="postCard${post.id}"
           class="card"
           .post="${post}"
@@ -473,12 +469,8 @@ export class YpPostsList extends YpBaseElement {
         `
       : html`
           <yp-post-list-item
-            aria-label="${post.name}"
+            role="listitem"
             ?is-last-item="${this._isLastItem(index!)}"
-            role="link"
-            @keydown="${this._postItemKeydown.bind(this)}"
-            @click="${this._selectedItemChanged.bind(this)}"
-            tabindex="0"
             id="postCard${post.id}"
             class="csard"
             .post="${post}"
@@ -624,9 +616,9 @@ export class YpPostsList extends YpBaseElement {
   }
 
   _selectedItemChanged(event: CustomEvent) {
-    const postCard = event.target as YpPostCard;
+    const galleryItem = event.target as YpPostListGalleryItem;
 
-    postCard.clickOnA();
+    galleryItem.clickOnA();
   }
 
   async _refreshPost(event: CustomEvent) {

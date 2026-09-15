@@ -223,6 +223,10 @@ export class YpTopAppBar extends YpBaseElement {
       super.styles,
       YpTopAppBarTokens,
       css`
+        :host {
+          --md-focus-ring-color: var(--md-sys-color-primary);
+        }
+
         a {
           color: var(--md-sys-color-on-surface);
           text-decoration: none;
