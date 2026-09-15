@@ -825,6 +825,7 @@ export class YpPostEdit extends YpEditBase {
         id="contactName"
         name="contactName"
         type="text"
+        autocomplete="name"
         label=""
         aria-label="${this.t("user.name")}"
         charCounter
@@ -836,6 +837,7 @@ export class YpPostEdit extends YpEditBase {
         id="contactEmail"
         name="contactEmail"
         type="text"
+        autocomplete="home email"
         label=""
         aria-label="${this.t("user.email")}"
         charCounter
@@ -852,6 +854,7 @@ export class YpPostEdit extends YpEditBase {
         id="contactAddress"
         name="contactAddress"
         type="text"
+        autocomplete="postal-code"
         ?hidden="${!this.group!.configuration.moreContactInformationAddress}"
         label=""
         aria-label="${this.t("contactAddress")}"
