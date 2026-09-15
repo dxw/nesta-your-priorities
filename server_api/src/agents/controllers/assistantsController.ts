@@ -208,7 +208,10 @@ export class AssistantController {
 
       const htmlContent = await marked(markdownContent);
 
-      const docxBuffer = (await HTMLtoDOCX(htmlContent)) as Buffer;
+      const docxOutput = await HTMLtoDOCX(htmlContent);
+      const docxBuffer = Buffer.isBuffer(docxOutput)
+        ? docxOutput
+        : Buffer.from(await docxOutput.arrayBuffer());
 
       log.debug(`docxBuffer: ${docxBuffer.length}`);
 
