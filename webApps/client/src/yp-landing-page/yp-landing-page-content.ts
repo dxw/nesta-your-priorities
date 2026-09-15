@@ -238,7 +238,7 @@ export const ABOUT_US_CONTENT: {
   leaders: [
     "Martin Lewis, Chair",
     "Kathy Peach, Co-Director",
-    "Sue Tibbals, Co-Director",
+    "Sue Tibballs, Co-Director",
   ],
   panelLabel: "Our Panel:",
   panel: [
