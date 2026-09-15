@@ -226,6 +226,8 @@ export const ABOUT_US_CONTENT: {
   paragraphs: string[];
   ledByLabel: string;
   leaders: string[];
+  panelLabel: string;
+  panel: string[];
 } = {
   heading: "About Us",
   paragraphs: [
@@ -237,6 +239,16 @@ export const ABOUT_US_CONTENT: {
     "Martin Lewis, Chair",
     "Kathy Peach, Co-Director",
     "Sue Tibbals, Co-Director",
+  ],
+  panelLabel: "Our Panel:",
+  panel: [
+    "Tracey Brabin",
+    "Tamara Finklestein",
+    "Green party",
+    "Danny Kruger",
+    "Polly Mackenzie",
+    "Penny Mourdant",
+    "Kwajo Tweneboa",
   ],
 };
 

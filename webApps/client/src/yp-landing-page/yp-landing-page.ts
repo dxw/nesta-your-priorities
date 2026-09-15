@@ -714,6 +714,13 @@ export class YpLandingPage extends YpBaseElement {
           text-align: justify;
         }
 
+        .aboutUsPeopleGrid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0 32px;
+          margin-bottom: 24px;
+        }
+
         .aboutUsLeadershipList {
           margin: 0 0 16px;
           padding-left: 0;
@@ -892,6 +899,11 @@ export class YpLandingPage extends YpBaseElement {
           .aboutUsGrid {
             grid-template-columns: 1fr;
             gap: 24px;
+          }
+
+          .aboutUsPeopleGrid {
+            grid-template-columns: 1fr;
+            gap: 0;
           }
 
           .martinHeading,
@@ -1370,12 +1382,24 @@ export class YpLandingPage extends YpBaseElement {
                 ${ABOUT_US_CONTENT.paragraphs.map(
                   (paragraph) => html`<p>${paragraph}</p>`
                 )}
-                <p>${ABOUT_US_CONTENT.ledByLabel}</p>
-                <ul class="aboutUsLeadershipList">
-                  ${ABOUT_US_CONTENT.leaders.map(
-                    (leader) => html`<li>${leader}</li>`
-                  )}
-                </ul>
+                <div class="aboutUsPeopleGrid">
+                  <div>
+                    <p>${ABOUT_US_CONTENT.ledByLabel}</p>
+                    <ul class="aboutUsLeadershipList">
+                      ${ABOUT_US_CONTENT.leaders.map(
+                        (leader) => html`<li>${leader}</li>`
+                      )}
+                    </ul>
+                  </div>
+                  <div>
+                    <p>${ABOUT_US_CONTENT.panelLabel}</p>
+                    <ul class="aboutUsLeadershipList">
+                      ${ABOUT_US_CONTENT.panel.map(
+                        (member) => html`<li>${member}</li>`
+                      )}
+                    </ul>
+                  </div>
+                </div>
                 <div class="aboutUsActions">
                   <button
                     class="shareIdeaButton yp-hard-shadow-box"
