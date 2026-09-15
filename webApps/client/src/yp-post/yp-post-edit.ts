@@ -1019,7 +1019,7 @@ export class YpPostEdit extends YpEditBase {
                   <md-outlined-text-field
                     id="name"
                     required
-                    minlength="1"
+                    minlength="10"
                     name="name"
                     type="text"
                     label=""
