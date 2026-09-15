@@ -350,6 +350,7 @@ export class YpPostCard extends YpBaseElement {
                 <a
                   href="${ifDefined(this._getPostLink(this.post))}"
                   @click="${this.goToPostIfNotHeader}"
+                  aria-label="${this.post.name}"
                   id="mainArea"
                 >
                   <yp-post-cover-media
@@ -494,10 +495,6 @@ export class YpPostCard extends YpBaseElement {
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-  }
-
-  clickOnA() {
-    this.$$("#mainArea")?.click();
   }
 
   _getPostLink(post: YpPostData) {

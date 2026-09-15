@@ -919,7 +919,8 @@ export class YpApp extends YpBaseElement {
   renderMainApp() {
     return html`
       ${this.renderTopBar()}
-      <div
+      <main
+        id="mainContent"
         class="mainPage"
         ?agentBundle="${this.page === "agent_bundle" ||
         window.appGlobals.originalQueryParameters.forAgentBundle}"
@@ -928,7 +929,7 @@ export class YpApp extends YpBaseElement {
         ?hidden="${this.appMode !== "main"}"
       >
         ${this.renderPage()}
-      </div>
+      </main>
     `;
   }
 
