@@ -827,6 +827,7 @@ export class YpApp extends YpBaseElement {
             <md-icon-button
               id="userMenuButton"
               class="userIcon"
+              ?hidden="${this.user.profile_data?.isAnonymousUser}"
               @click="${this._openUserDrawer}"
               slot="actionItems"
               aria-label="${this.t("userMenuLabel")}"
@@ -1100,7 +1101,9 @@ export class YpApp extends YpBaseElement {
         ?hidden="${!this.userDrawerOpened}"
         @closed="${this._closeUserDrawer}"
       >
-        ${this.userDrawerOpened && this.user
+        ${this.userDrawerOpened &&
+        this.user &&
+        !this.user.profile_data?.isAnonymousUser
           ? html`
               <yp-user-info
                 @open-user-edit="${this._openUserEdit}"
