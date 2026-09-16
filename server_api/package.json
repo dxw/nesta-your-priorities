@@ -27,7 +27,7 @@
     "@google-cloud/vertexai": "^1.10.0",
     "@google-cloud/vision": "^5.3.7",
     "@node-saml/passport-saml": "^5.1.0",
-    "@policysynth/agents": "^1.3.192",
+    "@policysynth/agents": "1.3.192",
     "async": "^3.2.6",
     "authorized": "^1.0.0",
     "axios": "^1.17.0",
@@ -56,7 +56,7 @@
     "html-to-docx": "^1.8.0",
     "i18next": "^26.3.1",
     "i18next-fs-backend": "^2.6.6",
-    "image-size": "^2.0.2",
+    "image-size": "^2.0.4",
     "isbot": "^5.1.43",
     "iso-639-1": "^3.1.5",
     "jsonrepair": "^3.12.0",
@@ -64,11 +64,11 @@
     "lodash": "^4.18.1",
     "marked": "^18.0.5",
     "moment": "^2.30.1",
-    "morgan": "^1.11.0",
-    "multer": "^2.2.0",
+    "morgan": "^1.12.1",
+    "multer": "^2.4.0",
     "multer-s3": "^3.0.1",
     "newrelic": "^14.1.0",
-    "nodemailer": "^9.0.1",
+    "nodemailer": "^9.1.1",
     "open-graph-scraper": "^6.11.0",
     "openai": "^6.36.0",
     "passport": "^0.7.0",
@@ -86,7 +86,7 @@
     "request-ip": "^3.3.0",
     "sanitize-filename": "^1.6.4",
     "sequelize": "^6.37.7",
-    "sharp": "^0.35.2",
+    "sharp": "^0.35.4",
     "sitemap": "^9.0.1",
     "stripe": "^22.2.2",
     "striptags": "^3.2.0",
@@ -114,7 +114,7 @@
     "@types/ws": "^8.18.1",
     "axios": "^1.17.0",
     "copyfiles": "^2.4.1",
-    "csv-parse": "^7.0.0",
+    "csv-parse": "^7.0.2",
     "diacritics": "^1.3.0",
     "jslint": "^0.12.1",
     "ncp": "^2.0.0",
@@ -138,8 +138,14 @@
       "cookie": "0.7.2",
       "on-headers": "1.1.0"
     },
+    "html-to-docx": {
+      "image-size": "$image-size"
+    },
     "@grpc/grpc-js": "1.14.4",
     "@newrelic/security-agent": "3.0.4",
+    "@policysynth/agents": {
+      "puppeteer": "25.9.0"
+    },
     "@opentelemetry/core": "2.8.0",
     "@opentelemetry/exporter-metrics-otlp-http": "0.219.0",
     "@opentelemetry/otlp-exporter-base": "0.219.0",
@@ -149,11 +155,13 @@
     "@opentelemetry/sdk-metrics": "2.8.0",
     "@opentelemetry/sdk-trace-base": "2.8.0",
     "discord.js": {
-      "undici": "6.27.0"
+      "undici": "6.28.0"
     },
     "@discordjs/rest": {
-      "undici": "6.27.0"
+      "undici": "6.28.0"
     },
+    "js-yaml": "4.3.2",
+    "protobufjs": "7.6.5",
     "google-auth-library@9.15.1": {
       "gaxios": "6.3.0"
     },
