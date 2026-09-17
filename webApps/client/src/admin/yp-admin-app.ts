@@ -792,7 +792,9 @@ export class YpAdminApp extends YpBaseElement {
     const loggedIn = await window.appUser.ensureLoginChecked();
 
     if (loggedIn) {
-      this._getAdminCollection();
+      if (this.collectionId === "new") {
+        this._getAdminCollection();
+      }
     } else {
       window.appUser.openUserlogin();
     }
