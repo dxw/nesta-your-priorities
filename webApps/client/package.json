@@ -74,7 +74,7 @@
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
-    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-terser": "^1.0.0",
     "@types/chart.js": "^2.9.41",
     "@types/d3": "^7.4.3",
     "@types/glob": "^7.2.0",
@@ -90,11 +90,13 @@
     "@types/topojson-client": "^3.1.4",
     "@types/wavesurfer.js": "^6.0.12",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
-    "@web/dev-server": "^0.4.6",
+    "@web/dev-server": "^1.0.0",
     "@web/dev-server-esbuild": "^2.0.0",
-    "@web/dev-server-legacy": "^2.1.1",
-    "@web/rollup-plugin-html": "^2.3.0",
-    "@web/test-runner": "^0.18.2",
+    "@web/dev-server-legacy": "^3.0.0",
+    "@web/dev-server-rollup": "^1.0.0",
+    "@web/rollup-plugin-html": "^4.0.0",
+    "@web/test-runner": "^1.0.0",
+    "@web/test-runner-commands": "^1.0.0",
     "@webcomponents/webcomponentsjs": "^2.8.0",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
@@ -102,11 +104,11 @@
     "glob": "^7.2.0",
     "koa-proxies": "^0.12.4",
     "lit-analyzer": "^2.0.3",
-    "mocha": "^11.7.6",
+    "mocha": "^12.0.1",
     "rimraf": "^5.0.7",
     "rollup": "^4.18.0",
     "rollup-plugin-copy": "^3.5.0",
-    "typescript": "^5.5.3",
+    "typescript": "~5.5.3",
     "yargs": "^18.0.0"
   },
   "scripts": {
@@ -135,5 +137,9 @@
     "test:all": "wtr",
     "test:all:coverage": "wtr --coverage",
     "checksize": "rollup -c ; cat my-element.bundled.js | gzip -9 | wc -c ; rm my-element.bundled.js"
-  }
+  },
+  "overrides": {
+    "protobufjs": "^7.6.6"
+  },
+  "customElements": "custom-elements.json"
 }
