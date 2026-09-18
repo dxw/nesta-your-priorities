@@ -271,7 +271,7 @@ export class AcActivityPost extends YpPostBaseWithAnswers(
 
   get postUrl() {
     return this.activity?.Post
-      ? YpNavHelpers.withForAgentBundle(`/post/${this.activity.Post.id}`)
+      ? `/post/${this.activity.Post.id}`
       : "#";
   }
 

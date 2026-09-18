@@ -1,34 +1,5 @@
 export class YpNavHelpers {
-  /**
-   * Appends ?forAgentBundle=... if present in originalQueryParameters.
-   */
-  static withForAgentBundle(path: string): string {
-    if (window.appGlobals?.originalQueryParameters?.forAgentBundle) {
-      const hashIndex = path.indexOf("#");
-      const pathWithoutHash = hashIndex === -1 ? path : path.slice(0, hashIndex);
-      const hash = hashIndex === -1 ? "" : path.slice(hashIndex);
-
-      if (/[?&]forAgentBundle=/.test(pathWithoutHash)) {
-        return path;
-      }
-
-      const forAgentBundleValue = encodeURIComponent(
-        window.appGlobals.originalQueryParameters.forAgentBundle
-      );
-      // Decide if we add ? or & based on whether path already has a query string
-      const separator = pathWithoutHash.indexOf("?") === -1 ? "?" : "&";
-      path =
-        pathWithoutHash +
-        `${separator}forAgentBundle=${forAgentBundleValue}` +
-        hash;
-    }
-    return path;
-  }
-
   static redirectTo(path: string) {
-    // Safely add forAgentBundle if needed
-    path = this.withForAgentBundle(path);
-
     history.pushState({}, '', path);
     window.dispatchEvent(new CustomEvent('location-changed'));
 
@@ -76,7 +47,6 @@ export class YpNavHelpers {
         window.app.setKeepOpenForPostsOn(window.location.pathname);
       }
       setTimeout(() => {
-        // Safely add forAgentBundle if needed, then redirect
         this.redirectTo(postUrl);
       });
     }

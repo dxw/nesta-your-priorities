@@ -206,6 +206,6 @@ export class AcActivityRecommendedPosts extends YpBaseElement {
   }
 
   postUrl(post: YpPostData) {
-    return YpNavHelpers.withForAgentBundle(`/post/${post.id}`);
+    return `/post/${post.id}`;
   }
 }

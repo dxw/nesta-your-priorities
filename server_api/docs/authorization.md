@@ -25,7 +25,7 @@ Checks if the request is authenticated, considering group configuration and anon
 | req   | Request | Express request object                      |
 | group | Object? | Optional group object for context           |
 
-**Returns:** `boolean`  
+**Returns:** `boolean`
 Returns `true` if the user is authenticated (including anonymous user logic), otherwise `false`.
 
 ---
@@ -38,7 +38,7 @@ Checks if the request is authenticated, ignoring anonymous user logic.
 |-------|---------|---------------------------------------------|
 | req   | Request | Express request object                      |
 
-**Returns:** `boolean`  
+**Returns:** `boolean`
 Returns `true` if the user is authenticated (ignores anonymous user logic).
 
 ---
@@ -323,12 +323,6 @@ auth.role("group.admin", function (group, req, done) {
 
 ---
 
-## Environment Variables
-
-- `PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY`: If set, allows API key-based authentication for certain actions.
-
----
-
 ## Notes
 
 - All callbacks follow the Node.js convention: `done(error, result)` or `done(result)` for some role/entity functions.
@@ -346,5 +340,5 @@ auth.role("group.admin", function (group, req, done) {
 
 ---
 
-**Module Export:**  
+**Module Export:**
 The module exports the `auth` object, which includes all role/entity/action registrations and utility functions described above.

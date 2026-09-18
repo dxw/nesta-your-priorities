@@ -788,15 +788,11 @@ export class YpPost extends YpCollection {
     return this._isEditRoute(this.subRoute);
   }
 
-  get forAgentBundle() {
-    return window.appGlobals.originalQueryParameters.forAgentBundle;
-  }
-
   override render() {
     //TODO: Bottom add new post button
     if (this.post && !this.isEditingPost) {
       return html`
-        <div ?for-agent-bundle="${this.forAgentBundle}" class="layout vertical center-center outerFrameContainer">
+        <div class="layout vertical center-center outerFrameContainer">
           <div class="frameContainer">
             <div class="layout vertical">
               ${this.renderPostStaticHeader()}

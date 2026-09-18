@@ -72,7 +72,7 @@ export class YpAdminGroups extends YpBaseElementWithLogin {
 
   renderGroup(group: YpGroupData) {
     const groupImage = YpMediaHelpers.getImageFormatUrl(group.GroupLogoImages);
-    const groupUrl = YpNavHelpers.withForAgentBundle(`/group/${group.id}`);
+    const groupUrl = `/group/${group.id}`;
     return html`
       <a
         class="layout horizontal groupItem"

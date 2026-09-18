@@ -378,8 +378,6 @@ export class YpCollectionItemCard extends YpBaseElement {
           return this.t("pairwiseVoting");
         case YpGroupType.IdeaGenerationAndDebate:
           return this.t("ideas");
-        case YpGroupType.PsAgentWorkflow:
-          return this.t("workflow");
         case YpGroupType.StaticHtml:
           return this.t("html");
         default:

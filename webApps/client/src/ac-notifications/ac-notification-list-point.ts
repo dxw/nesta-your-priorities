@@ -337,7 +337,7 @@ export class AcNotificationListPoint extends YpBaseElement {
       if (this.point) {
         postUrl += "/" + this.point.id;
       }
-      return YpNavHelpers.withForAgentBundle(postUrl);
+      return postUrl;
     } else {
       return "#";
     }

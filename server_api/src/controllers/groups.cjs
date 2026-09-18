@@ -1166,19 +1166,6 @@ var updateGroupConfigParameters = function (req, group) {
     truthValueFromBody(req.body.forceShowDebateCountOnPost)
   );
 
-  if (
-    req.body.forAgentId &&
-    req.body.forAgentId != "" &&
-    req.body.inputOutput &&
-    req.body.inputOutput != ""
-  ) {
-    group.set("configuration.agents", {
-      inputConnectorForAgentId:
-        req.body.inputOutput == "input" ? req.body.forAgentId : undefined,
-      outputConnectorForAgentId:
-        req.body.inputOutput == "output" ? req.body.forAgentId : undefined,
-    });
-  }
 };
 
 const getGroupFolder = function (req, done) {
@@ -1577,85 +1564,6 @@ router.post(
         }
       }
     );
-  }
-);
-
-router.post(
-  "/:groupId/sendEmailInvitesForAnons",
-  auth.can("edit group"),
-  async function (req, res) {
-    try {
-      const group = await models.Group.findOne({
-        where: { id: req.params.groupId },
-        attributes: ["id", "community_id"],
-      });
-
-      const emails = req.body.emails;
-
-      if (!emails) {
-        res.sendStatus(400);
-        log.error("No emails provided", {
-          emails,
-        });
-        return;
-      }
-
-      const emailArray = emails.split("\n").map((email) => email.trim());
-
-      // Validate each email
-      const validEmails = emailArray.filter((email) => {
-        // Basic email validation regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      });
-
-      if (validEmails.length !== emailArray.length) {
-        log.error("Invalid email addresses", {
-          invalidEmails: emailArray.filter(
-            (email) => !validEmails.includes(email)
-          ),
-        });
-      }
-
-      const { AgentInviteManager } = await import(
-        "../agents/managers/emailInvitesManager.js"
-      );
-
-      for (const email of validEmails) {
-        const token = crypto.randomBytes(20).toString("hex");
-
-        const invite = await models.Invite.create({
-          token,
-          expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year expiry
-          type: models.Invite.INVITE_TO_COMMUNITY_AND_GROUP_AS_ANON,
-          community_id: group.community_id,
-          from_user_id: req.user.id,
-        });
-
-        const invite_link = `https://app.${req.ypDomain.domain_name}/group/${group.id}?anonInvite=1&token=${token}&forAgentBundle=1`;
-
-        await AgentInviteManager.sendInviteEmail(
-          invite_link,
-          req.body.agentRunId,
-          group.id,
-          req.user,
-          email
-        );
-
-        log.info("Invite Created", {
-          email,
-          inviteId: invite.id,
-          invite_link,
-        });
-      }
-
-      res.sendStatus(200);
-    } catch (error) {
-      log.error("Error inviting user emails as anons", {
-        error,
-      });
-      res.sendStatus(500);
-    }
   }
 );
 
@@ -3035,72 +2943,8 @@ router.get(
   }
 );
 
-//TODO: Refactor this as not to repeate it in controlelrs
-const addAgentFabricUserToSessionIfNeeded = async (req) => {
-  let userId = req.user && req.user.id ? req.user.id : null;
-  if (
-    !userId &&
-    req.query.agentFabricUserId &&
-    process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY &&
-    req.headers["x-api-key"] === process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-  ) {
-    log.info(
-      `Creating group with temp agents fabric group api key ${req.query.agentFabricUserId}`
-    );
-    userId = req.query.agentFabricUserId;
-    try {
-      const loadedUser = await models.User.findByPk(userId);
-      req.user = loadedUser;
-    } catch (error) {
-      log.error(`Could not find user with id ${userId}`, {
-        context: "create",
-        userId: userId,
-        error: error,
-      });
-      throw error;
-    }
-  } else {
-    log.info("Creating group with user id: " + userId);
-  }
-};
-
-const copyThemeAndLogoFromAgentFabricGroup = async (
-  newGroup,
-  agentFabricGroup
-) => {
-  if (agentFabricGroup.configuration && agentFabricGroup.configuration.theme) {
-    newGroup.configuration.theme = { ...agentFabricGroup.configuration.theme };
-    await newGroup.save();
-  }
-
-  if (
-    agentFabricGroup.GroupLogoImages &&
-    agentFabricGroup.GroupLogoImages.length > 0
-  ) {
-    log.info("Copying logo images from agent fabric group");
-    for (const logoImage of agentFabricGroup.GroupLogoImages) {
-      log.info(`Copying logo image ${logoImage.id} from agent fabric group`);
-      await newGroup.addGroupLogoImage(logoImage);
-    }
-  }
-};
-
 const createGroup = async (req, res) => {
   log.info("Creating group with community id: " + req.params.communityId);
-
-  if (!req.user) {
-    try {
-      await addAgentFabricUserToSessionIfNeeded(req);
-    } catch (error) {
-      log.error("Could not add agent fabric user to session", {
-        context: "create",
-        userId: req.user.id,
-        error: error,
-      });
-      res.sendStatus(500);
-      return;
-    }
-  }
 
   var group = models.Group.build({
     name: req.body.name,
@@ -3141,32 +2985,6 @@ const createGroup = async (req, res) => {
         "low"
       );
 
-      if (req.query.agentFabricGroupId) {
-        try {
-          const agentFabricGroup = await models.Group.findByPk(
-            req.query.agentFabricGroupId,
-            {
-              include: [
-                {
-                  model: models.Image,
-                  as: "GroupLogoImages",
-                },
-              ],
-            }
-          );
-          if (agentFabricGroup) {
-            await copyThemeAndLogoFromAgentFabricGroup(group, agentFabricGroup);
-          }
-        } catch (error) {
-          log.error("Error copying theme and logo from agent fabric group", {
-            context: "create",
-            newGroupId: group.id,
-            agentFabricGroupId: req.query.agentFabricGroupId,
-            error: error,
-          });
-        }
-      }
-
       group.updateAllExternalCounters(req, "up", "counter_groups", function () {
         models.Group.addUserToGroupIfNeeded(group.id, req, function () {
           group.addGroupAdmins(req.user).then(function (results) {
@@ -3189,44 +3007,7 @@ const createGroup = async (req, res) => {
                 },
                 "medium"
               );
-              if (group.configuration.groupType == 3) {
-                import("../agents/controllers/policySynthAgents.js").then(
-                  ({ PolicySynthAgentsController }) => {
-                    PolicySynthAgentsController.setupApiKeysForGroup(group)
-                      .then(() => {
-                        log.info("Policy Synth Agents Api Keys Created", {
-                          groupId: group.id,
-                          context: "create",
-                          userId: req.user.id,
-                        });
-                        sendGroupOrError(
-                          res,
-                          group,
-                          "createGroup",
-                          req.user,
-                          error
-                        );
-                      })
-                      .catch((error) => {
-                        sendGroupOrError(
-                          res,
-                          group,
-                          "createGroup",
-                          req.user,
-                          error
-                        );
-                        log.error("Policy Synth Agents Api Keys Not Created", {
-                          groupId: group.id,
-                          context: "create",
-                          userId: req.user.id,
-                          error: error,
-                        });
-                      });
-                  }
-                );
-              } else {
-                sendGroupOrError(res, group, "createGroup", req.user, error);
-              }
+              sendGroupOrError(res, group, "createGroup", req.user, error);
             });
           });
         });
@@ -3327,44 +3108,7 @@ router.put("/:id", auth.can("edit group"), function (req, res) {
                 },
                 "medium"
               );
-              if (group.configuration.groupType == 3) {
-                import("../agents/controllers/policySynthAgents.js").then(
-                  ({ PolicySynthAgentsController }) => {
-                    PolicySynthAgentsController.setupApiKeysForGroup(group)
-                      .then(() => {
-                        log.info("Policy Synth Agents Api Keys Created", {
-                          groupId: group.id,
-                          context: "create",
-                          userId: req.user.id,
-                        });
-                        sendGroupOrError(
-                          res,
-                          group,
-                          "setupImages",
-                          req.user,
-                          error
-                        );
-                      })
-                      .catch((error) => {
-                        sendGroupOrError(
-                          res,
-                          group,
-                          "createGroup",
-                          req.user,
-                          error
-                        );
-                        log.error("Policy Synth Agents Api Keys Not Created", {
-                          groupId: group.id,
-                          context: "create",
-                          userId: req.user.id,
-                          error: error,
-                        });
-                      });
-                  }
-                );
-              } else {
-                sendGroupOrError(res, group, "setupImages", req.user, error);
-              }
+              sendGroupOrError(res, group, "setupImages", req.user, error);
             });
           })
           .catch(function (error) {

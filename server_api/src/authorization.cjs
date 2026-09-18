@@ -113,13 +113,6 @@ auth.isAuthenticated = function (req, group) {
     } else {
       log.info("isAuthenticated: Is regular user");
     }
-  } else if (
-    false &&
-    process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY &&
-    req.headers["x-api-key"] === process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-  ) {
-    log.info("isAuthenticated: Is API key user");
-    return true;
   } else {
     log.info("isAuthenticated: No user");
   }
@@ -145,13 +138,7 @@ auth.isAuthenticatedNoAnonymousCheck = function (req) {
 };
 
 auth.authNeedsGroupForCreate = function (group, req, done) {
-  if (
-    process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY &&
-    req.headers["x-api-key"] === process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-  ) {
-    done(null, true);
-  } else {
-    models.Group.findOne({
+  models.Group.findOne({
       where: { id: group.id },
       attributes: ["id", "access", "user_id", "configuration"],
       include: [
@@ -181,7 +168,6 @@ auth.authNeedsGroupForCreate = function (group, req, done) {
         log.error("Error in authentication", { error });
         done(null, false);
       });
-  }
 };
 
 auth.hasCommunitySsnLoginListAccess = function (community, req, done) {
@@ -371,24 +357,8 @@ auth.isGroupMemberOrOpenToCommunityMember = function (group, req, done) {
       group.Community.access === models.Community.ACCESS_PUBLIC
     ) {
       done(null, true);
-    } else if (
-      !auth.isAuthenticated(req) &&
-      //TODO: Come up with a better way to handle this than a master API key
-      !process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-    ) {
+    } else if (!auth.isAuthenticated(req)) {
       done(null, false);
-    } else if (
-      !auth.isAuthenticated(req) &&
-      process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-    ) {
-      if (
-        req.headers["x-api-key"] ===
-        process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-      ) {
-        done(null, true);
-      } else {
-        done(null, false);
-      }
     } else {
       group
         .hasGroupUsers(req.user)
@@ -1139,14 +1109,7 @@ auth.role("post.vote", function (post, req, done) {
     .then(function (post) {
       log.info("In post.vote found post");
       if (post) {
-        if (
-          process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY &&
-          req.headers["x-api-key"] ===
-            process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-        ) {
-          done(null, true);
-        } else {
-          isAuthenticatedAndCorrectLoginProvider(
+        isAuthenticatedAndCorrectLoginProvider(
             req,
             post.Group,
             function (results) {
@@ -1167,7 +1130,6 @@ auth.role("post.vote", function (post, req, done) {
               }
             }
           );
-        }
       } else {
         done(null, false);
       }
@@ -1689,30 +1651,8 @@ auth.role("createCommunityGroup.createGroup", function (community, req, done) {
   })
     .then(function (community) {
       log.info(`community`, community);
-      log.info(
-        `XXX: ${auth.isAuthenticated(req)} ${
-          process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-        }`
-      );
-      if (
-        !auth.isAuthenticated(req) &&
-        //TODO: Come up with a better way to handle this than a master API key
-        !process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-      ) {
+      if (!auth.isAuthenticated(req)) {
         done(null, false);
-      } else if (
-        !auth.isAuthenticated(req) &&
-        process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-      ) {
-        log.info(`XXXY: ${req.headers["x-api-key"]}`);
-        if (
-          req.headers["x-api-key"] ===
-          process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-        ) {
-          done(null, true);
-        } else {
-          done(null, false);
-        }
       } else if (community.access === models.Community.ACCESS_PUBLIC) {
         done(null, true);
       } else if (community.user_id === req.user.id) {

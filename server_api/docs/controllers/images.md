@@ -549,7 +549,7 @@ No content (status 200).
 
 ## Middleware: isAuthenticated
 
-Custom authentication middleware that allows access if the user is authenticated via session or via a special API key for temporary agents.
+Custom authentication middleware that allows access if the user is authenticated via session.
 
 ### Parameters
 
@@ -561,7 +561,6 @@ Custom authentication middleware that allows access if the user is authenticated
 
 **Behavior:**
 - If `req.isAuthenticated()` is true, proceeds.
-- If `req.query.agentFabricUserId` and a valid `x-api-key` header are present, sets `req.user` and proceeds.
 - Otherwise, responds with 401 Unauthorized.
 
 ---

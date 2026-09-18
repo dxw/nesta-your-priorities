@@ -214,21 +214,21 @@ export class AcNotificationListGenaralItem extends YpBaseElement {
         this.notification.AcActivities[0].Group.name !=
           'hidden_public_group_for_domain_level_points'
       ) {
-        return YpNavHelpers.withForAgentBundle(
+        return (
           '/group/' +
             this.notification.AcActivities[0].Group.id +
             '/news/' +
             this.notification.AcActivities[0].id
         );
       } else if (this.notification.AcActivities[0].Community) {
-        return YpNavHelpers.withForAgentBundle(
+        return (
           '/community/' +
             this.notification.AcActivities[0].Community.id +
             '/news/' +
             this.notification.AcActivities[0].id
         );
       } else if (this.notification.AcActivities[0].Domain) {
-        return YpNavHelpers.withForAgentBundle(
+        return (
           '/domain/' +
             this.notification.AcActivities[0].Domain.id +
             '/news/' +
@@ -301,7 +301,7 @@ export class AcNotificationListGenaralItem extends YpBaseElement {
 
   get postUrl() {
     return this.post
-      ? YpNavHelpers.withForAgentBundle('/post/' + this.post.id + '/news')
+      ? '/post/' + this.post.id + '/news'
       : '#';
   }
 

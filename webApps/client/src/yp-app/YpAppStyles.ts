@@ -145,15 +145,11 @@ export const YpAppStyles = css`
     margin-top: 52px;
   }
 
-  .mainPage[agentBundle] {
-    margin-top: 0;
-  }
-
   .mainPage[isLandingPage] {
     margin-top: 0;
   }
 
-  .mainPage[expandedTopBar]:not([agentBundle]):not([isLandingPage]) {
+  .mainPage[expandedTopBar]:not([isLandingPage]) {
     margin-top: var(--top-app-bar-expanded-height);
   }
 

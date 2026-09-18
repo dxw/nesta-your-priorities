@@ -1479,7 +1479,6 @@
   "selectLargeAiModel": "大型AIモデルを選択",
   "aiModelAgentCreateInfo": "要求されたAIモデルを選択",
   "hideAppBarIfWelcomeHtml": "Welcome HTMLの場合はアプリバーを非表示",
-  "policySynthAgentsWorkflow": "エージェントワークフロー",
   "generateWithAi": "AIで生成",
   "hidePointFor": "ボックスに対するポイントを非表示",
   "newOrganization": "新しい組織",

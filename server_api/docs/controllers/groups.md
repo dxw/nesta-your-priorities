@@ -594,31 +594,6 @@ Fetches a group folder and its groups, with caching.
 
 ---
 
-### Function: `addAgentFabricUserToSessionIfNeeded`
-
-Adds an agent fabric user to the session if required by API key.
-
-#### Parameters
-
-| Name | Type     | Description                |
-|------|----------|----------------------------|
-| req  | Request  | Express request object     |
-
----
-
-### Function: `copyThemeAndLogoFromAgentFabricGroup`
-
-Copies theme and logo images from another group.
-
-#### Parameters
-
-| Name           | Type   | Description                |
-|----------------|--------|----------------------------|
-| newGroup       | any    | New group instance         |
-| agentFabricGroup| any   | Source group instance      |
-
----
-
 ### Function: `createGroup`
 
 Creates a new group, including configuration and image setup.

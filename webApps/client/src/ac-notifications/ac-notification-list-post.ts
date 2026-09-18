@@ -294,7 +294,7 @@ export class AcNotificationListPost extends YpBaseElement {
 
   get postUrl() {
     return this.post
-      ? YpNavHelpers.withForAgentBundle(`/post/${this.post.id}`)
+      ? `/post/${this.post.id}`
       : "#";
   }
 

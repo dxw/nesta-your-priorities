@@ -132,7 +132,7 @@ Sets up core Express middlewares: logging, user agent parsing, IP detection, bod
 
 ### `async initializeEsControllers(): Promise<void>`
 
-Dynamically imports and initializes ES module controllers (e.g., AllOurIdeas, PolicySynthAgents, Assistant), and sets up error handling.
+Dynamically imports and initializes ES module controllers such as AllOurIdeas, and sets up error handling.
 
 ---
 
@@ -362,4 +362,3 @@ api.listen();
 - [Passport.js Documentation](http://www.passportjs.org/)
 - [Redis Client for Node.js](https://github.com/redis/node-redis)
 - [Airbrake Node Notifier](https://github.com/airbrake/node-airbrake)
-- [Policy Synth Agents](https://github.com/CitizensFoundation/policy-synth/tree/main/agents)

@@ -309,4 +309,3 @@ This module exports the Express router with all rating-related endpoints.
 - [utils/logger.cjs](../utils/logger.cjs.md)
 - [utils/to_json.cjs](../utils/to_json.cjs.md)
 - [services/workers/queue.cjs](../services/workers/queue.cjs.md)
-- [Policy Synth PsAgent](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agent.ts)

@@ -45,7 +45,6 @@ Returned if there is an error processing the index file.
 ### [GET] /domain{/*splat}
 ### [GET] /organization{/*splat}
 ### [GET] /community{/*splat}
-### [GET] /agent_bundle{/*splat}
 ### [GET] /group{/*splat}
 ### [GET] /post{/*splat}
 ### [GET] /user{/*splat}

@@ -31,7 +31,7 @@ A comprehensive admin configuration web component for managing group settings in
 | questionNameHasChanged             | boolean                                     | Tracks if the AOI question name has changed.                                                 |
 | registrationQuestionsJsonError     | boolean                                     | Error state for registration questions JSON.                                                 |
 | groupTypeOptions                   | string[]                                    | List of group type option tokens.                                                            |
-| static GroupType                   | { ideaGeneration: 0, allOurIdeas: 1, htmlContent: 2, policySynthAgentsWorkflow: 3 } | Enum for group type indices.                                                                 |
+| static GroupType                   | { ideaGeneration: 0, allOurIdeas: 1, htmlContent: 2 } | Enum for group type indices.                                                                 |
 | groupAccessOptions                 | Record<number, YpGroupAccessTypes>          | Mapping of access option indices to access type strings.                                     |
 
 ## Methods
@@ -131,6 +131,6 @@ groupConfig.addEventListener("save", (e) => {
 
 ---
 
-**Note:**  
+**Note:**
 - This component is intended for admin use and expects a rich set of data objects (`YpGroupData`, `YpConfigTabData`, etc.) and integration with a larger application context (e.g., `window.appGlobals`, `window.serverApi`).
 - Many methods interact with external APIs, dialogs, and global helpers, and require the full application environment to function as intended.

@@ -17,15 +17,6 @@ var isAuthenticated = function (req, res, next) {
     return next();
   }
 
-  if (
-    req.query.agentFabricUserId &&
-    process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY &&
-    req.headers["x-api-key"] === process.env.PS_TEMP_AGENTS_FABRIC_GROUP_API_KEY
-  ) {
-    req.user = { id: Number(req.query.agentFabricUserId) };
-    return next();
-  }
-
   res.status(401).send("Unauthorized");
 };
 

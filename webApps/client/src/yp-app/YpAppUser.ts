@@ -144,7 +144,7 @@ export class YpAppUser extends YpCodeBase {
       return this.fallbackBrowserId;
     }
   }
-  
+
   async getBrowserFingerprintData(prefix: string) {
     return {
       [`${prefix}BaseId`]: "",
@@ -859,7 +859,6 @@ export class YpAppUser extends YpCodeBase {
     this.hasIssuedLogout = true;
     (await this.serverApi.logout()) as void;
     this.removeUserSession();
-    const isInAgentBundlePage = window.location.pathname.includes("/agent-bundle/");
     const moveUserToHomePageLocation = true;
     if (moveUserToHomePageLocation) {
       window.location.reload();

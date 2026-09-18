@@ -3,39 +3,11 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import { Sequelize, DataTypes, Op, ModelCtor } from "sequelize";
-import { sequelize as psSequelize } from "@policysynth/agents/dbModels/index.js";
+import { Sequelize, DataTypes, Op } from "sequelize";
 import log from "./loggerTs.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// PolicySynth Models
-import { PsAiModel } from "@policysynth/agents/dbModels/aiModel.js";
-import { PsAgentClass } from "@policysynth/agents/dbModels/agentClass.js";
-import { PsExternalApiUsage } from "@policysynth/agents/dbModels/externalApiUsage.js";
-import { PsExternalApi } from "@policysynth/agents/dbModels/externalApis.js";
-import { PsModelUsage } from "@policysynth/agents/dbModels/modelUsage.js";
-import { PsAgent } from "@policysynth/agents/dbModels/agent.js";
-import { PsAgentAuditLog } from "@policysynth/agents/dbModels/agentAuditLog.js";
-import { PsAgentConnector } from "@policysynth/agents/dbModels/agentConnector.js";
-import { PsAgentConnectorClass } from "@policysynth/agents/dbModels/agentConnectorClass.js";
-import { PsAgentRegistry } from "@policysynth/agents/dbModels/agentRegistry.js";
-
-const psModels: {
-  [key: string]: ModelCtor<any> & { associate?: (models: any) => void };
-} = {
-  PsAgentClass,
-  PsExternalApiUsage,
-  PsModelUsage,
-  PsAgentConnector,
-  PsAgent,
-  PsAgentAuditLog,
-  PsAgentConnectorClass,
-  PsAgentRegistry,
-  PsAiModel,
-  PsExternalApi,
-};
 
 const env = process.env.NODE_ENV || "development";
 let mainSequelize: Sequelize;
@@ -297,30 +269,6 @@ async function syncMainDatabase() {
   log.info("Main database synchronization finished.");
 }
 
-async function syncPolicySynthDatabase() {
-  log.info("Starting PolicySynth database synchronization...");
-  try {
-    // This script is intended for creating a new database, so always force sync.
-    await psSequelize.sync({ force: false });
-    log.info(
-      "PolicySynth database schema forcefully synchronized (tables dropped and recreated)."
-    );
-
-    log.info("Associating PolicySynth models...");
-    for (const modelName of Object.keys(psModels)) {
-      const model = psModels[modelName];
-      if (model && typeof model.associate === "function") {
-        model.associate(psSequelize.models);
-      }
-    }
-    log.info("PolicySynth models associated successfully.");
-  } catch (error) {
-    log.error("Error during PolicySynth database synchronization:", error);
-    process.exit(1);
-  }
-  log.info("PolicySynth database synchronization finished.");
-}
-
 async function seedAllModels() {
   log.info("--- Starting Database Seeding and Synchronization ---");
   log.info(
@@ -370,9 +318,7 @@ async function seedAllModels() {
 
   try {
     await syncMainDatabase();
-    await syncPolicySynthDatabase();
-
-    log.info("--- Databases Synchronized ---");
+    log.info("--- Database Synchronized ---");
     log.info("--- Creating User and Domain ---");
 
     if (!mainDb.User) {
@@ -468,7 +414,6 @@ async function seedAllModels() {
   } finally {
     log.info("Closing database connections...");
     await mainSequelize.close();
-    await psSequelize.close();
     log.info("Database connections closed.");
   }
 }

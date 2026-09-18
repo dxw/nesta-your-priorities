@@ -56,10 +56,26 @@ interface YpAssistantMessage {
   uniqueToken?: string;
   url?: string;
   avatarUrl?: string;
-  updatedWorkflow?: {
-    workflow: YpAgentRunWorkflowConfiguration;
-    status: YpAgentProductStatus;
-  };
+}
+
+interface YpBaseChatBotMemoryData {
+  chatLog?: YpSimpleChatLog[];
+}
+
+interface YpAgentStartWsOptions {
+  name: string;
+  noStreaming: boolean;
+}
+
+interface YpValidationAgentResult {
+  isValid: boolean;
+  validationErrors?: string;
+  lastAgent: boolean;
+}
+
+interface YpAgentCompletedWsOptions {
+  name: string;
+  results: YpValidationAgentResult;
 }
 
 interface YpAssistantClientSystemMessage extends YpAssistantMessage {

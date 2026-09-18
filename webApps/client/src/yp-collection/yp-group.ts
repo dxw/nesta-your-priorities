@@ -81,9 +81,6 @@ export class YpGroup extends YpCollection {
   isImportingCode = false;
 
   @state()
-  haveLoadedAgentsOps = false;
-
-  @state()
   haveLoadedAllOurIdeas = false;
 
   @state()
@@ -391,13 +388,6 @@ export class YpGroup extends YpCollection {
           this.collectionItems = groupFolder.group.Groups;
         }
         if (
-          !this.haveLoadedAgentsOps &&
-          this.collection.configuration &&
-          this.collection.configuration.groupType == YpGroupType.PsAgentWorkflow
-        ) {
-          await import("../policySynth/ps-operations-manager.js");
-          this.haveLoadedAgentsOps = true;
-        } else if (
           !this.haveLoadedAllOurIdeas &&
           this.collection.configuration &&
           this.collection.configuration.groupType == YpGroupType.AllOurIdeas
@@ -1084,14 +1074,6 @@ export class YpGroup extends YpCollection {
             </div>
           `
         : nothing}
-      <div
-        class="xlsDownloadContainer"
-        ?hidden="${!YpAccessHelpers.checkGroupAccess(
-          this.collection as YpGroupData
-        ) || !window.location.href.includes("agentBundle")}"
-      >
-        ${this.renderXlsDownload()}
-      </div>
       <div class="layout vertical center-center">
         ${showCategoryPortal
           ? html`
@@ -1300,15 +1282,6 @@ export class YpGroup extends YpCollection {
     ];
   }
 
-  renderAgentsOps() {
-    return html`<ps-operations-manager
-      class="agentManager"
-      .minimizeWorkflow="${this.minimizeWorkflow}"
-      .groupId="${this.collection!.id}"
-      .group="${this.collection as YpGroupData}"
-    ></ps-operations-manager>`;
-  }
-
   renderGroupFolder() {
     if (this.collectionItems) {
       return html`<div class="currentPage layout vertical center-center">
@@ -1387,16 +1360,13 @@ export class YpGroup extends YpCollection {
       case YpGroupType.StaticHtml:
         return this.renderStaticHtml();
 
-      case YpGroupType.PsAgentWorkflow:
-        return this.haveLoadedAgentsOps ? this.renderAgentsOps() : html``;
-
       default:
         return html``;
     }
   }
 
   get hideBigHeaders() {
-    return window.appGlobals.originalQueryParameters.forAgentBundle;
+    return false;
   }
 
   renderYpGroup() {

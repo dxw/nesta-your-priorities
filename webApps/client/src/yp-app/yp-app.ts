@@ -51,7 +51,6 @@ import "../yp-collection/yp-group.js";
 import "../yp-landing-page/yp-landing-page.js";
 
 import "./yp-app-nav-drawer.js";
-import "./yp-agent-bundle-top-bar.js";
 
 import { YpDomain } from "../yp-collection/yp-domain.js";
 import { YpCommunity } from "../yp-collection/yp-community.js";
@@ -66,24 +65,16 @@ import { YpServerApiAdmin } from "../common/YpServerApiAdmin.js";
 import { MdDialog } from "@material/web/dialog/dialog.js";
 import { YpDrawer } from "./yp-drawer.js";
 import { YpSnackbar } from "./yp-snackbar.js";
-import { PsAppGlobals } from "../policySynth/PsAppGlobals.js";
-import { PsServerApi } from "../policySynth/PsServerApi.js";
 import {
   YpTopAppBar,
   YP_TOP_APP_BAR_TITLE_EXPAND_THRESHOLD,
 } from "./yp-top-app-bar.js";
 import { YpTopAppBarTokens } from "./YpTopAppBarTokens.js";
-import { YpGroupType } from "../yp-collection/ypGroupType.js";
 import { YpUserEdit } from "../yp-user/yp-user-edit.js";
-
-import "../yp-assistants/yp-agent-bundle.js";
-import { YpAssistant } from "../yp-assistants/yp-assistant.js";
 
 declare global {
   interface Window {
     appGlobals: YpAppGlobals;
-    psAppGlobals: PsAppGlobals;
-    psServerApi: PsServerApi;
     appUser: YpAppUser;
     appDialogs: YpAppDialogs;
     serverApi: YpServerApi;
@@ -629,11 +620,7 @@ export class YpApp extends YpBaseElement {
   }
 
   get isFullScreenMode() {
-    return (
-      this.page == "group" &&
-      window.appGlobals.currentGroup?.configuration.groupType ==
-        YpGroupType.PsAgentWorkflow
-    );
+    return false;
   }
 
   renderNavigationIcon() {
@@ -644,7 +631,6 @@ export class YpApp extends YpBaseElement {
         window.appGlobals.myDomains.length < 2}"
         slot="actionItems"
         ?hidden="${!this.user ||
-        this.page === "agent_bundle" ||
         this.user.profile_data?.isAnonymousUser}"
         class="topActionItem"
         @click="${this._openNavDrawer}"
@@ -853,8 +839,7 @@ export class YpApp extends YpBaseElement {
         ? html`
             <md-text-button
               slot="actionItems"
-              ?hidden="${this.isOnDomainLoginPageAndNotLoggedIn ||
-              this.isOnAgentBundleLoginPageAndNotLoggedIn}"
+              ?hidden="${this.isOnDomainLoginPageAndNotLoggedIn}"
               class="topActionItem userImageNotificationContainer"
               @click="${this._login}"
               >${this.t("user.login")}
@@ -897,24 +882,10 @@ export class YpApp extends YpBaseElement {
       titleString = "";
     }
 
-    if (
-      this.page === "agent_bundle" ||
-      window.appGlobals.originalQueryParameters.forAgentBundle
-    ) {
-      return html` <yp-agent-bundle-top-bar
-        .numberOfUnViewedNotifications="${this.numberOfUnViewedNotifications}"
-        .hasStaticBadgeTheme="${this.hasStaticBadgeTheme}"
-        .page="${this.page}"
-        @open-notification-drawer="${this._openNotificationDrawer}"
-        @open-user-drawer="${this._openUserDrawer}"
-      ></yp-agent-bundle-top-bar>`;
-    } else {
-      return html` <yp-top-app-bar
+    return html` <yp-top-app-bar
         role="navigation"
-        .useLowestContainerColor="${this.page === "agent_bundle"}"
         .restrictWidth="${!this.isFullScreenMode}"
         .titleString="${this.currentTitle || titleString}"
-        ?hideTitle="${this.page === "agent_bundle"}"
         aria-label="top navigation"
         ?fixed="${true ||
         window.appGlobals.domain?.configuration.useFixedTopAppBar}"
@@ -926,10 +897,9 @@ export class YpApp extends YpBaseElement {
         window.appGlobals.domain?.configuration.hideAppBarIfWelcomeHtml}"
       >
         <div slot="navigation">${this.renderNavigation()}</div>
-        <div slot="title" ?hidden="${this.page === "agent_bundle"}"></div>
+        <div slot="title"></div>
         <div slot="action">${this.renderActionItems()}</div>
       </yp-top-app-bar>`;
-    }
   }
 
   renderMainApp() {
@@ -938,8 +908,6 @@ export class YpApp extends YpBaseElement {
       <main
         id="mainContent"
         class="mainPage"
-        ?agentBundle="${this.page === "agent_bundle" ||
-        window.appGlobals.originalQueryParameters.forAgentBundle}"
         ?isLandingPage="${!this.page}"
         ?expandedTopBar="${this.isTopBarExpanded}"
         ?hidden="${this.appMode !== "main"}"
@@ -974,14 +942,6 @@ export class YpApp extends YpBaseElement {
         case "organization":
           pageHtml = cache(html`
             <yp-domain id="domainPage" .subRoute="${this.subRoute}"></yp-domain>
-          `);
-          break;
-        case "agent_bundle":
-          pageHtml = cache(html`
-            <yp-agent-bundle
-              id="agentBundlePage"
-              .subRoute="${this.subRoute}"
-            ></yp-agent-bundle>
           `);
           break;
         case "community":
@@ -1705,13 +1665,7 @@ export class YpApp extends YpBaseElement {
       }
     }
 
-    if (this.page === "assistant") {
-      (this.$$("#assistant") as YpAssistant).scrollDown();
-      document.body.style.backgroundColor =
-        "var(--md-sys-color-surface-container-lowest)";
-    } else {
-      document.body.style.backgroundColor = "var(--md-sys-color-surface)";
-    }
+    document.body.style.backgroundColor = "var(--md-sys-color-surface)";
   }
 
   loadDataViz() {
@@ -2022,15 +1976,6 @@ export class YpApp extends YpBaseElement {
       window.appGlobals.domain &&
       window.appGlobals.domain.configuration?.useLoginOnDomainIfNotLoggedIn &&
       this.page === "domain" &&
-      !this.user
-    );
-  }
-
-  get isOnAgentBundleLoginPageAndNotLoggedIn() {
-    return (
-      window.appGlobals.domain &&
-      window.appGlobals.domain.configuration?.useLoginOnDomainIfNotLoggedIn &&
-      this.page === "agent_bundle" &&
       !this.user
     );
   }

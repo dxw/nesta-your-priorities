@@ -415,5 +415,3 @@ This module is intended to be run as a script (e.g., via a cron job) to process 
 ---
 
 ## See Also
-
-- [PsAgent](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agent.ts) (for reference to agent models in Policy Synth, if relevant)

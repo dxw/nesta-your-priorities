@@ -74,9 +74,7 @@ export class YpAdminCommunities extends YpBaseElementWithLogin {
     const communityImage = YpMediaHelpers.getImageFormatUrl(
       community.CommunityLogoImages
     );
-    const communityUrl = YpNavHelpers.withForAgentBundle(
-      `/community/${community.id}`
-    );
+    const communityUrl = `/community/${community.id}`;
     return html`
       <a
         class="layout horizontal communityItem"

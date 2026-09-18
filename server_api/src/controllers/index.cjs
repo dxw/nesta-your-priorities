@@ -539,10 +539,6 @@ router.get("/community{/*splat}", function (req, res) {
   sendIndex(req, res);
 });
 
-router.get("/agent_bundle{/*splat}", function (req, res) {
-  sendIndex(req, res);
-});
-
 router.get("/group{/*splat}", function (req, res) {
   sendIndex(req, res);
 });

@@ -36,7 +36,7 @@ export class YpBaseChatBot {
   }
 
   loadMemory() {
-    return new Promise<PsAgentBaseMemoryData | undefined>(async (resolve, reject) => {
+    return new Promise<YpBaseChatBotMemoryData | undefined>(async (resolve, reject) => {
       try {
         log.info("loadMemoryWithOwnership loadMemory: redisKey: ", this.redisKey);
         const memoryString = await this.redis.get(this.redisKey);
@@ -107,7 +107,7 @@ export class YpBaseChatBot {
       data: {
         name: name,
         noStreaming: hasNoStreaming,
-      } as PsAgentStartWsOptions,
+      } as YpAgentStartWsOptions,
     } as YpAssistantMessage;
     this.wsClientSocket.send(JSON.stringify(botMessage));
   }
@@ -126,8 +126,8 @@ export class YpBaseChatBot {
           isValid: true,
           validationErrors: error,
           lastAgent: lastAgent,
-        } as PsValidationAgentResult,
-      } as PsAgentCompletedWsOptions,
+        } as YpValidationAgentResult,
+      } as YpAgentCompletedWsOptions,
     } as YpAssistantMessage;
 
     this.wsClientSocket.send(JSON.stringify(botMessage));

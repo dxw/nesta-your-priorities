@@ -2,11 +2,10 @@
 
 This file is a comprehensive database seeding and synchronization script for a Node.js/TypeScript project using Sequelize ORM. It is designed to:
 
-- Forcefully synchronize (drop and recreate) the main and PolicySynth databases.
+- Forcefully synchronize (drop and recreate) the main database.
 - Dynamically load and associate all Sequelize models.
 - Create compound indexes for performance.
 - Seed the database with an initial user and domain, using credentials provided via command-line arguments.
-- Integrate with PolicySynth models (see [PsAgent](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agent.ts) and related models).
 
 > **Note:** This script is intended for development and initial setup. It is destructive (drops all tables) and should not be run in a production environment unless you intend to reset the database.
 
@@ -40,7 +39,7 @@ This file is a comprehensive database seeding and synchronization script for a N
 
 ### seedAllModels
 
-Seeds and synchronizes the main and PolicySynth databases, creates a user and domain, and sets up indexes.
+Seeds and synchronizes the main database, creates a user and domain, and sets up indexes.
 
 #### Parameters
 
@@ -52,7 +51,7 @@ _None (reads from environment and process.argv)_
 
 #### Description
 
-- Synchronizes (drops and recreates) all tables in the main and PolicySynth databases.
+- Synchronizes (drops and recreates) all tables in the main database.
 - Loads all models from `../models` and `../services/models`.
 - Associates models and creates compound indexes.
 - Creates a user and a domain, associating the user as both a user and admin of the domain.
@@ -90,33 +89,6 @@ Synchronizes the main database schema, loads models, associates them, and create
 #### Returns
 
 - `Promise<void>`
-
----
-
-### syncPolicySynthDatabase
-
-Synchronizes the PolicySynth database schema and associates its models.
-
-#### Returns
-
-- `Promise<void>`
-
----
-
-## Main Models and PolicySynth Models
-
-The script loads and associates the following PolicySynth models:
-
-- [PsAgent](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agent.ts)
-- [PsAiModel](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/aiModel.ts)
-- [PsAgentClass](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agentClass.ts)
-- [PsExternalApiUsage](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/externalApiUsage.ts)
-- [PsExternalApi](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/externalApis.ts)
-- [PsModelUsage](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/modelUsage.ts)
-- [PsAgentAuditLog](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agentAuditLog.ts)
-- [PsAgentConnector](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agentConnector.ts)
-- [PsAgentConnectorClass](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agentConnectorClass.ts)
-- [PsAgentRegistry](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agentRegistry.ts)
 
 ---
 
@@ -163,14 +135,13 @@ node seedModelsScript.js admin@example.com supersecret
 ## Notes
 
 - The script expects all models to be defined as default exports in `.cjs` files in the `../models` and `../services/models` directories.
-- The script is destructive: it will drop and recreate all tables in the main and PolicySynth databases.
+- The script is destructive: it will drop and recreate all tables in the main database.
 - The script is intended for initial setup, development, or testing environments.
 
 ---
 
 ## See Also
 
-- [PsAgent](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agent.ts)
 - [Sequelize Documentation](https://sequelize.org/master/)
 - [bcrypt Documentation](https://www.npmjs.com/package/bcrypt)
 - [crypto Documentation](https://nodejs.org/api/crypto.html)

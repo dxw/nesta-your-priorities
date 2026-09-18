@@ -1,6 +1,6 @@
 # Utility Module: exportUtils
 
-This module provides a comprehensive set of utility functions for exporting group, post, and user data, as well as handling file uploads to AWS S3, image downloads, translation utilities, and data formatting for CSV exports. It is designed for use in background jobs and export endpoints in a Node.js/Express.js application, particularly for the Policy Synth platform.
+This module provides a comprehensive set of utility functions for exporting group, post, and user data, as well as handling file uploads to AWS S3, image downloads, translation utilities, and data formatting for CSV exports.
 
 ---
 
@@ -519,7 +519,7 @@ These are not exported but are used internally:
 
 ## Configuration
 
-- **skipEmail:** `boolean`  
+- **skipEmail:** `boolean`
   If true, user emails are hidden in exports.
 
 ---
@@ -566,7 +566,7 @@ exportUtils.uploadToS3(jobId, userId, 'export.csv', 'reports', csvData, (err, ur
 
 ---
 
-**Note:**  
+**Note:**
 This module is designed for internal use in background jobs and export endpoints. It assumes the presence of a configured Sequelize ORM and AWS credentials in environment variables. For translation and structured question support, the group configuration must be properly set.
 
 ---

@@ -377,7 +377,6 @@ interface YpGroupConfiguration extends YpCollectionConfiguration {
     media: Array<YpSimpleGroupMediaData>;
   };
   useNewVersion?: boolean;
-  agents?: YpPsAgentConfiguration;
   useAsTemplate?: boolean;
 }
 
@@ -386,12 +385,6 @@ interface YpGroupPrivateAccessConfiguration {
   externalApiId?: number;
   projectId?: string;
   apiKey: string;
-}
-
-interface YpPsAgentConfiguration {
-  topLevelAgentId?: number;
-  inputConnectorForAgentId?: number;
-  outputConnectorForAgentId?: number;
 }
 
 interface YpSimpleGroupMediaData {

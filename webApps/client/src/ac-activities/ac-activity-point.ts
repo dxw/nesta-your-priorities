@@ -155,9 +155,7 @@ export class AcActivityPoint extends YpBaseElementWithLogin {
 
   get pointUrl() {
     return this.activity?.Post && this.activity?.Point
-      ? YpNavHelpers.withForAgentBundle(
-          `/post/${this.activity.Post.id}/${this.activity.Point.id}`
-        )
+      ? `/post/${this.activity.Post.id}/${this.activity.Point.id}`
       : "#";
   }
 

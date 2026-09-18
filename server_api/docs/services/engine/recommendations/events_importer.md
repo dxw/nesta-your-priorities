@@ -166,5 +166,3 @@ It will process all relevant actions and import them into the event system, prin
 ---
 
 ## See Also
-
-- [PsAgent](https://github.com/CitizensFoundation/policy-synth/blob/main/agents/src/dbModels/agent.ts) (for event-driven agent models in Policy Synth)

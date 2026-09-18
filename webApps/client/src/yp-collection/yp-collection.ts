@@ -18,7 +18,6 @@ import { YpServerApi } from "../common/YpServerApi.js";
 
 import "../ac-activities/ac-activities.js";
 import "../yp-post/yp-post-map.js";
-import "../yp-assistants/yp-assistant.js";
 
 import { AcActivities } from "../ac-activities/ac-activities.js";
 import { MdTabs } from "@material/web/tabs/tabs.js";
@@ -29,7 +28,6 @@ export const CollectionTabTypes: Record<string, number> = {
   Collection: 0,
   Newsfeed: 1,
   Map: 2,
-  Assistant: 3,
 };
 
 export abstract class YpCollection extends YpBaseElementWithLogin {
@@ -304,9 +302,6 @@ export abstract class YpCollection extends YpBaseElementWithLogin {
       case "map":
         tabNumber = CollectionTabTypes.Map;
         break;
-      case "assistant":
-        tabNumber = CollectionTabTypes.Assistant;
-        break;
       default:
         tabNumber = CollectionTabTypes.Collection;
         break;
@@ -553,16 +548,6 @@ export abstract class YpCollection extends YpBaseElementWithLogin {
       : nothing;
   }
 
-  renderAssistantTab() {
-    return html`<md-secondary-tab
-      hidden
-      ?has-static-theme="${this.hasStaticTheme}"
-      >${this.t("assistant")}<md-icon slot="icon"
-        >assistant</md-icon
-      ></md-secondary-tab
-    >`;
-  }
-
   renderNewsAndMapTabs() {
     return html`
       <md-secondary-tab
@@ -591,7 +576,6 @@ export abstract class YpCollection extends YpBaseElementWithLogin {
             @change="${this._selectTab}"
             .activeTabIndex="${this.selectedTab}"
           >
-            ${/*this.renderAssistantTab()*/ nothing}
             <md-secondary-tab
               ?has-static-theme="${this.hasStaticTheme}"
               ?hidden="${this.hideCollection}"
@@ -641,12 +625,6 @@ export abstract class YpCollection extends YpBaseElementWithLogin {
           .collectionType="${this.collectionType}"
           .collectionId="${this.collectionId!}"
         ></yp-post-map>`;
-        break;
-      case CollectionTabTypes.Assistant:
-        page = html`<yp-assistant
-          id="assistant"
-          .domainId="${this.collectionId!}"
-        ></yp-assistant>`;
         break;
     }
 

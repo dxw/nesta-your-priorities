@@ -1481,7 +1481,6 @@
   "selectLargeAiModel": "Select Large AI model",
   "aiModelAgentCreateInfo": "Choose requested AI models",
   "hideAppBarIfWelcomeHtml": "Hide app bar if Welcome HTML",
-  "policySynthAgentsWorkflow": "Agents Workflow",
   "generateWithAi": "Generate with AI",
   "hidePointFor": "Hide point against box"
 }

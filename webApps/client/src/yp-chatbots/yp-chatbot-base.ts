@@ -183,7 +183,7 @@ export abstract class YpChatbotBase extends YpStreamingLlmScrolling {
         if (this.lastChatUiElement) {
           this.lastChatUiElement.spinnerActive = false;
         }
-        const startOptions = wsMessage.data as PsAgentStartWsOptions;
+        const startOptions = wsMessage.data as YpAgentStartWsOptions;
 
         setTimeout(() => {
           this.scrollDown();
@@ -212,7 +212,7 @@ export abstract class YpChatbotBase extends YpStreamingLlmScrolling {
         break;
       case 'agentCompleted':
         console.log('agentCompleted...');
-        const completedOptions = wsMessage.data as PsAgentCompletedWsOptions;
+        const completedOptions = wsMessage.data as YpAgentCompletedWsOptions;
 
         if (this.lastChatUiElement) {
           this.lastChatUiElement.spinnerActive = false;

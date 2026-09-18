@@ -669,31 +669,6 @@ export class YourPrioritiesApi {
     log.info(`Controller path: ${aoiController.path} ${aoiController.router}`);
     this.app.use(aoiController.path, aoiController.router);
 
-    const { PolicySynthAgentsController } = await import(
-      "./agents/controllers/policySynthAgents.js"
-    );
-
-    const policySynthAgentsController = new PolicySynthAgentsController(
-      this.wsClients
-    );
-
-    this.app.use(
-      policySynthAgentsController.path,
-      policySynthAgentsController.router
-    );
-
-    const { AssistantController } = await import(
-      "./agents/controllers/assistantsController.js"
-    );
-    const assistantController = new AssistantController(this.wsClients);
-    this.app.use(assistantController.path, assistantController.router);
-
-    const { AgentTaskController } = await import(
-      "./agents/controllers/agentTaskController.js"
-    );
-    const agentTaskController = new AgentTaskController(this.wsClients);
-    this.app.use(agentTaskController.path, agentTaskController.router);
-
     // Setup those here so they wont override the ES controllers
     this.setupErrorHandler();
   }
@@ -819,7 +794,6 @@ export class YourPrioritiesApi {
     this.app.use("/domain", index);
     this.app.use("/community", index);
     this.app.use("/organization", index);
-    this.app.use("/agent_bundle/*splat", index);
     this.app.use("/group", index);
     this.app.use("/post", index);
     this.app.use("/user", index);

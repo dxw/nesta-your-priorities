@@ -902,18 +902,6 @@ Change a post's endorsement counter (up or down).
 
 ---
 
-## addAgentFabricUserToSessionIfNeeded
-
-Adds an agent fabric user to the session if needed, based on API key and query params.
-
-### Parameters
-
-| Name | Type     | Description                |
-|------|----------|----------------------------|
-| req  | Request  | Express request object     |
-
----
-
 ## decrementOldCountersIfNeeded
 
 Decrements old endorsement counters if the endorsement value has changed.
