@@ -143,6 +143,15 @@
     "@policysynth/agents": {
       "puppeteer": "25.9.0",
       "puppeteer-core": "25.9.0"
+    },
+    "sequelize": {
+      "uuid": "11.1.1"
+    },
+    "weaviate-ts-client": {
+      "uuid": "11.1.1"
+    },
+    "koa-proxies": {
+      "uuid": "^11.1.1"
     }
   },
   "customElements": "custom-elements.json"
