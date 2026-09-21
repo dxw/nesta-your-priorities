@@ -139,7 +139,20 @@
     "checksize": "rollup -c ; cat my-element.bundled.js | gzip -9 | wc -c ; rm my-element.bundled.js"
   },
   "overrides": {
-    "protobufjs": "^7.6.6"
+    "protobufjs": "^7.6.6",
+    "@policysynth/agents": {
+      "puppeteer": "25.9.0",
+      "puppeteer-core": "25.9.0"
+    },
+    "sequelize": {
+      "uuid": "11.1.1"
+    },
+    "weaviate-ts-client": {
+      "uuid": "11.1.1"
+    },
+    "koa-proxies": {
+      "uuid": "^11.1.1"
+    }
   },
   "customElements": "custom-elements.json"
 }
