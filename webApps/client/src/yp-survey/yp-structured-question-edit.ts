@@ -325,6 +325,11 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
             font-size: 24px;
           }
         }
+        
+        .required:after {
+            content: ' *';
+            color: var(--md-sys-color-error);
+        }
       `,
     ];
   }
@@ -358,7 +363,8 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
     return html`
       ${!skipLabel
         ? html`
-            <label class="fieldLabel" for="structuredQuestion_${this.index}">
+            <label class="fieldLabel ${this.question.required ? 'required' : ''}"
+             for="structuredQuestion_${this.index}">
               ${unsafeHTML(this.textWithIndex)}
             </label>
           `
@@ -435,7 +441,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
         ${!skipLabel
           ? html`
               <label
-                class="fieldLabel"
+                class="fieldLabel ${this.question.required ? 'required' : ''}"
                 for="structuredQuestion_${this.index}"
               >
                 ${unsafeHTML(this.textWithIndex)}
@@ -543,7 +549,7 @@ export class YpStructuredQuestionEdit extends YpBaseElement {
     return this.question.radioButtons
       ? html`
           <div
-            class="question general radiosLabel"
+            class="question general radiosLabel ${this.question.required ? 'required' : ''}"
             ?use-small-font="${this.useSmallFont}"
             ?is-from-new-post="${this.isFromNewPost}"
             ?is-first-rating="${this.isFirstRating}"
