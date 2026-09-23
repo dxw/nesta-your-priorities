@@ -21,7 +21,7 @@ import {
   ABOUT_US_CONTENT,
   FAQS_CONTENT,
   FAQ_ANSWER_PENDING_LABEL,
-  FOOTER_CONTENT,
+  FOOTER_CONTENT, CONSENT_BUTTON_LABEL, CONSENT_TEXT,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -29,7 +29,7 @@ import "@material/web/button/text-button.js";
 @customElement("yp-landing-page")
 export class YpLandingPage extends YpBaseElement {
   @state()
-  private videoPlaying = false;
+  private consented = false;
 
   @state()
   private carouselThumbWidthPercent = 100;
@@ -75,7 +75,7 @@ export class YpLandingPage extends YpBaseElement {
         /* Sits inside a white .yp-hard-shadow-box card that already has black border, 
          * so accent colour is needed to differentiate
          */
-        .shareIdeaButton:focus-visible {
+        .button:focus-visible {
           box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #c124bc;
         }
 
@@ -100,7 +100,7 @@ export class YpLandingPage extends YpBaseElement {
         .logoPlaceholder,
         .intro h1,
         h2,
-        .shareIdeaButton,
+        .button,
         .howItWorksCard h3,
         .criteriaBox h3,
         .carouselCardBody h3 {
@@ -260,7 +260,7 @@ export class YpLandingPage extends YpBaseElement {
           color: var(--yp-landing-heading-text-color, #191923);
         }
 
-        .shareIdeaButton {
+        .button {
           background: var(--yp-landing-surface-color, #ffffff);
           color: var(--yp-landing-heading-text-color, #191923);
           padding: 12px 28px;
@@ -274,12 +274,12 @@ export class YpLandingPage extends YpBaseElement {
           transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
-        .shareIdeaButton:hover {
+        .button:hover {
           transform: translate(2px, 2px);
           box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e144dc);
         }
 
-        .shareIdeaButton:active {
+        .button:active {
           transform: translate(4px, 4px);
           box-shadow: 2px 2px 0 0 var(--yp-hard-shadow-color, #e144dc);
         }
@@ -294,6 +294,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-direction: column;
           background: var(--yp-landing-video-background-color, #191923);
         }
 
@@ -978,6 +979,15 @@ export class YpLandingPage extends YpBaseElement {
             scroll-snap-align: center;
           }
         }
+          
+          .consent {
+              color: var(--yp-landing-surface-color, #ffffff);
+              padding: 50px;
+          }
+          
+          .consentLink {
+              color: var(--yp-landing-surface-color, #ffffff);
+          }
       `,
     ];
   }
@@ -1012,11 +1022,6 @@ export class YpLandingPage extends YpBaseElement {
     }
     this.openFaqIndexes = openFaqIndexes;
     window.appGlobals.activity("click", "landingPageFaqToggle", `${index}`);
-  }
-
-  _playVideo() {
-    window.appGlobals.activity("click", "landingPageVideoPlay");
-    this.videoPlaying = true;
   }
 
   override connectedCallback() {
@@ -1175,35 +1180,34 @@ export class YpLandingPage extends YpBaseElement {
     `;
   }
 
+  giveConsent() {
+    this.consented = true;
+  }
+
   renderIntroVideo() {
     const youtubeVideoId = "dQw4w9WgXcQ"; // TODO: USE ACTUAL VIDEO LINK
 
     return html`
       <div class="videoPlaceholder">
-        ${this.videoPlaying
-          ? html`
+        ${this.consented 
+                ? html`
               <iframe
-                src="https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1"
+                src="https://www.youtube-nocookie.com/embed/${youtubeVideoId}?autoplay=0"
                 title="The Institute for Small Ideas video"
-                allow="autoplay; encrypted-media; picture-in-picture"
+                allow=" encrypted-media; picture-in-picture"
                 allowfullscreen
               ></iframe>
-            `
-          : html`
-              <img
-                src="https://img.youtube.com/vi/${youtubeVideoId}/maxresdefault.jpg"
-                alt="The Institute for Small Ideas video thumbnail"
-              />
-              <button
-                class="playButton"
-                aria-label="Play video"
-                @click="${this._playVideo}"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor" d="M8 5v14l11-7z" />
-                </svg>
-              </button>
-            `}
+        ` : html`
+                 <div class="consent">
+                     ${CONSENT_TEXT}
+                     See <a class="consentLink" href="https://policies.google.com/privacy?hl=en-GB&">Youtube's privacy policy</a> for
+                     more information.
+                 </div>
+                <button class="button"
+                        @click="${this.giveConsent}">
+                    ${CONSENT_BUTTON_LABEL}
+                </button>`
+          }
       </div>
     `;
   }
@@ -1225,7 +1229,7 @@ export class YpLandingPage extends YpBaseElement {
                 &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
               </p>
               <button
-                class="shareIdeaButton yp-hard-shadow-box"
+                class="button yp-hard-shadow-box"
                 aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                 @click="${this._shareYourIdea}"
               >
@@ -1246,7 +1250,7 @@ export class YpLandingPage extends YpBaseElement {
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
               <button
-                class="shareIdeaButton yp-hard-shadow-box"
+                class="button yp-hard-shadow-box"
                 aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                 @click="${this._shareYourIdea}"
               >
@@ -1280,7 +1284,7 @@ export class YpLandingPage extends YpBaseElement {
                   <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                 </div>
                 <button
-                  class="shareIdeaButton yp-hard-shadow-box"
+                  class="button yp-hard-shadow-box"
                   aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                   @click="${this._shareYourIdea}"
                 >
@@ -1445,7 +1449,7 @@ export class YpLandingPage extends YpBaseElement {
                 </div>
                 <div class="aboutUsActions">
                   <button
-                    class="shareIdeaButton yp-hard-shadow-box"
+                    class="button yp-hard-shadow-box"
                     aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                     @click="${this._shareYourIdea}"
                   >
