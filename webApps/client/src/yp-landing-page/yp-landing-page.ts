@@ -811,11 +811,9 @@ export class YpLandingPage extends YpBaseElement {
           border: none;
           cursor: pointer;
           text-align: left;
-          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
           font-size: 1.125rem;
           font-weight: 400;
           letter-spacing: -0.01em;
-          text-transform: uppercase;
           color: var(--yp-landing-heading-text-color, #191923);
         }
 
