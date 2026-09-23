@@ -119,13 +119,6 @@ export const KIND_OF_THING_CONTENT: {
       alt: "",
     },
     {
-      title: "Non-branded school uniform",
-      description:
-        "Every state-funded school to allow non-branded uniform and PE kits to reduce costs.",
-      image: "/images/home/uniform_crop.jpg",
-      alt: "",
-    },
-    {
       title: "Real-time sewage alerts",
       description:
         "Real-time sewage alerts visible at every beach (not just the ones water companies choose to monitor). We should know before we get in!",
