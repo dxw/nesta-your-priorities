@@ -32,6 +32,8 @@ export const VIDEO_PLACEHOLDER_LABEL = "Video placeholder";
 export const IMAGE_PLACEHOLDER_LABEL = "Image placeholder";
 export const LOGO_IMAGE_PLACEHOLDER_LABEL = "Logo placeholder";
 export const SHARE_IDEA_BUTTON_LABEL = "Share your idea";
+export const CONSENT_BUTTON_LABEL = "I consent";
+export const CONSENT_TEXT = "This video requires third party cookies which include tracking. By clicking I consent you agree to using their service and tracking";
 export const CAROUSEL_REGION_LABEL = "Examples of small ideas";
 
 export const NAV_LINKS: YpLandingPageNavLink[] = [
