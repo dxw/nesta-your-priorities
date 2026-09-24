@@ -15,8 +15,8 @@ describe('PlausibleBar', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <pl-bar></pl-bar>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

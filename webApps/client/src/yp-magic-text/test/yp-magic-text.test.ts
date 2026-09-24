@@ -15,10 +15,10 @@ describe('YpMagicText', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-magic-text
         content='ALXOE'>
       </yp-magic-text>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

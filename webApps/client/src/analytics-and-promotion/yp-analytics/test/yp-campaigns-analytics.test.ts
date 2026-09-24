@@ -15,8 +15,8 @@ describe('YpCampaignsAnalytics', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-campaigns-analytics></yp-campaigns-analytics>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

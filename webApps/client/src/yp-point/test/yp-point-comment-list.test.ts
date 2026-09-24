@@ -19,9 +19,9 @@ describe('YpPointCommentList', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-point-comment-list
       ></yp-point-comment-list>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

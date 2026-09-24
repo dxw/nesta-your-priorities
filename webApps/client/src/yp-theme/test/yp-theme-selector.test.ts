@@ -22,10 +22,10 @@ describe('YpThemeSelector', () => {
     const theme = [themes, themes, themes]
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-theme-selector
         .theme="${theme}">
       </yp-theme-selector>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -15,8 +15,8 @@ describe('YpUsersGrid', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-users-grid></yp-users-grid>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

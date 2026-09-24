@@ -52,8 +52,8 @@ describe('YpUserEdit', () => {
     } as AcNotificationSettingsData;
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-user-edit .settings="${settings}" .user="${YpTestHelpers.getUser()}"></yp-user-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
     element.open(true, { id: 1 });

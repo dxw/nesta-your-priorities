@@ -30,10 +30,10 @@ describe('AcNotificationListPost', () => {
       } as AcNotificationData;
 
       element = await fixture(html`
-        ${YpTestHelpers.renderCommonHeader()}
         <ac-notification-list-post
           .notification="${notification}"
         ></ac-notification-list-post>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

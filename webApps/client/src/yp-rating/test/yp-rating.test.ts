@@ -22,10 +22,10 @@ describe('YpRating', () => {
     }
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-rating
         .alexo="${alexo}"
       ></yp-rating>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

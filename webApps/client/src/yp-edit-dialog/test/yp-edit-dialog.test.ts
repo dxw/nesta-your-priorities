@@ -15,8 +15,8 @@ describe('YpEditDialog', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-edit-dialog></yp-edit-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

@@ -15,8 +15,8 @@ describe('YpOrganizationGrid', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-organization-grid></yp-organization-grid>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

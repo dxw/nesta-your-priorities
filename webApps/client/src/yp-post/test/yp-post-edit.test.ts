@@ -15,11 +15,11 @@ describe('YpPostEdit', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-post-edit
         .group="${YpTestHelpers.getGroup()}"
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
     element.open(true, {})

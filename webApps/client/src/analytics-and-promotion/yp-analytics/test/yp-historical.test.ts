@@ -15,8 +15,8 @@ describe('YpHistorical', () => {
 
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-historical></yp-historical>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);
