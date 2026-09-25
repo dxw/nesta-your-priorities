@@ -113,6 +113,80 @@ describe('YpLandingPage', () => {
     });
   });
 
+  describe('mobile hamburger menu', () => {
+    function getToggle(): HTMLButtonElement {
+      const toggle = element.shadowRoot!.querySelector(
+        '.navToggle'
+      ) as HTMLButtonElement;
+      expect(toggle, 'nav toggle button should exist').to.exist;
+      return toggle;
+    }
+
+    it('is collapsed by default, with aria-expanded false', () => {
+      const toggle = getToggle();
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
+    });
+
+    it('points aria-controls at the nav links list', () => {
+      const toggle = getToggle();
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(toggle.getAttribute('aria-controls')).to.equal('navLinksMenu');
+      expect(list!.id).to.equal('navLinksMenu');
+    });
+
+    it('opens on click, setting aria-expanded true and adding the open class', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('true');
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(list!.classList.contains('open')).to.be.true;
+    });
+
+    it('closes again on a second click', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+      toggle.click();
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(list!.classList.contains('open')).to.be.false;
+    });
+
+    it('closes when Escape is pressed, returning focus to the toggle', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+
+      const nav = element.shadowRoot!.querySelector('nav.nav') as HTMLElement;
+      nav.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
+      );
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
+      expect(element.shadowRoot!.activeElement).to.equal(toggle);
+    });
+
+    it('closes when a nav link is clicked', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+
+      const section = element.shadowRoot!.querySelector(
+        '#faqs'
+      ) as HTMLElement;
+      section.scrollIntoView = () => {};
+      getNavButton('FAQs').click();
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
+    });
+  });
+
   describe('"Share your idea" button', () => {
     [YpTestHelpers.getDomain(), undefined].forEach((domain) => {
       it(`redirects to /group/1/new_post regardless of domain (domain ${
