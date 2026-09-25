@@ -170,6 +170,9 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .navLinks {
+          list-style: none;
+          margin: 0;
+          padding: 0;
           display: flex;
           align-items: center;
           gap: 4px;
@@ -186,6 +189,13 @@ export class YpLandingPage extends YpBaseElement {
           line-height: 1;
           letter-spacing: normal;
           text-transform: uppercase;
+        }
+
+        #how-it-works,
+        #small-idea,
+        #kind-of-thing,
+        #martin-explains {
+          scroll-margin-top: 64px;
         }
 
         section {
@@ -1147,18 +1157,20 @@ export class YpLandingPage extends YpBaseElement {
         <button class="skipLink" @click="${this._skipToContent}">
           Skip to content
         </button>
-        <div class="navLinks">
+        <ul class="navLinks" role="list">
           ${NAV_LINKS.map(
             (link) => html`
-              <md-text-button
-                aria-label="${link.label}"
-                @click="${() => this._scrollToSection(link.id)}"
-              >
-                ${link.label}
-              </md-text-button>
+              <li>
+                <md-text-button
+                  aria-label="${link.label}"
+                  @click="${() => this._scrollToSection(link.id)}"
+                >
+                  ${link.label}
+                </md-text-button>
+              </li>
             `
           )}
-        </div>
+        </ul>
       </nav>
     `;
   }
@@ -1242,6 +1254,7 @@ export class YpLandingPage extends YpBaseElement {
 
               <h2
                 class="bigHeading howItWorksHeading"
+                id="how-it-works"
                 aria-label="${HOW_IT_WORKS_CONTENT.heading}"
               >
                 ${HOW_IT_WORKS_CONTENT.heading}
@@ -1259,7 +1272,7 @@ export class YpLandingPage extends YpBaseElement {
             </div>
           </div>
 
-          <div class="smallIdeaSection">
+          <div class="smallIdeaSection" id="small-idea">
             <div class="sectionInner">
               <div class="smallIdeaHeader">
                 <div>
@@ -1295,7 +1308,7 @@ export class YpLandingPage extends YpBaseElement {
             </div>
           </div>
 
-          <div class="kindOfThingSection">
+          <div class="kindOfThingSection" id="kind-of-thing">
             <div class="sectionInner">
               <h2 class="bigHeading" aria-label="${KIND_OF_THING_CONTENT.heading}">${KIND_OF_THING_CONTENT.heading}</h2>
               ${KIND_OF_THING_CONTENT.paragraphs.map(
@@ -1386,7 +1399,7 @@ export class YpLandingPage extends YpBaseElement {
             </div>
           </div>
 
-          <div class="martinSection">
+          <div class="martinSection" id="martin-explains">
             <div class="sectionInner martinGrid">
               <h2 class="bigHeading martinHeading" aria-label="${MARTIN_CONTENT.heading}">${MARTIN_CONTENT.heading}</h2>
               <div class="martinImage" aria-hidden="true">

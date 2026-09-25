@@ -11,6 +11,21 @@ const SECTIONS = [
   { id: 'faqs', navLabel: 'FAQs', heading: 'Frequently Asked Questions' },
 ];
 
+// All nav items, including the four that scroll to a target that isn't a
+// <section> (a heading or plain div rather than <section id="...">), so
+// this list is used only for nav-bar behaviour (button exists, click
+// scrolls), not for the `<section>`-shaped assertions in the `sections`
+// describe block below.
+const NAV_ITEMS = [
+  { id: 'small-idea', navLabel: 'What is a small idea?' },
+  { id: 'kind-of-thing', navLabel: 'The kind of thing we mean' },
+  { id: 'get-involved', navLabel: 'Get Involved' },
+  { id: 'how-it-works', navLabel: 'How it works' },
+  { id: 'martin-explains', navLabel: 'Martin explains…' },
+  { id: 'about-us', navLabel: 'About Us' },
+  { id: 'faqs', navLabel: 'FAQs' },
+];
+
 describe('YpLandingPage', () => {
   let element: YpLandingPage;
   let fetchMock: any;
@@ -70,7 +85,16 @@ describe('YpLandingPage', () => {
       expect(navStyle.top).to.equal('0px');
     });
 
-    SECTIONS.forEach(({ id, navLabel }) => {
+    it('lists all nav items in a single semantic list', () => {
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(list, 'nav links list should exist').to.exist;
+      expect(list!.getAttribute('role')).to.equal('list');
+
+      const items = list!.querySelectorAll(':scope > li');
+      expect(items.length).to.equal(NAV_ITEMS.length);
+    });
+
+    NAV_ITEMS.forEach(({ id, navLabel }) => {
       it(`scrolls to the "${navLabel}" section when its nav button is clicked`, () => {
         const section = element.shadowRoot!.querySelector(
           `#${id}`
