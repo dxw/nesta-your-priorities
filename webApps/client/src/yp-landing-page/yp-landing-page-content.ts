@@ -1,4 +1,11 @@
-export type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
+export type YpLandingSectionId =
+  | "small-idea"
+  | "kind-of-thing"
+  | "get-involved"
+  | "how-it-works"
+  | "martin-explains"
+  | "about-us"
+  | "faqs";
 
 export interface YpLandingPageNavLink {
   id: YpLandingSectionId;
@@ -35,7 +42,11 @@ export const SHARE_IDEA_BUTTON_LABEL = "Share your idea";
 export const CAROUSEL_REGION_LABEL = "Examples of small ideas";
 
 export const NAV_LINKS: YpLandingPageNavLink[] = [
+  { id: "small-idea", label: "What is a small idea?" },
+  { id: "kind-of-thing", label: "The kind of thing we mean" },
   { id: "get-involved", label: "Get Involved" },
+  { id: "how-it-works", label: "How it works" },
+  { id: "martin-explains", label: "Martin explains…" },
   { id: "about-us", label: "About Us" },
   { id: "faqs", label: "FAQs" },
 ];

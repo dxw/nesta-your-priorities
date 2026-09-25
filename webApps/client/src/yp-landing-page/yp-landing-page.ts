@@ -1,4 +1,4 @@
-import { html, css } from "lit";
+import { html, css, svg } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import { YpBaseElement } from "../common/yp-base-element.js";
@@ -50,6 +50,11 @@ export class YpLandingPage extends YpBaseElement {
 
   @state()
   private openFaqIndexes = new Set<number>();
+
+  @state()
+  private mobileMenuOpen = false;
+
+  private mobileNavQuery = window.matchMedia("(max-width: 900px)");
 
   static override get styles() {
     return [
@@ -170,6 +175,9 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .navLinks {
+          list-style: none;
+          margin: 0;
+          padding: 0;
           display: flex;
           align-items: center;
           gap: 4px;
@@ -186,6 +194,38 @@ export class YpLandingPage extends YpBaseElement {
           line-height: 1;
           letter-spacing: normal;
           text-transform: uppercase;
+        }
+
+        .navBrand {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .navToggle {
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: none;
+          border: none;
+          padding: 8px;
+          min-width: 44px;
+          min-height: 44px;
+          color: #edeff2;
+          cursor: pointer;
+        }
+
+        .navToggleIcon {
+          width: 1.75rem;
+          height: 1.75rem;
+          flex-shrink: 0;
+        }
+
+        #how-it-works,
+        #small-idea,
+        #kind-of-thing,
+        #martin-explains {
+          scroll-margin-top: 64px;
         }
 
         section {
@@ -890,6 +930,33 @@ export class YpLandingPage extends YpBaseElement {
           text-decoration: underline;
         }
 
+        @media (max-width: 900px) {
+          .navToggle {
+            display: inline-flex;
+          }
+
+          .navLinks {
+            display: none;
+            width: 100%;
+            flex-basis: 100%;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(237, 239, 242, 0.24);
+          }
+
+          .navLinks.open {
+            display: flex;
+          }
+
+          .navLinks md-text-button {
+            width: 100%;
+            padding: 14px 8px;
+          }
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -984,7 +1051,38 @@ export class YpLandingPage extends YpBaseElement {
       section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
     window.appGlobals.activity("click", "landingPageNav", sectionId);
+    this._closeMobileMenu();
   }
+
+  _toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    window.appGlobals.activity(
+      "click",
+      "landingPageNavToggle",
+      this.mobileMenuOpen ? "open" : "closed"
+    );
+  }
+
+  _closeMobileMenu() {
+    this.mobileMenuOpen = false;
+  }
+
+  _handleNavKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape" && this.mobileMenuOpen) {
+      this.mobileMenuOpen = false;
+      (this.$$(".navToggle") as HTMLElement | null)?.focus();
+    }
+  }
+
+  private _handleMobileNavQueryChange = (event: MediaQueryListEvent) => {
+    // Above the breakpoint the links are always visible via CSS regardless
+    // of this flag, but resetting it here keeps aria-expanded (and the
+    // toggle's icon/label) from staying stuck "open" if the menu was left
+    // open on a narrow viewport before resizing back to desktop width.
+    if (!event.matches) {
+      this.mobileMenuOpen = false;
+    }
+  };
 
   _shareYourIdea() {
     window.appGlobals.activity("click", "landingPageShareYourIdea");
@@ -1010,11 +1108,19 @@ export class YpLandingPage extends YpBaseElement {
   override connectedCallback() {
     super.connectedCallback();
     window.addEventListener("resize", this._updateCarouselThumb);
+    this.mobileNavQuery.addEventListener(
+      "change",
+      this._handleMobileNavQueryChange
+    );
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener("resize", this._updateCarouselThumb);
+    this.mobileNavQuery.removeEventListener(
+      "change",
+      this._handleMobileNavQueryChange
+    );
   }
 
   override firstUpdated(changedProperties: Map<string, unknown>) {
@@ -1140,25 +1246,62 @@ export class YpLandingPage extends YpBaseElement {
 
   renderNav() {
     return html`
-      <nav class="nav" aria-label="Landing page sections">
-        <div class="logoPlaceholder">
-          <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
+      <nav
+        class="nav"
+        aria-label="Landing page sections"
+        @keydown="${this._handleNavKeydown}"
+      >
+        <div class="navBrand">
+          <div class="logoPlaceholder">
+            <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
+          </div>
+          <button
+            class="navToggle"
+            aria-expanded="${this.mobileMenuOpen}"
+            aria-controls="navLinksMenu"
+            aria-label="${this.mobileMenuOpen ? "Close menu" : "Open menu"}"
+            @click="${this._toggleMobileMenu}"
+          >
+            <svg class="navToggleIcon" viewBox="0 0 24 24" aria-hidden="true">
+              ${this.mobileMenuOpen
+                ? svg`<path
+                    d="M6 6l12 12M6 18L18 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />`
+                : svg`<path
+                    d="M4 7h16M4 12h16M4 17h16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />`}
+            </svg>
+          </button>
         </div>
         <button class="skipLink" @click="${this._skipToContent}">
           Skip to content
         </button>
-        <div class="navLinks">
+        <ul
+          class="navLinks${this.mobileMenuOpen ? " open" : ""}"
+          id="navLinksMenu"
+          role="list"
+        >
           ${NAV_LINKS.map(
             (link) => html`
-              <md-text-button
-                aria-label="${link.label}"
-                @click="${() => this._scrollToSection(link.id)}"
-              >
-                ${link.label}
-              </md-text-button>
+              <li>
+                <md-text-button
+                  aria-label="${link.label}"
+                  @click="${() => this._scrollToSection(link.id)}"
+                >
+                  ${link.label}
+                </md-text-button>
+              </li>
             `
           )}
-        </div>
+        </ul>
       </nav>
     `;
   }
@@ -1242,6 +1385,7 @@ export class YpLandingPage extends YpBaseElement {
 
               <h2
                 class="bigHeading howItWorksHeading"
+                id="how-it-works"
                 aria-label="${HOW_IT_WORKS_CONTENT.heading}"
               >
                 ${HOW_IT_WORKS_CONTENT.heading}
@@ -1259,7 +1403,7 @@ export class YpLandingPage extends YpBaseElement {
             </div>
           </div>
 
-          <div class="smallIdeaSection">
+          <div class="smallIdeaSection" id="small-idea">
             <div class="sectionInner">
               <div class="smallIdeaHeader">
                 <div>
@@ -1295,7 +1439,7 @@ export class YpLandingPage extends YpBaseElement {
             </div>
           </div>
 
-          <div class="kindOfThingSection">
+          <div class="kindOfThingSection" id="kind-of-thing">
             <div class="sectionInner">
               <h2 class="bigHeading" aria-label="${KIND_OF_THING_CONTENT.heading}">${KIND_OF_THING_CONTENT.heading}</h2>
               ${KIND_OF_THING_CONTENT.paragraphs.map(
@@ -1386,7 +1530,7 @@ export class YpLandingPage extends YpBaseElement {
             </div>
           </div>
 
-          <div class="martinSection">
+          <div class="martinSection" id="martin-explains">
             <div class="sectionInner martinGrid">
               <h2 class="bigHeading martinHeading" aria-label="${MARTIN_CONTENT.heading}">${MARTIN_CONTENT.heading}</h2>
               <div class="martinImage" aria-hidden="true">

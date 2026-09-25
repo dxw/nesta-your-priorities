@@ -11,6 +11,21 @@ const SECTIONS = [
   { id: 'faqs', navLabel: 'FAQs', heading: 'Frequently Asked Questions' },
 ];
 
+// All nav items, including the four that scroll to a target that isn't a
+// <section> (a heading or plain div rather than <section id="...">), so
+// this list is used only for nav-bar behaviour (button exists, click
+// scrolls), not for the `<section>`-shaped assertions in the `sections`
+// describe block below.
+const NAV_ITEMS = [
+  { id: 'small-idea', navLabel: 'What is a small idea?' },
+  { id: 'kind-of-thing', navLabel: 'The kind of thing we mean' },
+  { id: 'get-involved', navLabel: 'Get Involved' },
+  { id: 'how-it-works', navLabel: 'How it works' },
+  { id: 'martin-explains', navLabel: 'Martin explains…' },
+  { id: 'about-us', navLabel: 'About Us' },
+  { id: 'faqs', navLabel: 'FAQs' },
+];
+
 describe('YpLandingPage', () => {
   let element: YpLandingPage;
   let fetchMock: any;
@@ -70,7 +85,16 @@ describe('YpLandingPage', () => {
       expect(navStyle.top).to.equal('0px');
     });
 
-    SECTIONS.forEach(({ id, navLabel }) => {
+    it('lists all nav items in a single semantic list', () => {
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(list, 'nav links list should exist').to.exist;
+      expect(list!.getAttribute('role')).to.equal('list');
+
+      const items = list!.querySelectorAll(':scope > li');
+      expect(items.length).to.equal(NAV_ITEMS.length);
+    });
+
+    NAV_ITEMS.forEach(({ id, navLabel }) => {
       it(`scrolls to the "${navLabel}" section when its nav button is clicked`, () => {
         const section = element.shadowRoot!.querySelector(
           `#${id}`
@@ -86,6 +110,80 @@ describe('YpLandingPage', () => {
 
         expect(scrolledIntoView).to.be.true;
       });
+    });
+  });
+
+  describe('mobile hamburger menu', () => {
+    function getToggle(): HTMLButtonElement {
+      const toggle = element.shadowRoot!.querySelector(
+        '.navToggle'
+      ) as HTMLButtonElement;
+      expect(toggle, 'nav toggle button should exist').to.exist;
+      return toggle;
+    }
+
+    it('is collapsed by default, with aria-expanded false', () => {
+      const toggle = getToggle();
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
+    });
+
+    it('points aria-controls at the nav links list', () => {
+      const toggle = getToggle();
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(toggle.getAttribute('aria-controls')).to.equal('navLinksMenu');
+      expect(list!.id).to.equal('navLinksMenu');
+    });
+
+    it('opens on click, setting aria-expanded true and adding the open class', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('true');
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(list!.classList.contains('open')).to.be.true;
+    });
+
+    it('closes again on a second click', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+      toggle.click();
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
+      const list = element.shadowRoot!.querySelector('ul.navLinks');
+      expect(list!.classList.contains('open')).to.be.false;
+    });
+
+    it('closes when Escape is pressed, returning focus to the toggle', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+
+      const nav = element.shadowRoot!.querySelector('nav.nav') as HTMLElement;
+      nav.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
+      );
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
+      expect(element.shadowRoot!.activeElement).to.equal(toggle);
+    });
+
+    it('closes when a nav link is clicked', async () => {
+      const toggle = getToggle();
+      toggle.click();
+      await element.updateComplete;
+
+      const section = element.shadowRoot!.querySelector(
+        '#faqs'
+      ) as HTMLElement;
+      section.scrollIntoView = () => {};
+      getNavButton('FAQs').click();
+      await element.updateComplete;
+
+      expect(toggle.getAttribute('aria-expanded')).to.equal('false');
     });
   });
 
