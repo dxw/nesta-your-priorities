@@ -55,6 +55,7 @@ import toJson from "./utils/to_json.cjs";
 import sso from "passport-sso";
 import cors from "cors";
 import log from "./utils/loggerTs.js";
+import { configureServerTimeouts } from "./utils/serverTimeouts.cjs";
 import { createClient } from "redis";
 
 import { Notifier } from "@airbrake/node";
@@ -1279,6 +1280,7 @@ export class YourPrioritiesApi {
 
     return await new Promise<HttpServer>((resolve, reject) => {
       const server = this.app.listen(port, host);
+      configureServerTimeouts(server);
 
       const onError = (err: any) => {
         server.removeListener("listening", onListening);
