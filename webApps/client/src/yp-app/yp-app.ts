@@ -644,7 +644,8 @@ export class YpApp extends YpBaseElement {
         window.appGlobals.myDomains.length < 2}"
         slot="actionItems"
         ?hidden="${!this.user ||
-        this.page === "agent_bundle"}"
+        this.page === "agent_bundle" ||
+        this.user.profile_data?.isAnonymousUser}"
         class="topActionItem"
         @click="${this._openNavDrawer}"
         aria-label="${this.t("navigationMenu")}"
@@ -658,7 +659,7 @@ export class YpApp extends YpBaseElement {
 
   renderNavigation() {
     if (
-      window.appGlobals.domain?.configuration.disableArrowBasedTopNavigation &&
+      window.appGlobals.domain?.configuration?.disableArrowBasedTopNavigation &&
       !this.closePostHeader &&
       !this.keepOpenForGroup
     ) {
@@ -747,7 +748,7 @@ export class YpApp extends YpBaseElement {
         ><md-icon>translate</md-icon>
       </md-icon-button>
 
-      ${window.appGlobals.domain?.configuration.disableArrowBasedTopNavigation
+      ${window.appGlobals.domain?.configuration?.disableArrowBasedTopNavigation
         ? nothing
         : this.renderNonArrowNavigation()}
 
@@ -797,31 +798,36 @@ export class YpApp extends YpBaseElement {
 
       ${this.user
         ? html`
-            <div style="position: relative;">
-              <md-filled-tonal-icon-button
-                id="notificationButton"
-                class="layout horizontal topActionItem"
-                @click="${this._openNotificationDrawer}"
-                slot="actionItems"
-                aria-label="${this.t("notifications")}"
-                aria-haspopup="dialog"
-                aria-controls="notificationDrawer"
-                aria-expanded="${this.notificationDrawerOpened ? "true" : "false"}"
-              >
-                <md-icon>notifications</md-icon>
-              </md-filled-tonal-icon-button>
-              <md-badge
-                id="notificationBadge"
-                class="activeBadge"
-                ?has-static-theme="${this.hasStaticBadgeTheme}"
-                .value="${this.numberOfUnViewedNotifications}"
-                ?hidden="${!this.numberOfUnViewedNotifications}"
-              >
-              </md-badge>
-            </div>
+            ${this.user.profile_data?.isAnonymousUser
+              ? nothing
+              : html`
+                  <div style="position: relative;">
+                    <md-filled-tonal-icon-button
+                      id="notificationButton"
+                      class="layout horizontal topActionItem"
+                      @click="${this._openNotificationDrawer}"
+                      slot="actionItems"
+                      aria-label="${this.t("notifications")}"
+                      aria-haspopup="dialog"
+                      aria-controls="notificationDrawer"
+                      aria-expanded="${this.notificationDrawerOpened ? "true" : "false"}"
+                    >
+                      <md-icon>notifications</md-icon>
+                    </md-filled-tonal-icon-button>
+                    <md-badge
+                      id="notificationBadge"
+                      class="activeBadge"
+                      ?has-static-theme="${this.hasStaticBadgeTheme}"
+                      .value="${this.numberOfUnViewedNotifications}"
+                      ?hidden="${!this.numberOfUnViewedNotifications}"
+                    >
+                    </md-badge>
+                  </div>
+                `}
             <md-icon-button
               id="userMenuButton"
               class="userIcon"
+              ?hidden="${this.user.profile_data?.isAnonymousUser}"
               @click="${this._openUserDrawer}"
               slot="actionItems"
               aria-label="${this.t("userMenuLabel")}"
@@ -832,6 +838,16 @@ export class YpApp extends YpBaseElement {
               <yp-user-image id="userImage" small .user="${this.user}">
               </yp-user-image>
             </md-icon-button>
+            ${this.user.profile_data?.isAnonymousUser
+              ? html`
+                  <md-text-button
+                    slot="actionItems"
+                    class="topActionItem userImageNotificationContainer"
+                    @click="${this._login}"
+                    >${this.t("user.login")}
+                  </md-text-button>
+                `
+              : nothing}
           `
         : window.appUser?.hasCompletedInitialLoginCheck
         ? html`
@@ -901,13 +917,13 @@ export class YpApp extends YpBaseElement {
         ?hideTitle="${this.page === "agent_bundle"}"
         aria-label="top navigation"
         ?fixed="${true ||
-        window.appGlobals.domain?.configuration.useFixedTopAppBar}"
+        window.appGlobals.domain?.configuration?.useFixedTopAppBar}"
         ?disableArrowBasedNavigation="${window.appGlobals.domain?.configuration
-          .disableArrowBasedTopNavigation}"
+          ?.disableArrowBasedTopNavigation}"
         ?hideBreadcrumbs="${!titleString || titleString == ""}"
         ?hidden="${this.appMode !== "main" ||
         !this.page ||
-        window.appGlobals.domain?.configuration.hideAppBarIfWelcomeHtml}"
+        window.appGlobals.domain?.configuration?.hideAppBarIfWelcomeHtml}"
       >
         <div slot="navigation">${this.renderNavigation()}</div>
         <div slot="title" ?hidden="${this.page === "agent_bundle"}"></div>
@@ -1042,7 +1058,7 @@ export class YpApp extends YpBaseElement {
         id="leftDrawer"
         aria-label="${this.t("navigationMenu")}"
         position="${window.appGlobals.domain?.configuration
-          .disableArrowBasedTopNavigation
+          ?.disableArrowBasedTopNavigation
           ? "left"
           : "right"}"
         @closed="${this._closeNavDrawer}"
@@ -1085,7 +1101,9 @@ export class YpApp extends YpBaseElement {
         ?hidden="${!this.userDrawerOpened}"
         @closed="${this._closeUserDrawer}"
       >
-        ${this.userDrawerOpened && this.user
+        ${this.userDrawerOpened &&
+        this.user &&
+        !this.user.profile_data?.isAnonymousUser
           ? html`
               <yp-user-info
                 @open-user-edit="${this._openUserEdit}"

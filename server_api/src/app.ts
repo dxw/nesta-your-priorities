@@ -805,6 +805,9 @@ export class YourPrioritiesApi {
         //log.info("Static path", staticPath);
         // Check if the request is for index.html
         if (req.path === "/" || req.path === "/index.html") {
+          // cache for 5 minutes to allow deployment changes to go through quickly
+          // but not get overwhelmed by requests
+          res.setHeader("Cache-Control", "public, max-age=300, s-maxage=60, stale-while-revalidate=60");
           index(req, res, next); // Use your dynamic handler
         } else {
           express.static(staticPath)(req, res, next);

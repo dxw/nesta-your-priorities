@@ -8,7 +8,10 @@ From repo root:
 ```bash
 cp development/docker/.env-dist development/docker/.env
 cp development/docker/plausible-conf.env.dist development/docker/plausible-conf.env
+cp server_api/startWatchWithEnv.sh-dist server_api/startWatchWithEnv.sh
 ```
+
+Edit server_api/startWatchWithEnv.sh to set your SESSION_SECRET and database variables
 
 ## 1) First-Time Setup (Do Once Per Machine/Clone)
 
@@ -53,10 +56,11 @@ cd ../webApps/client && npm install --ignore-scripts
 cd ../..
 ```
 
-### 1.6 Setup first user
+### 1.6 Setup first user
 
-Once you've started both the server and client (see below), run
+First, start both the server and client (see [Daily local run](#2-daily-local-run-normal-development-startup)), run
 
+`YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/domains/createDomain.js 1 "here.com" "example"`
 `YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/users/createUserAddDomain.js 1 your.email@here.com yourusername yourpassword`
 
 to create a new user, and `node server_api/ts-out/scripts/setAdminOnAll.cjs your.email@here.com` with the same environment variables to make that user an admin.

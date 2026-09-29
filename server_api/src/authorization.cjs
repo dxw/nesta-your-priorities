@@ -395,45 +395,45 @@ auth.isGroupMemberOrOpenToCommunityMember = function (group, req, done) {
         .then(function (result) {
           if (result) {
             done(null, true);
-          } else if (
-            group.Community &&
-            (group.access === models.Group.ACCESS_OPEN_TO_COMMUNITY ||
-              group.access === models.Group.ACCESS_PUBLIC)
-          ) {
-            if (group.Community.access === models.Community.ACCESS_PUBLIC) {
+            return;
+          }
+          group.hasGroupAdmins(req.user).then(function (isGroupAdmin) {
+            if (isGroupAdmin) {
               done(null, true);
-            } else {
-              group.Community.hasCommunityUsers(req.user).then(function (
-                result
-              ) {
-                if (result) {
-                  done(null, true);
-                } else {
-                  group.Community.hasCommunityAdmins(req.user).then(function (
-                    result
-                  ) {
-                    if (result) {
-                      done(null, true);
-                    } else {
-                      auth.hasCommunitySsnLoginListAccess(
-                        group.Community,
-                        req,
-                        done
-                      );
-                    }
-                  });
-                }
-              });
-            }
-          } else {
-            group.hasGroupAdmins(req.user).then(function (result) {
-              if (result) {
+            } else if (
+              group.Community &&
+              (group.access === models.Group.ACCESS_OPEN_TO_COMMUNITY ||
+                group.access === models.Group.ACCESS_PUBLIC)
+            ) {
+              if (group.Community.access === models.Community.ACCESS_PUBLIC) {
                 done(null, true);
               } else {
-                done(null, false);
+                group.Community.hasCommunityUsers(req.user).then(function (
+                  result
+                ) {
+                  if (result) {
+                    done(null, true);
+                  } else {
+                    group.Community.hasCommunityAdmins(req.user).then(
+                      function (result) {
+                        if (result) {
+                          done(null, true);
+                        } else {
+                          auth.hasCommunitySsnLoginListAccess(
+                            group.Community,
+                            req,
+                            done
+                          );
+                        }
+                      }
+                    );
+                  }
+                });
               }
-            });
-          }
+            } else {
+              done(null, false);
+            }
+          });
         })
         .catch(function (error) {
           done(error, false);

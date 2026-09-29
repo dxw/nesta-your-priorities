@@ -2542,6 +2542,7 @@ router.delete(
 
 router.post(
   "/:id/endorse",
+  auth.isLoggedInNoAnonymousCheck,
   auth.can("vote on post"),
   async function (req, res) {
     if (!req.user) {

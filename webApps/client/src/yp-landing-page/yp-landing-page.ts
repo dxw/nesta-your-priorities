@@ -287,6 +287,8 @@ export class YpLandingPage extends YpBaseElement {
         .videoPlaceholder {
           position: relative;
           width: 100%;
+          max-width: 1100px;
+          margin: 0 auto 64px;
           aspect-ratio: 16 / 9;
           max-height: 80vh;
           display: flex;
@@ -355,6 +357,38 @@ export class YpLandingPage extends YpBaseElement {
         .sectionInner {
           max-width: 1100px;
           margin: 0 auto;
+        }
+          
+        .footerTopRow {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            @media (min-width: 900px) {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
+        .logos {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            .logo {
+                margin-bottom: 20px;
+                margin-right: 0;
+            }
+            
+            @media (min-width: 900px) {
+                flex-direction: row;
+                align-items: center;
+                margin-top: 0;
+
+                .logo {
+                    margin-bottom: 0;
+                    margin-right: 20px;
+                }
+            }
         }
 
         .bigHeading {
@@ -712,6 +746,13 @@ export class YpLandingPage extends YpBaseElement {
           text-align: justify;
         }
 
+        .aboutUsPeopleGrid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0 32px;
+          margin-bottom: 24px;
+        }
+
         .aboutUsLeadershipList {
           margin: 0 0 16px;
           padding-left: 0;
@@ -770,11 +811,9 @@ export class YpLandingPage extends YpBaseElement {
           border: none;
           cursor: pointer;
           text-align: left;
-          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
           font-size: 1.125rem;
           font-weight: 400;
           letter-spacing: -0.01em;
-          text-transform: uppercase;
           color: var(--yp-landing-heading-text-color, #191923);
         }
 
@@ -860,6 +899,11 @@ export class YpLandingPage extends YpBaseElement {
             padding: 32px 16px;
           }
 
+          .videoPlaceholder {
+            max-width: none;
+            margin-bottom: 0;
+          }
+
           .introCopy {
             padding: 40px 16px 32px;
           }
@@ -885,6 +929,11 @@ export class YpLandingPage extends YpBaseElement {
           .aboutUsGrid {
             grid-template-columns: 1fr;
             gap: 24px;
+          }
+
+          .aboutUsPeopleGrid {
+            grid-template-columns: 1fr;
+            gap: 0;
           }
 
           .martinHeading,
@@ -1363,12 +1412,24 @@ export class YpLandingPage extends YpBaseElement {
                 ${ABOUT_US_CONTENT.paragraphs.map(
                   (paragraph) => html`<p>${paragraph}</p>`
                 )}
-                <p>${ABOUT_US_CONTENT.ledByLabel}</p>
-                <ul class="aboutUsLeadershipList">
-                  ${ABOUT_US_CONTENT.leaders.map(
-                    (leader) => html`<li>${leader}</li>`
-                  )}
-                </ul>
+                <div class="aboutUsPeopleGrid">
+                  <div>
+                    <p>${ABOUT_US_CONTENT.ledByLabel}</p>
+                    <ul class="aboutUsLeadershipList">
+                      ${ABOUT_US_CONTENT.leaders.map(
+                        (leader) => html`<li>${leader}</li>`
+                      )}
+                    </ul>
+                  </div>
+                  <div>
+                    <p>${ABOUT_US_CONTENT.panelLabel}</p>
+                    <ul class="aboutUsLeadershipList">
+                      ${ABOUT_US_CONTENT.panel.map(
+                        (member) => html`<li>${member}</li>`
+                      )}
+                    </ul>
+                  </div>
+                </div>
                 <div class="aboutUsActions">
                   <button
                     class="shareIdeaButton yp-hard-shadow-box"
@@ -1422,14 +1483,22 @@ export class YpLandingPage extends YpBaseElement {
 
       <footer class="siteFooter">
         <div class="sectionInner">
-          <h2 class="footerHeading" aria-label="${FOOTER_CONTENT.heading}">${FOOTER_CONTENT.heading}</h2>
-          <a
-            class="footerEmail"
-            aria-label="${FOOTER_CONTENT.emailAddress}"
-            href="mailto:${FOOTER_CONTENT.emailAddress}"
-          >
-            ${FOOTER_CONTENT.emailAddress}
-          </a>
+            <div class="footerTopRow">
+              <div>
+                <h2 class="footerHeading" aria-label="${FOOTER_CONTENT.heading}">${FOOTER_CONTENT.heading}</h2>
+                <a
+                  class="footerEmail"
+                  aria-label="${FOOTER_CONTENT.emailAddress}"
+                  href="mailto:${FOOTER_CONTENT.emailAddress}"
+                >
+                  ${FOOTER_CONTENT.emailAddress}
+                </a>
+              </div>
+              <div class="logos">
+                  <img class="logo" src="/images/home/centre_collective_intelligence_logo.png" alt="Contributing organisation Centre for Collective Intelligence's logo">
+                  <img src="/images/home/involve_logo.png" alt="Contributing organisation Involve's logo">
+              </div>
+            </div>
           <div class="footerBottomRow">
             <p class="footerCopyright">
               &copy; ${new Date().getFullYear()}

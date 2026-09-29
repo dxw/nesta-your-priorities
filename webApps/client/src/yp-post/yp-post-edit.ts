@@ -763,10 +763,6 @@ export class YpPostEdit extends YpEditBase {
 
           .videoCam {
           }
-
-          yp-structured-question-edit {
-            max-width: calc(100vw - 64px);
-          }
         }
 
         .postCoverVideoInfo {
@@ -825,6 +821,11 @@ export class YpPostEdit extends YpEditBase {
           font-size: var(--yp-min-font-size);
           margin: 4px 0 24px;
         }
+
+        .required:after {
+            content: ' *';
+            color: var(--md-sys-color-error);
+        }
       `,
     ];
   }
@@ -839,7 +840,7 @@ export class YpPostEdit extends YpEditBase {
       <p class="contactInfoExplanation">
         ${this.t("contactInformationExplanation")}
       </p>
-      <label class="fieldLabel">${this.t("user.name")}</label>
+      <label class="fieldLabel required">${this.t("user.name")}</label>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactName"
@@ -853,7 +854,7 @@ export class YpPostEdit extends YpEditBase {
         charCounter
       >
       </md-outlined-text-field>
-      <label class="fieldLabel">${this.t("user.email")}</label>
+      <label class="fieldLabel required">${this.t("user.email")}</label>
       <md-outlined-text-field
         class="contactInfoField"
         id="contactEmail"
@@ -1017,13 +1018,13 @@ export class YpPostEdit extends YpEditBase {
                 `
               : this.post
               ? html`
-                  <label class="fieldLabel">
+                  <label class="fieldLabel required">
                     ${this.titleQuestionText}
                   </label>
                   <md-outlined-text-field
                     id="name"
                     required
-                    minlength="1"
+                    minlength="10"
                     name="name"
                     type="text"
                     label=""
@@ -1088,7 +1089,7 @@ export class YpPostEdit extends YpEditBase {
             ${this.postDescriptionLimit
               ? html`
                   <label
-                    class="fieldLabel"
+                    ?class="fieldLabel ${this.structuredQuestions == null ? 'required' : ''}"
                     ?hidden="${this.structuredQuestions != null}"
                   >
                     ${this.t("post.description")}
@@ -1189,7 +1190,7 @@ export class YpPostEdit extends YpEditBase {
     return this.newPointShown
       ? html`
           <div class="subContainer">
-            <label class="fieldLabel">
+            <label class="fieldLabel ${!this.group!.configuration.newPointOptional ? 'required' : ''}">
               ${this.t("point.for")}
             </label>
             <md-outlined-text-field
@@ -2773,7 +2774,12 @@ export class YpPostEdit extends YpEditBase {
     group: YpGroupData,
     params: any | undefined = undefined
   ) {
-    if (window.appUser && (await window.appUser.ensureLoginChecked()) === true) {
+    const isLoggedInOrAnonymousAllowed =
+      window.appUser &&
+      ((await window.appUser.ensureLoginChecked()) === true ||
+        (await window.appUser.silentAnonymousLoginIfAllowed(group)));
+
+    if (isLoggedInOrAnonymousAllowed) {
       this._setupGroup(group);
       if (newItem) {
         this.new = true;
