@@ -496,8 +496,12 @@ let sendIndex = async (req, res) => {
     let indexFileData = indexCache[versionKey].data;
 
     indexFileData = await replaceSiteData(indexFileData, req, useNewVersion);
-
-    res.setHeader("Cache-Control", "no-cache, must-revalidate");
+    // cache for 5 minutes to allow deployment changes to go through quickly
+    // but not get overwhelmed by requests
+    res.setHeader(
+        "Cache-Control",
+        "public, max-age=300, s-maxage=60, stale-while-revalidate=60"
+    );
     res.setHeader("Last-Modified", indexCache[versionKey].lastModified);
 
     res.send(indexFileData);
