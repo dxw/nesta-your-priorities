@@ -1,5 +1,6 @@
 var express = require("express");
 const { cacheForAnonymous } = require("../utils/publicCache.cjs");
+const { cachedForAnonymous, invalidate, groupKey } = require("../utils/responseCache.cjs");
 var router = express.Router();
 var models = require("../models/index.cjs");
 var auth = require("../authorization.cjs");
@@ -3299,6 +3300,7 @@ router.put("/:id", auth.can("edit group"), function (req, res) {
         group
           .save()
           .then(function () {
+            invalidate(req.redisClient, groupKey(group.id));
             log.info("Group Updated", {
               group: toJson(group),
               context: "update",
@@ -3822,7 +3824,7 @@ router.get(
   }
 );
 
-router.get("/:id", auth.can("view group"), cacheForAnonymous(60), function (req, res) {
+router.get("/:id", auth.can("view group"), cacheForAnonymous(60), cachedForAnonymous({ key: (req) => groupKey(req.params.id), ttl: 60 }), function (req, res) {
   if (isValidDbId(req.params.id)) {
     models.Group.findOne({
       where: { id: req.params.id },
