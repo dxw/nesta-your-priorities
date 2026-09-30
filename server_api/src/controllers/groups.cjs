@@ -1,4 +1,5 @@
 var express = require("express");
+const { cacheForAnonymous } = require("../utils/publicCache.cjs");
 var router = express.Router();
 var models = require("../models/index.cjs");
 var auth = require("../authorization.cjs");
@@ -3821,7 +3822,7 @@ router.get(
   }
 );
 
-router.get("/:id", auth.can("view group"), function (req, res) {
+router.get("/:id", auth.can("view group"), cacheForAnonymous(60), function (req, res) {
   if (isValidDbId(req.params.id)) {
     models.Group.findOne({
       where: { id: req.params.id },
@@ -4539,7 +4540,7 @@ router.get(
   }
 );
 
-router.get("/:id/categories", auth.can("view group"), function (req, res) {
+router.get("/:id/categories", auth.can("view group"), cacheForAnonymous(60), function (req, res) {
   models.Category.findAll({
     where: { group_id: req.params.id },
     limit: 20,
