@@ -1206,6 +1206,7 @@ export class YpLandingPage extends YpBaseElement {
             <div class="introCopy">
               <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
               <h1 aria-label="${INTRO_CONTENT.heading}">${INTRO_CONTENT.heading}</h1>
+              <p class="quote">${INTRO_CONTENT.subHeading}</p>
               <p class="quote">${INTRO_CONTENT.quote}</p>
               <p class="attribution">
                 <strong>${INTRO_CONTENT.attributionName}</strong>
