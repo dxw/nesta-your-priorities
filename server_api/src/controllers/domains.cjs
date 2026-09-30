@@ -1,4 +1,5 @@
 var express = require('express');
+const { cacheForAnonymous } = require("../utils/publicCache.cjs");
 var router = express.Router();
 var models = require("../models/index.cjs");
 var auth = require('../authorization.cjs');
@@ -711,7 +712,7 @@ router.get('/oldBoot', function(req, res) {
   });
 });
 
-router.get('/', function(req, res) {
+router.get('/', cacheForAnonymous(60), function(req, res) {
   if (req.ypDomain.secret_api_keys &&
     req.ypDomain.secret_api_keys.saml && req.ypDomain.secret_api_keys.saml.entryPoint &&
     req.ypDomain.secret_api_keys.saml.entryPoint.length > 6) {
