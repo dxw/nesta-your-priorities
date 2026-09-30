@@ -221,7 +221,12 @@ export class YpLandingPage extends YpBaseElement {
           flex-shrink: 0;
         }
 
-        #how-it-works,
+        #how-it-works {
+            scroll-margin-top: 128px;
+            @media (min-width: 900px) {
+                scroll-margin-top: 0;
+            }
+        }
         #small-idea,
         #kind-of-thing,
         #martin-explains {
@@ -565,7 +570,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .kindOfThingSection {
-          padding: 0 24px 64px;
+          padding: 64px 24px;
         }
 
         .kindOfThingEmphasis {
@@ -1380,6 +1385,41 @@ export class YpLandingPage extends YpBaseElement {
 
         ${this.renderIntroVideo()}
 
+          <div class="smallIdeaSection" id="small-idea">
+              <div class="sectionInner">
+                  <div class="smallIdeaHeader">
+                      <div>
+                          <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
+                          <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
+                      </div>
+                      <button
+                              class="shareIdeaButton yp-hard-shadow-box"
+                              aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+                              @click="${this._shareYourIdea}"
+                      >
+                          ${SHARE_IDEA_BUTTON_LABEL}
+                      </button>
+                  </div>
+                  <div class="criteriaGrid">
+                      ${SMALL_IDEA_CONTENT.criteria.map(
+                              (group) => html`
+                    <div class="criteriaBox">
+                      <h3 aria-label="${group.heading}">${group.heading}</h3>
+                      <ul>
+                        ${group.items.map(
+                                      (item) => html`
+                            <li>
+                              <strong>${item.lead}</strong> &ndash; ${item.text}
+                            </li>
+                          `
+                              )}
+                      </ul>
+                    </div>
+                  `
+                      )}
+                  </div>
+              </div>
+          </div>
         <section id="get-involved">
           <div class="getInvolvedDark">
             <div class="sectionInner">
@@ -1396,9 +1436,11 @@ export class YpLandingPage extends YpBaseElement {
                 ${SHARE_IDEA_BUTTON_LABEL}
               </button>
 
+                <div
+                        id="how-it-works"
+                >
               <h2
                 class="bigHeading howItWorksHeading"
-                id="how-it-works"
                 aria-label="${HOW_IT_WORKS_CONTENT.heading}"
               >
                 ${HOW_IT_WORKS_CONTENT.heading}
@@ -1413,42 +1455,7 @@ export class YpLandingPage extends YpBaseElement {
                   `
                 )}
               </div>
-            </div>
-          </div>
-
-          <div class="smallIdeaSection" id="small-idea">
-            <div class="sectionInner">
-              <div class="smallIdeaHeader">
-                <div>
-                  <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
-                  <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                 </div>
-                <button
-                  class="shareIdeaButton yp-hard-shadow-box"
-                  aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                  @click="${this._shareYourIdea}"
-                >
-                  ${SHARE_IDEA_BUTTON_LABEL}
-                </button>
-              </div>
-              <div class="criteriaGrid">
-                ${SMALL_IDEA_CONTENT.criteria.map(
-                  (group) => html`
-                    <div class="criteriaBox">
-                      <h3 aria-label="${group.heading}">${group.heading}</h3>
-                      <ul>
-                        ${group.items.map(
-                          (item) => html`
-                            <li>
-                              <strong>${item.lead}</strong> &ndash; ${item.text}
-                            </li>
-                          `
-                        )}
-                      </ul>
-                    </div>
-                  `
-                )}
-              </div>
             </div>
           </div>
 
