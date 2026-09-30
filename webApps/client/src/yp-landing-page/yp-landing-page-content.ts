@@ -293,6 +293,27 @@ export const FAQS_CONTENT: {
 
 export const FOOTER_CONTENT = {
   heading: "Contact",
+  details: "THE INSTITUTE FOR SMALL IDEAS IS FOUNDED AND CHAIRED BY MARTIN LEWIS, AND RUN BY TWO CHARITIES:",
+  charities: [
+    {
+      name: "CCI",
+      url: "https://www.nesta.org.uk/centre-for-collective-intelligence/",
+      logo: {
+        url: "/images/home/centre_collective_intelligence_logo.png",
+        alt: "Contributing organisation Centre for Collective Intelligence's logo"
+      },
+      number: "1144091"
+    },
+    {
+      name: "Involve",
+      url: "https://www.involve.org.uk/",
+      logo: {
+        url: "/images/home/involve_logo.png",
+        alt: "Contributing organisation Involve's logo"
+      },
+      number: "1130568"
+    }
+  ],
   emailAddress: "smallideas@nesta.org.uk",
   copyrightHolder: "The Institute for Small Ideas",
   privacyPolicyLabel: "Privacy Policy",

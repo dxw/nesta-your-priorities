@@ -369,20 +369,30 @@ export class YpLandingPage extends YpBaseElement {
             }
         }
         
+        .logosContainer {
+            max-width: 550px;
+            margin-top: 20px;
+            @media (min-width: 900px) {
+                margin-top: 0;
+            }
+        }
+        
         .logos {
             align-items: flex-start;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             margin-top: 20px;
+            
             .logo {
                 margin-bottom: 20px;
                 margin-right: 0;
+                max-height: 63px;
             }
             
             @media (min-width: 900px) {
                 flex-direction: row;
                 align-items: center;
-                margin-top: 0;
 
                 .logo {
                     margin-bottom: 0;
@@ -835,6 +845,8 @@ export class YpLandingPage extends YpBaseElement {
         .siteFooter {
           background: var(--yp-landing-video-background-color, #191923);
           padding: 64px 24px;
+          color: var(--yp-landing-surface-color, #ffffff);
+            
         }
 
         .footerHeading {
@@ -1495,9 +1507,16 @@ export class YpLandingPage extends YpBaseElement {
                   ${FOOTER_CONTENT.emailAddress}
                 </a>
               </div>
-              <div class="logos">
-                  <img class="logo" src="/images/home/centre_collective_intelligence_logo.png" alt="Contributing organisation Centre for Collective Intelligence's logo">
-                  <img src="/images/home/involve_logo.png" alt="Contributing organisation Involve's logo">
+              <div class="logosContainer">
+                <div>${FOOTER_CONTENT.details}</div>
+                <div class="logos">
+                    ${FOOTER_CONTENT.charities.map(charity => {
+                      return html `<div>
+                          <a href="${charity.url}"><img class="logo" src="${charity.logo.url}" alt="${charity.logo.alt}"></a>
+                          <div>Charity number: ${charity.number}</div>
+                      </div>`;
+                    })}
+                </div>
               </div>
             </div>
           <div class="footerBottomRow">
