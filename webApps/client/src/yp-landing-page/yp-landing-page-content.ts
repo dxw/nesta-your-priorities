@@ -42,9 +42,10 @@ export const NAV_LINKS: YpLandingPageNavLink[] = [
 
 export const INTRO_CONTENT = {
   eyebrow: "The Institute for Small Ideas",
-  heading: "Getting government to fix the small stuff",
+  heading: "Tell us the small fixes that’ll make a difference. We’ll ensure they’re heard.",
+  subHeading: "A charity initiative.",
   quote:
-    "“I think small ideas to fix life's frustrations deserve the same serious policy concentration as the big ones because if we get it right, they add up – and bit by bit, we can make day-to-day life better for everyone.”",
+    "“Ever thought ‘why don’t they just fix this’? Politicians often talk up big legacy projects, but can ignore the small things that’d make lives better. We want your ideas for practical, small, non-controversial ways to improve the UK. Then we’ll give them a serious policy workover and try to make the changes happen.”",
   attributionName: "Martin Lewis",
   attributionRole:
     "Money Saving Expert, Chair of the Institute for Small Ideas",
@@ -67,18 +68,18 @@ export const HOW_IT_WORKS_CONTENT: {
   heading: "How it works",
   steps: [
     {
-      title: "01: Send us your idea",
+      title: "01: Send us your idea.",
       description:
         "Small, do-able, non-political - the stuff that'd actually make life better.",
     },
     {
-      title: "02: Our policy advisers narrow the list of ideas",
+      title: "02: We check and help refine your ideas.",
       description:
-        "They'll sift through your ideas to select the ones that meet the criteria.",
+        "We filter ideas against the criteria, then bring in policy experts to make sure they’re workable.",
     },
     {
-      title: "03: You get to weigh in",
-      description: "We publish the long-list for your feedback.",
+      title: "03: We publish the long list.",
+      description: "And invite you to feedback.",
     },
     {
       title: "04: Our cross-party panel, chaired by Martin, picks the final ones",
@@ -230,18 +231,19 @@ export const ABOUT_US_CONTENT: {
   ledByLabel: "Team:",
   leaders: [
     "Martin Lewis, Chair",
-    "Kathy Peach, Co-Director",
-    "Sue Tibballs, Co-Director",
+    "Kathy Peach, Nesta. Co-Director",
+    "Sue Tibballs, Involve. Co-Director",
   ],
   panelLabel: "Our Panel:",
   panel: [
-    "Tracey Brabin",
-    "Tamara Finklestein",
-    "Green party",
-    "Danny Kruger",
-    "Polly Mackenzie",
-    "Penny Mourdant",
-    "Kwajo Tweneboa",
+    "Jonathan Bartley, former Co-Leader (Green Party)",
+    "Tracy Brabin, Mayor of West Yorkshire (Labour)",
+    "Tamara Finkelstein, former Permanent Secretary Department for Environment, Food & Rural Affairs",
+    "Danny Kruger MP (Reform)",
+    "Polly Mackenzie, former Director of Policy (Liberal Democrats)",
+    "Penny Mordaunt, former Leader of the House of",
+    "Commons (Conservative)",
+    "Kwajo Tweneboa, social housing activist"
   ],
 };
 
