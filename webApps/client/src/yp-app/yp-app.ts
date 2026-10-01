@@ -924,6 +924,7 @@ export class YpApp extends YpBaseElement {
         ?hidden="${this.appMode !== "main" ||
         !this.page ||
         window.appGlobals.domain?.configuration?.hideAppBarIfWelcomeHtml}"
+        ?showHomeLink="${this.subRoute?.endsWith("new_post")}"
       >
         <div slot="navigation">${this.renderNavigation()}</div>
         <div slot="title" ?hidden="${this.page === "agent_bundle"}"></div>
