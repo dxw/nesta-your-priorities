@@ -308,9 +308,10 @@ export const PRESS_RELEASES_CONTENT: {
   description: "The latest announcements and news from the Institute for Small Ideas.",
   items: [
     {
-      title: "First Institute for Small Ideas announcement",
-      description: "Placeholder press release description.",
-      releaseDate: "Date to be confirmed",
+      title: "Martin Lewis launches the Institute for Small Ideas",
+      description:
+        "A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.",
+      releaseDate: "5th October 2026",
     },
   ],
 };

@@ -105,14 +105,20 @@ describe('YpLandingPage', () => {
     });
   });
 
-  it('shows a non-clickable placeholder release and the forthcoming PDF status', () => {
+  it('shows the press release and the forthcoming PDF status', () => {
     const section = element.shadowRoot!.querySelector('#press-releases');
     expect(section?.textContent).to.contain(
       'The latest announcements and news from the Institute for Small Ideas.'
     );
+    expect(section?.textContent).to.contain(
+      'Martin Lewis launches the Institute for Small Ideas'
+    );
+    expect(section?.textContent).to.contain(
+      'A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.'
+    );
+    expect(section?.textContent).to.contain('5th October 2026');
     expect(section?.textContent).to.contain('PDF forthcoming');
     expect(section?.querySelector('.pressReleaseItem h3 a')).to.not.exist;
-    expect(section?.textContent).to.contain('Date to be confirmed');
   });
 
   describe('"Share your idea" button', () => {
