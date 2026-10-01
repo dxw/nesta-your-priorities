@@ -531,7 +531,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .kindOfThingSection {
-          padding: 0 24px 64px;
+          padding: 64px 24px;
         }
 
         .kindOfThingEmphasis {
@@ -1316,6 +1316,41 @@ export class YpLandingPage extends YpBaseElement {
 
         ${this.renderIntroVideo()}
 
+          <div class="smallIdeaSection">
+              <div class="sectionInner">
+                  <div class="smallIdeaHeader">
+                      <div>
+                          <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
+                          <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
+                      </div>
+                      <button
+                              class="shareIdeaButton yp-hard-shadow-box"
+                              aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+                              @click="${this._shareYourIdea}"
+                      >
+                          ${SHARE_IDEA_BUTTON_LABEL}
+                      </button>
+                  </div>
+                  <div class="criteriaGrid">
+                      ${SMALL_IDEA_CONTENT.criteria.map(
+                              (group) => html`
+                    <div class="criteriaBox">
+                      <h3 aria-label="${group.heading}">${group.heading}</h3>
+                      <ul>
+                        ${group.items.map(
+                                      (item) => html`
+                            <li>
+                              <strong>${item.lead}</strong> &ndash; ${item.text}
+                            </li>
+                          `
+                              )}
+                      </ul>
+                    </div>
+                  `
+                      )}
+                  </div>
+              </div>
+          </div>
         <section id="get-involved">
           <div class="getInvolvedDark">
             <div class="sectionInner">
@@ -1344,42 +1379,6 @@ export class YpLandingPage extends YpBaseElement {
                     <div class="howItWorksCard yp-hard-shadow-box">
                       <h3 aria-label="${step.title}">${step.title}</h3>
                       <p>${step.description}</p>
-                    </div>
-                  `
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div class="smallIdeaSection">
-            <div class="sectionInner">
-              <div class="smallIdeaHeader">
-                <div>
-                  <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
-                  <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
-                </div>
-                <button
-                  class="shareIdeaButton yp-hard-shadow-box"
-                  aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                  @click="${this._shareYourIdea}"
-                >
-                  ${SHARE_IDEA_BUTTON_LABEL}
-                </button>
-              </div>
-              <div class="criteriaGrid">
-                ${SMALL_IDEA_CONTENT.criteria.map(
-                  (group) => html`
-                    <div class="criteriaBox">
-                      <h3 aria-label="${group.heading}">${group.heading}</h3>
-                      <ul>
-                        ${group.items.map(
-                          (item) => html`
-                            <li>
-                              <strong>${item.lead}</strong> &ndash; ${item.text}
-                            </li>
-                          `
-                        )}
-                      </ul>
                     </div>
                   `
                 )}
