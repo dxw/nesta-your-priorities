@@ -1104,6 +1104,19 @@ auth.role("post.viewUser", function (post, req, done) {
           done(null, true);
         } else if (req.user && post.user_id === req.user.id) {
           done(null, true);
+        } else if (
+            group.configuration &&
+            group.configuration.onlyAdminsCanViewIdeas
+        ) {
+          if (req.user && group.user_id === req.user.id) {
+            done(null, true);
+          } else if (auth.isAuthenticated(req)) {
+            group.hasGroupAdmins(req.user).then(function (result) {
+              done(null, !!result);
+            });
+          } else {
+            done(null, false);
+          }
         } else {
           auth.isGroupMemberOrOpenToCommunityMember(group, req, done);
         }

@@ -1,8 +1,9 @@
-export type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
+export type YpLandingSectionId = "get-involved" | "about-us" | "faqs" | "press-releases";
 
 export interface YpLandingPageNavLink {
   id: YpLandingSectionId;
   label: string;
+  mobileLabel?: string;
 }
 
 export interface YpLandingPageExample {
@@ -27,6 +28,13 @@ export interface YpLandingPageFaqItem {
   answer: string;
 }
 
+export interface YpLandingPagePressRelease {
+  title: string;
+  description: string;
+  releaseDate: string;
+  pdfUrl?: string;
+}
+
 export const LOGO_PLACEHOLDER_LABEL = "Logo";
 export const VIDEO_PLACEHOLDER_LABEL = "Video placeholder";
 export const IMAGE_PLACEHOLDER_LABEL = "Image placeholder";
@@ -38,7 +46,7 @@ export const CAROUSEL_REGION_LABEL = "Examples of small ideas";
 
 export const NAV_LINKS: YpLandingPageNavLink[] = [
   { id: "get-involved", label: "Get Involved" },
-  { id: "about-us", label: "About Us" },
+  { id: "about-us", label: "About Us", mobileLabel: "about" },
   { id: "faqs", label: "FAQs" },
 ];
 
@@ -289,6 +297,23 @@ export const FAQS_CONTENT: {
     {
       question: "Is this anything to do with MoneySavingExpert?",
       answer: "No. Martin set up this project in a personal capacity. It's run by Nesta's Centre for Collective Intelligence and Involve, with Martin as Chair and funder.",
+    },
+  ],
+};
+
+export const PRESS_RELEASES_CONTENT: {
+  heading: string;
+  description: string;
+  items: YpLandingPagePressRelease[];
+} = {
+  heading: "Press releases",
+  description: "The latest announcements and news from the Institute for Small Ideas.",
+  items: [
+    {
+      title: "Martin Lewis launches the Institute for Small Ideas",
+      description:
+        "A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.",
+      releaseDate: "5th October 2026",
     },
   ],
 };

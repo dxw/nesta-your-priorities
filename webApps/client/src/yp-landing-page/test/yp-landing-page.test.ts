@@ -44,7 +44,7 @@ describe('YpLandingPage', () => {
   function getNavButton(navLabel: string): HTMLElement {
     const button = Array.from(
       element.shadowRoot!.querySelectorAll('.navLinks md-text-button')
-    ).find((el) => el.textContent?.trim() === navLabel) as HTMLElement | undefined;
+    ).find((el) => el.getAttribute('aria-label') === navLabel) as HTMLElement | undefined;
     expect(button, `nav button "${navLabel}" should exist`).to.exist;
     return button!;
   }
@@ -87,6 +87,38 @@ describe('YpLandingPage', () => {
         expect(scrolledIntoView).to.be.true;
       });
     });
+
+    it('uses short mobile labels without shortening accessible names', () => {
+      const getInvolvedButton = getNavButton('Get Involved');
+      const aboutButton = getNavButton('About Us');
+      const faqsButton = getNavButton('FAQs');
+
+      expect(getInvolvedButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('Get Involved');
+      expect(aboutButton.querySelector('.navLabelMobile')?.textContent).to.equal('about');
+      expect(faqsButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('FAQs');
+      expect(getInvolvedButton.getAttribute('aria-label')).to.equal('Get Involved');
+      expect(aboutButton.getAttribute('aria-label')).to.equal('About Us');
+      expect(faqsButton.getAttribute('aria-label')).to.equal('FAQs');
+      expect(
+        element.shadowRoot!.querySelector('.navLinks md-text-button[aria-label="Press releases"]')
+      ).to.not.exist;
+    });
+  });
+
+  it('shows the press release and the forthcoming PDF status', () => {
+    const section = element.shadowRoot!.querySelector('#press-releases');
+    expect(section?.textContent).to.contain(
+      'The latest announcements and news from the Institute for Small Ideas.'
+    );
+    expect(section?.textContent).to.contain(
+      'Martin Lewis launches the Institute for Small Ideas'
+    );
+    expect(section?.textContent).to.contain(
+      'A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.'
+    );
+    expect(section?.textContent).to.contain('5th October 2026');
+    expect(section?.textContent).to.contain('PDF forthcoming');
+    expect(section?.querySelector('.pressReleaseItem h3 a')).to.not.exist;
   });
 
   describe('"Share your idea" button', () => {
