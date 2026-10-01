@@ -18,6 +18,7 @@ declare global {
     PasswordCredential?: any;
     autoTranslate: boolean;
     FederatedCredential?: any;
+    plausible?: (eventName: string, options?: { callback?: () => void; props?: Record<string, unknown> }) => void;
   }
 }
 

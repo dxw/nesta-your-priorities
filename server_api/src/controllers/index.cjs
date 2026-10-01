@@ -168,7 +168,7 @@ let replaceFromEnvFallback = function (data) {
 };
 
 const plausibleCode = `
-  <script defer data-domain="DATADOMAIN" src="https://plausible.io/js/plausible.js"></script>
+  <script defer data-domain="DATADOMAIN" src="https://plausible.io/js/script.manual.js"></script>
   <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
 `;
 
