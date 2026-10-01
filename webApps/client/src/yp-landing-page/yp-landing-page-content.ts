@@ -46,7 +46,6 @@ export const NAV_LINKS: YpLandingPageNavLink[] = [
   { id: "get-involved", label: "Get Involved" },
   { id: "about-us", label: "About Us", mobileLabel: "about" },
   { id: "faqs", label: "FAQs" },
-  { id: "press-releases", label: "Press releases", mobileLabel: "press" },
 ];
 
 export const INTRO_CONTENT = {

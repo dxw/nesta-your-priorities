@@ -9,7 +9,6 @@ const SECTIONS = [
   { id: 'get-involved', navLabel: 'Get Involved', heading: 'Get Involved' },
   { id: 'about-us', navLabel: 'About Us', heading: 'About Us' },
   { id: 'faqs', navLabel: 'FAQs', heading: 'Frequently Asked Questions' },
-  { id: 'press-releases', navLabel: 'Press releases', heading: 'Press releases' },
 ];
 
 describe('YpLandingPage', () => {
@@ -93,16 +92,16 @@ describe('YpLandingPage', () => {
       const getInvolvedButton = getNavButton('Get Involved');
       const aboutButton = getNavButton('About Us');
       const faqsButton = getNavButton('FAQs');
-      const pressButton = getNavButton('Press releases');
 
       expect(getInvolvedButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('Get Involved');
       expect(aboutButton.querySelector('.navLabelMobile')?.textContent).to.equal('about');
       expect(faqsButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('FAQs');
-      expect(pressButton.querySelector('.navLabelMobile')?.textContent).to.equal('press');
       expect(getInvolvedButton.getAttribute('aria-label')).to.equal('Get Involved');
       expect(aboutButton.getAttribute('aria-label')).to.equal('About Us');
       expect(faqsButton.getAttribute('aria-label')).to.equal('FAQs');
-      expect(pressButton.getAttribute('aria-label')).to.equal('Press releases');
+      expect(
+        element.shadowRoot!.querySelector('.navLinks md-text-button[aria-label="Press releases"]')
+      ).to.not.exist;
     });
   });
 
