@@ -9,6 +9,7 @@ const SECTIONS = [
   { id: 'get-involved', navLabel: 'Get Involved', heading: 'Get Involved' },
   { id: 'about-us', navLabel: 'About Us', heading: 'About Us' },
   { id: 'faqs', navLabel: 'FAQs', heading: 'Frequently Asked Questions' },
+  { id: 'press-releases', navLabel: 'Press releases', heading: 'Press releases' },
 ];
 
 describe('YpLandingPage', () => {
@@ -44,7 +45,7 @@ describe('YpLandingPage', () => {
   function getNavButton(navLabel: string): HTMLElement {
     const button = Array.from(
       element.shadowRoot!.querySelectorAll('.navLinks md-text-button')
-    ).find((el) => el.textContent?.trim() === navLabel) as HTMLElement | undefined;
+    ).find((el) => el.getAttribute('aria-label') === navLabel) as HTMLElement | undefined;
     expect(button, `nav button "${navLabel}" should exist`).to.exist;
     return button!;
   }
@@ -87,6 +88,32 @@ describe('YpLandingPage', () => {
         expect(scrolledIntoView).to.be.true;
       });
     });
+
+    it('uses short mobile labels without shortening accessible names', () => {
+      const getInvolvedButton = getNavButton('Get Involved');
+      const aboutButton = getNavButton('About Us');
+      const faqsButton = getNavButton('FAQs');
+      const pressButton = getNavButton('Press releases');
+
+      expect(getInvolvedButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('Get Involved');
+      expect(aboutButton.querySelector('.navLabelMobile')?.textContent).to.equal('about');
+      expect(faqsButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('FAQs');
+      expect(pressButton.querySelector('.navLabelMobile')?.textContent).to.equal('press');
+      expect(getInvolvedButton.getAttribute('aria-label')).to.equal('Get Involved');
+      expect(aboutButton.getAttribute('aria-label')).to.equal('About Us');
+      expect(faqsButton.getAttribute('aria-label')).to.equal('FAQs');
+      expect(pressButton.getAttribute('aria-label')).to.equal('Press releases');
+    });
+  });
+
+  it('shows a non-clickable placeholder release and the forthcoming PDF status', () => {
+    const section = element.shadowRoot!.querySelector('#press-releases');
+    expect(section?.textContent).to.contain(
+      'The latest announcements and news from the Institute for Small Ideas.'
+    );
+    expect(section?.textContent).to.contain('PDF forthcoming');
+    expect(section?.querySelector('.pressReleaseItem h3 a')).to.not.exist;
+    expect(section?.textContent).to.contain('Date to be confirmed');
   });
 
   describe('"Share your idea" button', () => {

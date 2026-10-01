@@ -1,8 +1,9 @@
-export type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
+export type YpLandingSectionId = "get-involved" | "about-us" | "faqs" | "press-releases";
 
 export interface YpLandingPageNavLink {
   id: YpLandingSectionId;
   label: string;
+  mobileLabel?: string;
 }
 
 export interface YpLandingPageExample {
@@ -27,6 +28,13 @@ export interface YpLandingPageFaqItem {
   answer: string;
 }
 
+export interface YpLandingPagePressRelease {
+  title: string;
+  description: string;
+  releaseDate: string;
+  pdfUrl?: string;
+}
+
 export const LOGO_PLACEHOLDER_LABEL = "Logo";
 export const VIDEO_PLACEHOLDER_LABEL = "Video placeholder";
 export const IMAGE_PLACEHOLDER_LABEL = "Image placeholder";
@@ -36,8 +44,9 @@ export const CAROUSEL_REGION_LABEL = "Examples of small ideas";
 
 export const NAV_LINKS: YpLandingPageNavLink[] = [
   { id: "get-involved", label: "Get Involved" },
-  { id: "about-us", label: "About Us" },
+  { id: "about-us", label: "About Us", mobileLabel: "about" },
   { id: "faqs", label: "FAQs" },
+  { id: "press-releases", label: "Press releases", mobileLabel: "press" },
 ];
 
 export const INTRO_CONTENT = {
@@ -287,6 +296,22 @@ export const FAQS_CONTENT: {
     {
       question: "Is this anything to do with MoneySavingExpert?",
       answer: "No. Martin set up this project in a personal capacity. It's run by Nesta's Centre for Collective Intelligence and Involve, with Martin as Chair and funder.",
+    },
+  ],
+};
+
+export const PRESS_RELEASES_CONTENT: {
+  heading: string;
+  description: string;
+  items: YpLandingPagePressRelease[];
+} = {
+  heading: "Press releases",
+  description: "The latest announcements and news from the Institute for Small Ideas.",
+  items: [
+    {
+      title: "First Institute for Small Ideas announcement",
+      description: "Placeholder press release description.",
+      releaseDate: "Date to be confirmed",
     },
   ],
 };
