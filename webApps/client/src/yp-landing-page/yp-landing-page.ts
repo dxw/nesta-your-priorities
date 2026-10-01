@@ -1076,6 +1076,7 @@ export class YpLandingPage extends YpBaseElement {
 
   _shareYourIdea() {
     window.appGlobals.activity("click", "landingPageShareYourIdea");
+    window.plausible?.("Share Your Idea Click");
     YpNavHelpers.redirectTo("/group/1/new_post");
   }
 

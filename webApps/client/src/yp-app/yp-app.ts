@@ -1740,7 +1740,8 @@ export class YpApp extends YpBaseElement {
       import(resolvedPageUrl).then(null, this._showPage404.bind(this));
     }*/
 
-    if (page) {
+    // Landing page route is ""
+    if (page !== undefined) {
       window.appGlobals.analytics.sendToAnalyticsTrackers(
         "send",
         "pageview",
