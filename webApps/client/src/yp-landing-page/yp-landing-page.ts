@@ -20,6 +20,7 @@ import {
   MARTIN_CONTENT,
   ABOUT_US_CONTENT,
   FAQS_CONTENT,
+  PRESS_RELEASES_CONTENT,
   FAQ_ANSWER_PENDING_LABEL,
   FOOTER_CONTENT,
 } from "./yp-landing-page-content.js";
@@ -188,6 +189,10 @@ export class YpLandingPage extends YpBaseElement {
           text-transform: uppercase;
         }
 
+        .navLabelMobile {
+          display: none;
+        }
+
         section {
           box-sizing: border-box;
           max-width: 760px;
@@ -347,7 +352,8 @@ export class YpLandingPage extends YpBaseElement {
 
         #get-involved,
         #about-us,
-        #faqs {
+        #faqs,
+        #press-releases {
           max-width: none;
           margin: 0;
           padding: 0;
@@ -842,6 +848,59 @@ export class YpLandingPage extends YpBaseElement {
           color: var(--yp-landing-body-text-color, #2e4057);
         }
 
+        .pressReleasesSection {
+          background: var(--yp-landing-surface-color, #ffffff);
+          padding: 64px 24px;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .pressReleasesSection .bigHeading {
+          text-align: center;
+        }
+
+        .pressReleasesDescription {
+          color: var(--yp-landing-body-text-color, #2e4057);
+          text-align: center;
+        }
+
+        .pressReleaseList {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin-top: 32px;
+        }
+
+        .pressReleaseItem {
+          padding: 24px;
+          background: var(--yp-landing-surface-color, #ffffff);
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .pressReleaseItem h3 {
+          margin: 0 0 8px;
+          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
+          font-size: 1.5rem;
+          font-weight: 400;
+        }
+
+        .pressReleaseItem p {
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .pressReleaseItem .pressReleaseDate {
+          margin-bottom: 12px;
+          font-weight: 700;
+        }
+
+        .pressReleaseStatus {
+          display: inline-block;
+          margin: 0;
+          padding: 8px 12px;
+          border: 1px solid #691365;
+          color: #691365;
+          font-weight: 700;
+        }
+
         .siteFooter {
           background: var(--yp-landing-video-background-color, #191923);
           padding: 64px 24px;
@@ -907,6 +966,20 @@ export class YpLandingPage extends YpBaseElement {
             padding: 12px 16px;
           }
 
+          .logoPlaceholder {
+            width: 160px;
+            height: 64px;
+            padding: 0 8px;
+          }
+
+          .navLabelDesktop {
+            display: none;
+          }
+
+          .navLabelMobile {
+            display: inline;
+          }
+
           section {
             padding: 32px 16px;
           }
@@ -925,6 +998,7 @@ export class YpLandingPage extends YpBaseElement {
           .martinSection,
           .aboutUsSection,
           .faqsSection,
+          .pressReleasesSection,
           .siteFooter {
             padding: 40px 16px;
           }
@@ -993,6 +1067,8 @@ export class YpLandingPage extends YpBaseElement {
   _scrollToSection(sectionId: YpLandingSectionId) {
     const section = this.$$("#" + sectionId);
     if (section) {
+      const nav = this.$$(".nav") as HTMLElement | null;
+      section.style.scrollMarginTop = `${nav?.getBoundingClientRect().height || 64}px`;
       section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
     window.appGlobals.activity("click", "landingPageNav", sectionId);
@@ -1166,7 +1242,10 @@ export class YpLandingPage extends YpBaseElement {
                 aria-label="${link.label}"
                 @click="${() => this._scrollToSection(link.id)}"
               >
-                ${link.label}
+                <span class="navLabelDesktop">${link.label}</span>
+                <span class="navLabelMobile" aria-hidden="true">
+                  ${link.mobileLabel ?? link.label}
+                </span>
               </md-text-button>
             `
           )}
@@ -1488,6 +1567,31 @@ export class YpLandingPage extends YpBaseElement {
                     </div>
                   `;
                 })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="press-releases">
+          <div class="pressReleasesSection">
+            <div class="sectionInner">
+              <h2 class="bigHeading">${PRESS_RELEASES_CONTENT.heading}</h2>
+              <p class="pressReleasesDescription">${PRESS_RELEASES_CONTENT.description}</p>
+              <div class="pressReleaseList">
+                ${PRESS_RELEASES_CONTENT.items.map(
+                  (item) => html`
+                    <article class="pressReleaseItem yp-hard-shadow-box">
+                      <h3>
+                        ${item.pdfUrl
+                          ? html`<a href="${item.pdfUrl}">${item.title}</a>`
+                          : item.title}
+                      </h3>
+                      <p>${item.description}</p>
+                      <p class="pressReleaseDate">Release date: ${item.releaseDate}</p>
+                      <p class="pressReleaseStatus">PDF forthcoming</p>
+                    </article>
+                  `
+                )}
               </div>
             </div>
           </div>
