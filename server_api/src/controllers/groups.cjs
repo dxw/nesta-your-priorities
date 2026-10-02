@@ -1,4 +1,5 @@
 var express = require("express");
+const { hasNonOpenPosts } = require("../utils/groupPosts.cjs");
 var router = express.Router();
 var models = require("../models/index.cjs");
 var auth = require("../authorization.cjs");
@@ -3736,10 +3737,9 @@ router.post(
 );
 
 router.get("/:id/checkNonOpenPosts", auth.can("view group posts"), (req, res) => {
-  var PostsByNotOpen = models.Post.scope("not_open");
-  PostsByNotOpen.count({ where: { group_id: req.params.id } })
-    .then(function (count) {
-      res.send({ hasNonOpenPosts: count != 0 });
+  hasNonOpenPosts(models, req.params.id)
+    .then(function (result) {
+      res.send({ hasNonOpenPosts: result });
     })
     .catch(function (error) {
       sendGroupOrError(res, null, "checkNonOpenPosts", req.user, error);
@@ -3918,10 +3918,9 @@ router.get("/:id", auth.can("view group"), function (req, res) {
                 id: group.id,
                 userId: req.user ? req.user.id : -1,
               });
-              var PostsByNotOpen = models.Post.scope("not_open");
-              PostsByNotOpen.count({ where: { group_id: req.params.id } })
-                .then(function (count) {
-                  res.send({ group: group, hasNonOpenPosts: count != 0 });
+              hasNonOpenPosts(models, req.params.id)
+                .then(function (result) {
+                  res.send({ group: group, hasNonOpenPosts: result });
                 })
                 .catch(function (error) {
                   sendGroupOrError(res, null, "count_posts", req.user, error);
