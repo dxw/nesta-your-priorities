@@ -968,6 +968,19 @@ export class YpLandingPage extends YpBaseElement {
           text-decoration: underline;
         }
 
+        .footerCookieSettings {
+          border: 0;
+          padding: 0;
+          background: none;
+          cursor: pointer;
+        }
+
+        .footerPolicyLinks {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -1654,15 +1667,24 @@ export class YpLandingPage extends YpBaseElement {
               &copy; ${new Date().getFullYear()}
               ${FOOTER_CONTENT.copyrightHolder}. All rights reserved.
             </p>
-            <a
-              class="footerPrivacyLink"
-              aria-label="${FOOTER_CONTENT.privacyPolicyLabel}"
-              href="${FOOTER_CONTENT.privacyPolicyUrl}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ${FOOTER_CONTENT.privacyPolicyLabel}
-            </a>
+            <div class="footerPolicyLinks">
+              <a
+                class="footerPrivacyLink"
+                aria-label="${FOOTER_CONTENT.privacyPolicyLabel}"
+                href="${FOOTER_CONTENT.privacyPolicyUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ${FOOTER_CONTENT.privacyPolicyLabel}
+              </a>
+              <button
+                class="footerPrivacyLink footerCookieSettings"
+                type="button"
+                @click="${() => window.app.openCookiePreferences()}"
+              >
+                Cookie settings
+              </button>
+            </div>
           </div>
         </div>
       </footer>

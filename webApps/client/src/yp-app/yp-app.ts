@@ -1140,7 +1140,7 @@ export class YpApp extends YpBaseElement {
         <div slot="headline" id="cookieNoticeTitle">This website uses cookies.</div>
         <div slot="content" id="cookieNoticeText">
          Some of these cookies are essential for allowing the site to function properly, while others are third party cookies that allow us to feature video content on the website. 
-		 You can also change your preferences at any point.
+		 You can also change your preferences at any point using the cookie settings link in the footer.
 		 <br />
 		 For more information visit <a href="https://www.nesta.org.uk/cookie-policy-institute-for-small-ideas/">our cookie policy.</a>
         </div>
@@ -1801,6 +1801,14 @@ export class YpApp extends YpBaseElement {
     }
     await this.updateComplete;
     (this.$$("#cookieNotice") as Dialog).show();
+  }
+
+  async openCookiePreferences() {
+    await this.updateComplete;
+    const dialog = this.$$("#cookieNotice") as Dialog;
+    if (!dialog.open) {
+      await dialog.show();
+    }
   }
 
   _cookieNoticeClosed() {

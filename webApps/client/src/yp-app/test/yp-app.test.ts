@@ -79,4 +79,13 @@ describe('YpApp', () => {
     expect(receivedConsent).to.equal(true);
     document.removeEventListener(OPTIONAL_COOKIE_CONSENT_EVENT, onConsent);
   });
+
+  it('reopens cookie preferences after the initial notice was dismissed', async () => {
+    expect(localStorage.getItem(cookieNoticeKey)).to.equal('1');
+
+    await element.openCookiePreferences();
+
+    const dialog = element.shadowRoot?.querySelector('#cookieNotice') as any;
+    expect(dialog.open).to.equal(true);
+  });
 });
