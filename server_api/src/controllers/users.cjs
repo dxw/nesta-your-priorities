@@ -224,6 +224,8 @@ const setUserProfileData = (user, profileData) => {
 
 // Register
 router.post('/register', function (req, res) {
+  return res.sendStatus(404);
+
   var user = models.User.build({
     email: req.body.email.toLowerCase(),
     name: req.body.name,
@@ -1909,6 +1911,8 @@ const completeCreationOfApiKey = (user, apiKey, res) => {
 }
 
 router.post('/createApiKey', auth.isLoggedIn, function(req, res, next) {
+  return res.sendStatus(404);
+
   models.User.findOne({
     where: {
       id: req.user.id
