@@ -7,6 +7,7 @@ import { YpTestHelpers } from '../../common/test/setup-app.js';
 describe('YpApp', () => {
   let element: YpApp;
   let fetchMock: any;
+  const cookieNoticeKey = 'yp-cookie-notice-dismissed';
 
   before(async () => {
     fetchMock = YpTestHelpers.getFetchMock();
@@ -14,6 +15,7 @@ describe('YpApp', () => {
   });
 
   beforeEach(async () => {
+    localStorage.setItem(cookieNoticeKey, '1');
 
     element = await fixture(html`
       ${YpTestHelpers.renderCommonHeader()}
@@ -24,8 +26,38 @@ describe('YpApp', () => {
     await aTimeout(100);
   });
 
+  afterEach(() => {
+    localStorage.removeItem(cookieNoticeKey);
+  });
+
   it('passes the a11y audit', async () => {
     debugger;
     await expect(element).shadowDom.to.be.accessible();
+  });
+
+  it('shows the cookie notice until it is dismissed', async () => {
+    localStorage.removeItem(cookieNoticeKey);
+    await element._showCookieNotice();
+
+    const dialog = element.shadowRoot?.querySelector('#cookieNotice') as any;
+    expect(dialog.open).to.equal(true);
+    (dialog.querySelector('#cookieNoticeDismiss') as HTMLElement).click();
+    await aTimeout(0);
+
+    expect(dialog.open).to.equal(false);
+    expect(localStorage.getItem(cookieNoticeKey)).to.equal('1');
+  });
+
+  it('does not prevent Escape while the cookie notice is open', async () => {
+    localStorage.removeItem(cookieNoticeKey);
+    await element._showCookieNotice();
+
+    const event = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      cancelable: true,
+    });
+    element._handleKeyDown(event);
+
+    expect(event.defaultPrevented).to.equal(false);
   });
 });
