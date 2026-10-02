@@ -836,6 +836,7 @@ export class YpLandingPage extends YpBaseElement {
           font-weight: 400;
           letter-spacing: -0.01em;
           color: var(--yp-landing-heading-text-color, #191923);
+		  font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
 
         .faqToggleIcon {
@@ -888,8 +889,19 @@ export class YpLandingPage extends YpBaseElement {
           font-weight: 400;
         }
 
+		.pressReleaseItem h3 a {
+          color: var(--yp-landing-body-text-color, #2e4057);
+		  text-decoration: none;
+        }
+
+        .pressReleaseItem h3 a:hover,
+        .pressReleaseItem h3 a:focus {
+          text-decoration: underline;
+        }
+
         .pressReleaseItem p {
           color: var(--yp-landing-body-text-color, #2e4057);
+		  margin-bottom: 0.5rem;
         }
 
         .pressReleaseItem .pressReleaseDate {
@@ -1592,12 +1604,11 @@ export class YpLandingPage extends YpBaseElement {
                     <article class="pressReleaseItem yp-hard-shadow-box">
                       <h3>
                         ${item.pdfUrl
-                          ? html`<a href="${item.pdfUrl}">${item.title}</a>`
+                          ? html`<a href="${item.pdfUrl}">${item.title} [pdf]</a>`
                           : item.title}
                       </h3>
                       <p>${item.description}</p>
-                      <p class="pressReleaseDate">Release date: ${item.releaseDate}</p>
-                      <p class="pressReleaseStatus">PDF forthcoming</p>
+                      <p class="pressReleaseDate">${item.releaseDate}</p>
                     </article>
                   `
                 )}
