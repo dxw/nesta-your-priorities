@@ -1,4 +1,5 @@
 let express = require("express");
+const { landingPageCacheControl } = require("../utils/webAppVersion.cjs");
 let router = express.Router();
 let log = require("../utils/logger.cjs");
 let toJson = require("../utils/to_json.cjs");
@@ -498,10 +499,7 @@ let sendIndex = async (req, res) => {
     indexFileData = await replaceSiteData(indexFileData, req, useNewVersion);
     // cache for 5 minutes to allow deployment changes to go through quickly
     // but not get overwhelmed by requests
-    res.setHeader(
-        "Cache-Control",
-        "public, max-age=300, s-maxage=60, stale-while-revalidate=60"
-    );
+    res.setHeader("Cache-Control", landingPageCacheControl(req));
     res.setHeader("Last-Modified", indexCache[versionKey].lastModified);
 
     res.send(indexFileData);
