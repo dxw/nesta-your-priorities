@@ -25,6 +25,8 @@ import {
   FOOTER_CONTENT,
   CONSENT_BUTTON_LABEL,
   CONSENT_TEXT,
+  OPTIONAL_COOKIE_CONSENT_EVENT,
+  OPTIONAL_COOKIE_CONSENT_KEY,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -50,6 +52,8 @@ export class YpLandingPage extends YpBaseElement {
   private carouselDragStartX = 0;
   private carouselDragStartScrollLeft = 0;
   private pendingArrowFocusRedirect: "left" | "right" | null = null;
+  private _boundOptionalCookieConsent =
+    this._optionalCookieConsent.bind(this);
 
   @state()
   private openFaqIndexes = new Set<number>();
@@ -964,6 +968,19 @@ export class YpLandingPage extends YpBaseElement {
           text-decoration: underline;
         }
 
+        .footerCookieSettings {
+          border: 0;
+          padding: 0;
+          background: none;
+          cursor: pointer;
+        }
+
+        .footerPolicyLinks {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
         @media (max-width: 600px) {
           .nav {
             padding: 12px 16px;
@@ -1105,11 +1122,21 @@ export class YpLandingPage extends YpBaseElement {
 
   override connectedCallback() {
     super.connectedCallback();
+    this.consented =
+      localStorage.getItem(OPTIONAL_COOKIE_CONSENT_KEY) === "accepted";
+    this.addGlobalListener(
+      OPTIONAL_COOKIE_CONSENT_EVENT,
+      this._boundOptionalCookieConsent
+    );
     window.addEventListener("resize", this._updateCarouselThumb);
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
+    this.removeGlobalListener(
+      OPTIONAL_COOKIE_CONSENT_EVENT,
+      this._boundOptionalCookieConsent
+    );
     window.removeEventListener("resize", this._updateCarouselThumb);
   }
 
@@ -1264,6 +1291,12 @@ export class YpLandingPage extends YpBaseElement {
 
   giveConsent() {
     this.consented = true;
+    localStorage.setItem(OPTIONAL_COOKIE_CONSENT_KEY, "accepted");
+    this.fireGlobal(OPTIONAL_COOKIE_CONSENT_EVENT, true);
+  }
+
+  private _optionalCookieConsent(event: CustomEvent) {
+    this.consented = event.detail === true;
   }
 
   renderIntroVideo() {
@@ -1634,15 +1667,24 @@ export class YpLandingPage extends YpBaseElement {
               &copy; ${new Date().getFullYear()}
               ${FOOTER_CONTENT.copyrightHolder}. All rights reserved.
             </p>
-            <a
-              class="footerPrivacyLink"
-              aria-label="${FOOTER_CONTENT.privacyPolicyLabel}"
-              href="${FOOTER_CONTENT.privacyPolicyUrl}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ${FOOTER_CONTENT.privacyPolicyLabel}
-            </a>
+            <div class="footerPolicyLinks">
+              <a
+                class="footerPrivacyLink"
+                aria-label="${FOOTER_CONTENT.privacyPolicyLabel}"
+                href="${FOOTER_CONTENT.privacyPolicyUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ${FOOTER_CONTENT.privacyPolicyLabel}
+              </a>
+              <button
+                class="footerPrivacyLink footerCookieSettings"
+                type="button"
+                @click="${() => window.app.openCookiePreferences()}"
+              >
+                Cookie settings
+              </button>
+            </div>
           </div>
         </div>
       </footer>
