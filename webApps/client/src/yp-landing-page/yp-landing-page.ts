@@ -468,7 +468,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .smallIdeaSection {
-          padding: 64px 24px;
+          padding: 0 24px 64px;
         }
 
         .smallIdeaHeader {
