@@ -49,6 +49,9 @@ export class YpTopAppBar extends YpBaseElement {
   hideTitle = false;
 
   @property({ type: Boolean })
+  showHomeLink = false;
+
+  @property({ type: Boolean })
   restrictWidth = false;
 
   @property({ type: Boolean })
@@ -514,7 +517,19 @@ export class YpTopAppBar extends YpBaseElement {
       // This logic seems redundant now with the separate finalTitle handling, review if needed.
     }
 
-    return html`
+    return this.showHomeLink ? html`<nav
+            ?useLowestContainerColor="${this.useLowestContainerColor}"
+            class="${appBarClass} layout"
+            ?restrict-width="${this.restrictWidth}"
+            >
+                <div
+                  class="titleText"
+                  @click="${() => this.redirectTo("/")}"
+                >
+                    ${this.domain?.name}
+                </div>
+            </nav>`
+      : html`
       <div
         ?useLowestContainerColor="${this.useLowestContainerColor}"
         class="${appBarClass} layout"

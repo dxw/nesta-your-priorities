@@ -104,6 +104,7 @@ export class YpAnalytics extends YpCodeBase {
 
     if (b==="pageview" && a!=="sendOnlyCommunity") {
       window.appGlobals.activity('pageview', c);
+      window.plausible?.('pageview');
     }
   }
 

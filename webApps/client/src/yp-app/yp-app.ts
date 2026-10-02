@@ -924,6 +924,7 @@ export class YpApp extends YpBaseElement {
         ?hidden="${this.appMode !== "main" ||
         !this.page ||
         window.appGlobals.domain?.configuration?.hideAppBarIfWelcomeHtml}"
+        ?showHomeLink="${this.subRoute?.endsWith("new_post")}"
       >
         <div slot="navigation">${this.renderNavigation()}</div>
         <div slot="title" ?hidden="${this.page === "agent_bundle"}"></div>
@@ -1525,7 +1526,8 @@ export class YpApp extends YpBaseElement {
         this.route.indexOf("/user/reset_password") > -1 ||
         this.route.indexOf("/user/open_notification_settings") > -1 ||
         this.route.indexOf("/user/accept/invite") > -1 ||
-        this.route.indexOf("/user/info_page") > -1
+        this.route.indexOf("/user/info_page") > -1 ||
+        this.route.indexOf("/user/login") > -1
       ) {
         if (this.route.indexOf("/user/reset_password") > -1) {
           this.openResetPasswordDialog(params[params.length - 1]);
@@ -1541,6 +1543,10 @@ export class YpApp extends YpBaseElement {
           this.openUserNotificationsDialog();
         } else if (this.route.indexOf("/user/info_page") > -1) {
           this.openUserInfoPage(parseInt(params[params.length - 1]));
+          window.history.pushState({}, "", "/");
+          window.dispatchEvent(new CustomEvent("location-changed"));
+        } else if (this.route.indexOf("/user/login") > -1) {
+          this.openLoginFromRoute();
           window.history.pushState({}, "", "/");
           window.dispatchEvent(new CustomEvent("location-changed"));
         }
@@ -1739,7 +1745,8 @@ export class YpApp extends YpBaseElement {
       import(resolvedPageUrl).then(null, this._showPage404.bind(this));
     }*/
 
-    if (page) {
+    // Landing page route is ""
+    if (page !== undefined) {
       window.appGlobals.analytics.sendToAnalyticsTrackers(
         "send",
         "pageview",
@@ -1753,6 +1760,16 @@ export class YpApp extends YpBaseElement {
     this.getDialogAsync("resetPassword", async (dialog: any) => {
       dialog.open(resetPasswordToken);
     });
+  }
+
+  // A bookmarkable way in for admins on sites that hide the header login link.
+  // On a cold load the session is restored asynchronously, so wait for it
+  // rather than prompting a user who is already logged in.
+  async openLoginFromRoute() {
+    const loggedIn = await window.appUser.ensureLoginChecked();
+    if (!loggedIn || window.appUser.user?.profile_data?.isAnonymousUser) {
+      window.appUser.openUserlogin();
+    }
   }
 
   openUserNotificationsDialog() {

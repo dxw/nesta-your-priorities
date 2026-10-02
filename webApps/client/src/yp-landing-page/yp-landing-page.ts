@@ -20,8 +20,11 @@ import {
   MARTIN_CONTENT,
   ABOUT_US_CONTENT,
   FAQS_CONTENT,
+  PRESS_RELEASES_CONTENT,
   FAQ_ANSWER_PENDING_LABEL,
   FOOTER_CONTENT,
+  CONSENT_BUTTON_LABEL,
+  CONSENT_TEXT,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -29,7 +32,7 @@ import "@material/web/button/text-button.js";
 @customElement("yp-landing-page")
 export class YpLandingPage extends YpBaseElement {
   @state()
-  private videoPlaying = false;
+  private consented = false;
 
   @state()
   private carouselThumbWidthPercent = 100;
@@ -75,7 +78,7 @@ export class YpLandingPage extends YpBaseElement {
         /* Sits inside a white .yp-hard-shadow-box card that already has black border, 
          * so accent colour is needed to differentiate
          */
-        .shareIdeaButton:focus-visible {
+        .button:focus-visible {
           box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #c124bc;
         }
 
@@ -100,7 +103,7 @@ export class YpLandingPage extends YpBaseElement {
         .logoPlaceholder,
         .intro h1,
         h2,
-        .shareIdeaButton,
+        .button,
         .howItWorksCard h3,
         .criteriaBox h3,
         .carouselCardBody h3 {
@@ -188,6 +191,10 @@ export class YpLandingPage extends YpBaseElement {
           text-transform: uppercase;
         }
 
+        .navLabelMobile {
+          display: none;
+        }
+
         section {
           box-sizing: border-box;
           max-width: 760px;
@@ -260,7 +267,7 @@ export class YpLandingPage extends YpBaseElement {
           color: var(--yp-landing-heading-text-color, #191923);
         }
 
-        .shareIdeaButton {
+        .button {
           background: var(--yp-landing-surface-color, #ffffff);
           color: var(--yp-landing-heading-text-color, #191923);
           padding: 12px 28px;
@@ -274,12 +281,12 @@ export class YpLandingPage extends YpBaseElement {
           transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
-        .shareIdeaButton:hover {
+        .button:hover {
           transform: translate(2px, 2px);
           box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e144dc);
         }
 
-        .shareIdeaButton:active {
+        .button:active {
           transform: translate(4px, 4px);
           box-shadow: 2px 2px 0 0 var(--yp-hard-shadow-color, #e144dc);
         }
@@ -294,6 +301,7 @@ export class YpLandingPage extends YpBaseElement {
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-direction: column;
           background: var(--yp-landing-video-background-color, #191923);
         }
 
@@ -347,7 +355,8 @@ export class YpLandingPage extends YpBaseElement {
 
         #get-involved,
         #about-us,
-        #faqs {
+        #faqs,
+        #press-releases {
           max-width: none;
           margin: 0;
           padding: 0;
@@ -369,20 +378,30 @@ export class YpLandingPage extends YpBaseElement {
             }
         }
         
+        .logosContainer {
+            max-width: 550px;
+            margin-top: 20px;
+            @media (min-width: 900px) {
+                margin-top: 0;
+            }
+        }
+        
         .logos {
             align-items: flex-start;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             margin-top: 20px;
+            
             .logo {
                 margin-bottom: 20px;
                 margin-right: 0;
+                max-height: 63px;
             }
             
             @media (min-width: 900px) {
                 flex-direction: row;
                 align-items: center;
-                margin-top: 0;
 
                 .logo {
                     margin-bottom: 0;
@@ -515,7 +534,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .kindOfThingSection {
-          padding: 0 24px 64px;
+          padding: 64px 24px;
         }
 
         .kindOfThingEmphasis {
@@ -832,9 +851,64 @@ export class YpLandingPage extends YpBaseElement {
           color: var(--yp-landing-body-text-color, #2e4057);
         }
 
+        .pressReleasesSection {
+          background: var(--yp-landing-surface-color, #ffffff);
+          padding: 64px 24px;
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .pressReleasesSection .bigHeading {
+          text-align: center;
+        }
+
+        .pressReleasesDescription {
+          color: var(--yp-landing-body-text-color, #2e4057);
+          text-align: center;
+        }
+
+        .pressReleaseList {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin-top: 32px;
+        }
+
+        .pressReleaseItem {
+          padding: 24px;
+          background: var(--yp-landing-surface-color, #ffffff);
+          color: var(--yp-landing-heading-text-color, #191923);
+        }
+
+        .pressReleaseItem h3 {
+          margin: 0 0 8px;
+          font-family: var(--yp-landing-heading-font, "Bebas Neue", sans-serif);
+          font-size: 1.5rem;
+          font-weight: 400;
+        }
+
+        .pressReleaseItem p {
+          color: var(--yp-landing-body-text-color, #2e4057);
+        }
+
+        .pressReleaseItem .pressReleaseDate {
+          margin-bottom: 12px;
+          font-weight: 700;
+        }
+
+        .pressReleaseStatus {
+          display: inline-block;
+          margin: 0;
+          padding: 8px 12px;
+          border: 1px solid #691365;
+          color: #691365;
+          font-weight: 700;
+        }
+
         .siteFooter {
           background: var(--yp-landing-video-background-color, #191923);
           padding: 64px 24px;
+          color: var(--yp-landing-surface-color, #ffffff);
+            
         }
 
         .footerHeading {
@@ -895,6 +969,20 @@ export class YpLandingPage extends YpBaseElement {
             padding: 12px 16px;
           }
 
+          .logoPlaceholder {
+            width: 160px;
+            height: 64px;
+            padding: 0 8px;
+          }
+
+          .navLabelDesktop {
+            display: none;
+          }
+
+          .navLabelMobile {
+            display: inline;
+          }
+
           section {
             padding: 32px 16px;
           }
@@ -913,6 +1001,7 @@ export class YpLandingPage extends YpBaseElement {
           .martinSection,
           .aboutUsSection,
           .faqsSection,
+          .pressReleasesSection,
           .siteFooter {
             padding: 40px 16px;
           }
@@ -966,6 +1055,15 @@ export class YpLandingPage extends YpBaseElement {
             scroll-snap-align: center;
           }
         }
+          
+          .consent {
+              color: var(--yp-landing-surface-color, #ffffff);
+              padding: 50px;
+          }
+          
+          .consentLink {
+              color: var(--yp-landing-surface-color, #ffffff);
+          }
       `,
     ];
   }
@@ -981,6 +1079,8 @@ export class YpLandingPage extends YpBaseElement {
   _scrollToSection(sectionId: YpLandingSectionId) {
     const section = this.$$("#" + sectionId);
     if (section) {
+      const nav = this.$$(".nav") as HTMLElement | null;
+      section.style.scrollMarginTop = `${nav?.getBoundingClientRect().height || 64}px`;
       section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
     window.appGlobals.activity("click", "landingPageNav", sectionId);
@@ -988,6 +1088,7 @@ export class YpLandingPage extends YpBaseElement {
 
   _shareYourIdea() {
     window.appGlobals.activity("click", "landingPageShareYourIdea");
+    window.plausible?.("Share Your Idea Click");
     YpNavHelpers.redirectTo("/group/1/new_post");
   }
 
@@ -1000,11 +1101,6 @@ export class YpLandingPage extends YpBaseElement {
     }
     this.openFaqIndexes = openFaqIndexes;
     window.appGlobals.activity("click", "landingPageFaqToggle", `${index}`);
-  }
-
-  _playVideo() {
-    window.appGlobals.activity("click", "landingPageVideoPlay");
-    this.videoPlaying = true;
   }
 
   override connectedCallback() {
@@ -1154,7 +1250,10 @@ export class YpLandingPage extends YpBaseElement {
                 aria-label="${link.label}"
                 @click="${() => this._scrollToSection(link.id)}"
               >
-                ${link.label}
+                <span class="navLabelDesktop">${link.label}</span>
+                <span class="navLabelMobile" aria-hidden="true">
+                  ${link.mobileLabel ?? link.label}
+                </span>
               </md-text-button>
             `
           )}
@@ -1163,35 +1262,34 @@ export class YpLandingPage extends YpBaseElement {
     `;
   }
 
+  giveConsent() {
+    this.consented = true;
+  }
+
   renderIntroVideo() {
     const youtubeVideoId = "dQw4w9WgXcQ"; // TODO: USE ACTUAL VIDEO LINK
 
     return html`
       <div class="videoPlaceholder">
-        ${this.videoPlaying
-          ? html`
+        ${this.consented 
+                ? html`
               <iframe
-                src="https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1"
+                src="https://www.youtube-nocookie.com/embed/${youtubeVideoId}?autoplay=0"
                 title="The Institute for Small Ideas video"
-                allow="autoplay; encrypted-media; picture-in-picture"
+                allow=" encrypted-media; picture-in-picture"
                 allowfullscreen
               ></iframe>
-            `
-          : html`
-              <img
-                src="https://img.youtube.com/vi/${youtubeVideoId}/maxresdefault.jpg"
-                alt="The Institute for Small Ideas video thumbnail"
-              />
-              <button
-                class="playButton"
-                aria-label="Play video"
-                @click="${this._playVideo}"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor" d="M8 5v14l11-7z" />
-                </svg>
-              </button>
-            `}
+        ` : html`
+                 <div class="consent">
+                     ${CONSENT_TEXT}
+                     See <a class="consentLink" href="https://policies.google.com/privacy?hl=en-GB&">Youtube's privacy policy</a> for
+                     more information.
+                 </div>
+                <button class="button"
+                        @click="${this.giveConsent}">
+                    ${CONSENT_BUTTON_LABEL}
+                </button>`
+          }
       </div>
     `;
   }
@@ -1206,13 +1304,14 @@ export class YpLandingPage extends YpBaseElement {
             <div class="introCopy">
               <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
               <h1 aria-label="${INTRO_CONTENT.heading}">${INTRO_CONTENT.heading}</h1>
+              <p class="quote">${INTRO_CONTENT.subHeading}</p>
               <p class="quote">${INTRO_CONTENT.quote}</p>
               <p class="attribution">
                 <strong>${INTRO_CONTENT.attributionName}</strong>
                 &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
               </p>
               <button
-                class="shareIdeaButton yp-hard-shadow-box"
+                class="button yp-hard-shadow-box"
                 aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                 @click="${this._shareYourIdea}"
               >
@@ -1224,6 +1323,41 @@ export class YpLandingPage extends YpBaseElement {
 
         ${this.renderIntroVideo()}
 
+          <div class="smallIdeaSection">
+              <div class="sectionInner">
+                  <div class="smallIdeaHeader">
+                      <div>
+                          <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
+                          <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
+                      </div>
+                      <button
+                              class="shareIdeaButton yp-hard-shadow-box"
+                              aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+                              @click="${this._shareYourIdea}"
+                      >
+                          ${SHARE_IDEA_BUTTON_LABEL}
+                      </button>
+                  </div>
+                  <div class="criteriaGrid">
+                      ${SMALL_IDEA_CONTENT.criteria.map(
+                              (group) => html`
+                    <div class="criteriaBox">
+                      <h3 aria-label="${group.heading}">${group.heading}</h3>
+                      <ul>
+                        ${group.items.map(
+                                      (item) => html`
+                            <li>
+                              <strong>${item.lead}</strong> &ndash; ${item.text}
+                            </li>
+                          `
+                              )}
+                      </ul>
+                    </div>
+                  `
+                      )}
+                  </div>
+              </div>
+          </div>
         <section id="get-involved">
           <div class="getInvolvedDark">
             <div class="sectionInner">
@@ -1233,7 +1367,7 @@ export class YpLandingPage extends YpBaseElement {
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
               <button
-                class="shareIdeaButton yp-hard-shadow-box"
+                class="button yp-hard-shadow-box"
                 aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                 @click="${this._shareYourIdea}"
               >
@@ -1252,42 +1386,6 @@ export class YpLandingPage extends YpBaseElement {
                     <div class="howItWorksCard yp-hard-shadow-box">
                       <h3 aria-label="${step.title}">${step.title}</h3>
                       <p>${step.description}</p>
-                    </div>
-                  `
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div class="smallIdeaSection">
-            <div class="sectionInner">
-              <div class="smallIdeaHeader">
-                <div>
-                  <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
-                  <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
-                </div>
-                <button
-                  class="shareIdeaButton yp-hard-shadow-box"
-                  aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                  @click="${this._shareYourIdea}"
-                >
-                  ${SHARE_IDEA_BUTTON_LABEL}
-                </button>
-              </div>
-              <div class="criteriaGrid">
-                ${SMALL_IDEA_CONTENT.criteria.map(
-                  (group) => html`
-                    <div class="criteriaBox">
-                      <h3 aria-label="${group.heading}">${group.heading}</h3>
-                      <ul>
-                        ${group.items.map(
-                          (item) => html`
-                            <li>
-                              <strong>${item.lead}</strong> &ndash; ${item.text}
-                            </li>
-                          `
-                        )}
-                      </ul>
                     </div>
                   `
                 )}
@@ -1432,7 +1530,7 @@ export class YpLandingPage extends YpBaseElement {
                 </div>
                 <div class="aboutUsActions">
                   <button
-                    class="shareIdeaButton yp-hard-shadow-box"
+                    class="button yp-hard-shadow-box"
                     aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                     @click="${this._shareYourIdea}"
                   >
@@ -1479,6 +1577,31 @@ export class YpLandingPage extends YpBaseElement {
             </div>
           </div>
         </section>
+
+        <section id="press-releases">
+          <div class="pressReleasesSection">
+            <div class="sectionInner">
+              <h2 class="bigHeading">${PRESS_RELEASES_CONTENT.heading}</h2>
+              <p class="pressReleasesDescription">${PRESS_RELEASES_CONTENT.description}</p>
+              <div class="pressReleaseList">
+                ${PRESS_RELEASES_CONTENT.items.map(
+                  (item) => html`
+                    <article class="pressReleaseItem yp-hard-shadow-box">
+                      <h3>
+                        ${item.pdfUrl
+                          ? html`<a href="${item.pdfUrl}">${item.title}</a>`
+                          : item.title}
+                      </h3>
+                      <p>${item.description}</p>
+                      <p class="pressReleaseDate">Release date: ${item.releaseDate}</p>
+                      <p class="pressReleaseStatus">PDF forthcoming</p>
+                    </article>
+                  `
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer class="siteFooter">
@@ -1494,9 +1617,16 @@ export class YpLandingPage extends YpBaseElement {
                   ${FOOTER_CONTENT.emailAddress}
                 </a>
               </div>
-              <div class="logos">
-                  <img class="logo" src="/images/home/centre_collective_intelligence_logo.png" alt="Contributing organisation Centre for Collective Intelligence's logo">
-                  <img src="/images/home/involve_logo.png" alt="Contributing organisation Involve's logo">
+              <div class="logosContainer">
+                <div>${FOOTER_CONTENT.details}</div>
+                <div class="logos">
+                    ${FOOTER_CONTENT.charities.map(charity => {
+                      return html `<div>
+                          <a href="${charity.url}"><img class="logo" src="${charity.logo.url}" alt="${charity.logo.alt}"></a>
+                          <div>Charity number: ${charity.number}</div>
+                      </div>`;
+                    })}
+                </div>
               </div>
             </div>
           <div class="footerBottomRow">

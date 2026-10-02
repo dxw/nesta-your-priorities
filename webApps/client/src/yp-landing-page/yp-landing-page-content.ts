@@ -1,8 +1,9 @@
-export type YpLandingSectionId = "get-involved" | "about-us" | "faqs";
+export type YpLandingSectionId = "get-involved" | "about-us" | "faqs" | "press-releases";
 
 export interface YpLandingPageNavLink {
   id: YpLandingSectionId;
   label: string;
+  mobileLabel?: string;
 }
 
 export interface YpLandingPageExample {
@@ -27,24 +28,34 @@ export interface YpLandingPageFaqItem {
   answer: string;
 }
 
+export interface YpLandingPagePressRelease {
+  title: string;
+  description: string;
+  releaseDate: string;
+  pdfUrl?: string;
+}
+
 export const LOGO_PLACEHOLDER_LABEL = "Logo";
 export const VIDEO_PLACEHOLDER_LABEL = "Video placeholder";
 export const IMAGE_PLACEHOLDER_LABEL = "Image placeholder";
 export const LOGO_IMAGE_PLACEHOLDER_LABEL = "Logo placeholder";
 export const SHARE_IDEA_BUTTON_LABEL = "Share your idea";
+export const CONSENT_BUTTON_LABEL = "I consent";
+export const CONSENT_TEXT = "This video requires third party cookies which include tracking. By clicking I consent you agree to using their service and tracking";
 export const CAROUSEL_REGION_LABEL = "Examples of small ideas";
 
 export const NAV_LINKS: YpLandingPageNavLink[] = [
   { id: "get-involved", label: "Get Involved" },
-  { id: "about-us", label: "About Us" },
+  { id: "about-us", label: "About Us", mobileLabel: "about" },
   { id: "faqs", label: "FAQs" },
 ];
 
 export const INTRO_CONTENT = {
   eyebrow: "The Institute for Small Ideas",
-  heading: "Getting government to fix the small stuff",
+  heading: "Tell us the small fixes that’ll make a difference. We’ll ensure they’re heard.",
+  subHeading: "A charity initiative.",
   quote:
-    "“I think small ideas to fix life's frustrations deserve the same serious policy concentration as the big ones because if we get it right, they add up – and bit by bit, we can make day-to-day life better for everyone.”",
+    "“Ever thought ‘why don’t they just fix this’? Politicians often talk up big legacy projects, but can ignore the small things that’d make lives better. We want your ideas for practical, small, non-controversial ways to improve the UK. Then we’ll give them a serious policy workover and try to make the changes happen.”",
   attributionName: "Martin Lewis",
   attributionRole:
     "Money Saving Expert, Chair of the Institute for Small Ideas",
@@ -67,18 +78,18 @@ export const HOW_IT_WORKS_CONTENT: {
   heading: "How it works",
   steps: [
     {
-      title: "01: Send us your idea",
+      title: "01: Send us your idea.",
       description:
         "Small, do-able, non-political - the stuff that'd actually make life better.",
     },
     {
-      title: "02: Our policy advisers narrow the list of ideas",
+      title: "02: We check and help refine your ideas.",
       description:
-        "They'll sift through your ideas to select the ones that meet the criteria.",
+        "We filter ideas against the criteria, then bring in policy experts to make sure they’re workable.",
     },
     {
-      title: "03: You get to weigh in",
-      description: "We publish the long-list for your feedback.",
+      title: "03: We publish the long list.",
+      description: "And invite you to feedback.",
     },
     {
       title: "04: Our cross-party panel, chaired by Martin, picks the final ones",
@@ -230,18 +241,19 @@ export const ABOUT_US_CONTENT: {
   ledByLabel: "Team:",
   leaders: [
     "Martin Lewis, Chair",
-    "Kathy Peach, Co-Director",
-    "Sue Tibballs, Co-Director",
+    "Kathy Peach, Nesta. Co-Director",
+    "Sue Tibballs, Involve. Co-Director",
   ],
   panelLabel: "Our Panel:",
   panel: [
-    "Tracey Brabin",
-    "Tamara Finklestein",
-    "Green party",
-    "Danny Kruger",
-    "Polly Mackenzie",
-    "Penny Mourdant",
-    "Kwajo Tweneboa",
+    "Jonathan Bartley, former Co-Leader (Green Party)",
+    "Tracy Brabin, Mayor of West Yorkshire (Labour)",
+    "Tamara Finkelstein, former Permanent Secretary Department for Environment, Food & Rural Affairs",
+    "Danny Kruger MP (Reform)",
+    "Polly Mackenzie, former Director of Policy (Liberal Democrats)",
+    "Penny Mordaunt, former Leader of the House of",
+    "Commons (Conservative)",
+    "Kwajo Tweneboa, social housing activist"
   ],
 };
 
@@ -289,8 +301,46 @@ export const FAQS_CONTENT: {
   ],
 };
 
+export const PRESS_RELEASES_CONTENT: {
+  heading: string;
+  description: string;
+  items: YpLandingPagePressRelease[];
+} = {
+  heading: "Press releases",
+  description: "The latest announcements and news from the Institute for Small Ideas.",
+  items: [
+    {
+      title: "Martin Lewis launches the Institute for Small Ideas",
+      description:
+        "A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.",
+      releaseDate: "5th October 2026",
+    },
+  ],
+};
+
 export const FOOTER_CONTENT = {
   heading: "Contact",
+  details: "THE INSTITUTE FOR SMALL IDEAS IS FOUNDED AND CHAIRED BY MARTIN LEWIS, AND RUN BY TWO CHARITIES:",
+  charities: [
+    {
+      name: "CCI",
+      url: "https://www.nesta.org.uk/centre-for-collective-intelligence/",
+      logo: {
+        url: "/images/home/centre_collective_intelligence_logo.png",
+        alt: "Contributing organisation Centre for Collective Intelligence's logo"
+      },
+      number: "1144091"
+    },
+    {
+      name: "Involve",
+      url: "https://www.involve.org.uk/",
+      logo: {
+        url: "/images/home/involve_logo.png",
+        alt: "Contributing organisation Involve's logo"
+      },
+      number: "1130568"
+    }
+  ],
   emailAddress: "smallideas@nesta.org.uk",
   copyrightHolder: "The Institute for Small Ideas",
   privacyPolicyLabel: "Privacy Policy",

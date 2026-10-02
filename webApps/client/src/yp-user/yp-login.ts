@@ -1755,24 +1755,7 @@ export class YpLogin extends YpBaseElement {
   }
 
   setupCreateOptions() {
-    if (window.appUser.loginForAcceptInviteParams || this.alwaysShowCreateUser) {
-      this.createEnabled = true;
-    } else if (
-      this.domain &&
-      this.domain.configuration &&
-      this.domain.configuration.onlyAllowCreateUserOnInvite
-    ) {
-      this.createEnabled = false;
-    } else {
-      this.createEnabled = true;
-    }
-
-    if (
-      window.appGlobals.originalQueryParameters &&
-      window.appGlobals.originalQueryParameters.allowCreateForTestSystem72
-    ) {
-      this.createEnabled = true;
-    }
+    return false;
   }
 
   setup(onLoginFunction: Function, domain: YpDomainData) {

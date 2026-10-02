@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # Root Dockerfile for Dalmatian ECS deployments.
 #
 # Dalmatian's default buildspec runs `docker build -t $IMAGE_REPO_NAME:test .`
@@ -10,13 +8,17 @@
 #
 # One image serves both the web and worker processes; ECS selects between them
 # with a per-service `entryPoint` override.
+#
+# There is deliberately no `# syntax=` directive: under BuildKit it pulls the
+# Dockerfile frontend from Docker Hub on every build, and CodeBuild's shared
+# egress IPs hit the anonymous pull limit. Nothing here needs a newer frontend.
 
 # ---------- Stage 1: build the Lit client ----------
 FROM node:24 AS client
 WORKDIR /app
 
 COPY webApps/client/package.json webApps/client/package-lock.json ./webApps/client/
-RUN cd webApps/client && npm ci
+RUN cd webApps/client && npm ci --no-audit --no-fund
 
 COPY webApps ./webApps
 
@@ -46,7 +48,7 @@ FROM node:24 AS server
 WORKDIR /app
 
 COPY server_api/package.json server_api/package-lock.json ./server_api/
-RUN cd server_api && npm ci
+RUN cd server_api && npm ci --no-audit --no-fund
 
 # server_api/tsconfig.json lists ../webApps/client/src/*.d.ts under "types",
 # so the client sources must be present for tsc to resolve them.
@@ -55,7 +57,11 @@ COPY server_api ./server_api
 
 # tsc emits dist/services/workers/main.cjs because tsconfig sets
 # "allowJs": true and includes "src/**/*.cjs" with "rootDir": "./src".
-RUN cd server_api && npm run build
+#
+# Pruning here rather than running a second `npm ci --omit=dev` in the runtime
+# stage saves a full download and install. Both images are the same Debian
+# release, so native modules built here load there.
+RUN cd server_api && npm run build && npm prune --omit=dev --no-audit --no-fund
 
 # ---------- Stage 3: runtime ----------
 FROM node:24-slim AS runtime
@@ -74,14 +80,17 @@ ENV NODE_ENV=production
 ENV PORT=8080
 ENV YOUR_PRIORITIES_LISTEN_HOST=0.0.0.0
 
-COPY server_api/package.json server_api/package-lock.json ./server_api/
-RUN cd server_api && npm ci --omit=dev
+# Ownership is set as files are copied in. A `chown -R` afterwards rewrites
+# every file into a second layer, which doubled node_modules in the image and
+# took about three minutes of each CodeBuild run.
+RUN mkdir server_api && chown -R node:node /app
 
-COPY --from=server /app/server_api/dist ./server_api/dist
-COPY --from=client /app/server_api/webAppsDist ./server_api/webAppsDist
-COPY server_api/config ./server_api/config
+COPY --chown=node:node server_api/package.json server_api/package-lock.json ./server_api/
+COPY --chown=node:node --from=server /app/server_api/node_modules ./server_api/node_modules
+COPY --chown=node:node --from=server /app/server_api/dist ./server_api/dist
+COPY --chown=node:node --from=client /app/server_api/webAppsDist ./server_api/webAppsDist
+COPY --chown=node:node server_api/config ./server_api/config
 
-RUN chown -R node:node /app
 USER node
 
 EXPOSE 8080
