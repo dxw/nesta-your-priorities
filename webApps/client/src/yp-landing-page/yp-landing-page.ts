@@ -1025,7 +1025,7 @@ export class YpLandingPage extends YpBaseElement {
           }
 
           .kindOfThingSection {
-            padding: 0 16px 40px;
+            padding: 40px 16px 40px;
           }
 
           .footerBottomRow {
