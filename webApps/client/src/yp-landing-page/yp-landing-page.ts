@@ -468,7 +468,7 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .smallIdeaSection {
-          padding: 64px 24px;
+          padding: 0 24px 64px;
         }
 
         .smallIdeaHeader {
@@ -739,7 +739,7 @@ export class YpLandingPage extends YpBaseElement {
         .aboutUsGrid {
           display: grid;
           grid-template-columns: 1fr 1.2fr;
-          gap: 48px;
+          gap: 32px 48px;
           align-items: start;
         }
 
@@ -767,9 +767,10 @@ export class YpLandingPage extends YpBaseElement {
 
         .aboutUsPeopleGrid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr 1.2fr;
           gap: 0 32px;
           margin-bottom: 24px;
+		  grid-column: 1 / span 2;
         }
 
         .aboutUsLeadershipList {
@@ -798,6 +799,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .aboutUsActions {
           text-align: right;
+		  grid-column: 1 / span 2;
         }
 
         .faqsSection {
@@ -834,6 +836,7 @@ export class YpLandingPage extends YpBaseElement {
           font-weight: 400;
           letter-spacing: -0.01em;
           color: var(--yp-landing-heading-text-color, #191923);
+		  font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
 
         .faqToggleIcon {
@@ -886,8 +889,19 @@ export class YpLandingPage extends YpBaseElement {
           font-weight: 400;
         }
 
+		.pressReleaseItem h3 a {
+          color: var(--yp-landing-body-text-color, #2e4057);
+		  text-decoration: none;
+        }
+
+        .pressReleaseItem h3 a:hover,
+        .pressReleaseItem h3 a:focus {
+          text-decoration: underline;
+        }
+
         .pressReleaseItem p {
           color: var(--yp-landing-body-text-color, #2e4057);
+		  margin-bottom: 0.5rem;
         }
 
         .pressReleaseItem .pressReleaseDate {
@@ -933,6 +947,10 @@ export class YpLandingPage extends YpBaseElement {
         .footerEmail:focus {
           text-decoration: underline;
         }
+
+		.footerTopRow {
+		  align-items: start;
+	    }
 
         .footerBottomRow {
           display: flex;
@@ -1007,7 +1025,7 @@ export class YpLandingPage extends YpBaseElement {
           }
 
           .kindOfThingSection {
-            padding: 0 16px 40px;
+            padding: 40px 16px 40px;
           }
 
           .footerBottomRow {
@@ -1267,7 +1285,7 @@ export class YpLandingPage extends YpBaseElement {
   }
 
   renderIntroVideo() {
-    const youtubeVideoId = "dQw4w9WgXcQ"; // TODO: USE ACTUAL VIDEO LINK
+    const youtubeVideoId = "hJohGPpAsNc"; 
 
     return html`
       <div class="videoPlaceholder">
@@ -1331,7 +1349,7 @@ export class YpLandingPage extends YpBaseElement {
                           <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                       </div>
                       <button
-                              class="shareIdeaButton yp-hard-shadow-box"
+                              class="button shareIdeaButton yp-hard-shadow-box"
                               aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                               @click="${this._shareYourIdea}"
                       >
@@ -1510,33 +1528,34 @@ export class YpLandingPage extends YpBaseElement {
                 ${ABOUT_US_CONTENT.paragraphs.map(
                   (paragraph) => html`<p>${paragraph}</p>`
                 )}
-                <div class="aboutUsPeopleGrid">
-                  <div>
-                    <p>${ABOUT_US_CONTENT.ledByLabel}</p>
-                    <ul class="aboutUsLeadershipList">
-                      ${ABOUT_US_CONTENT.leaders.map(
-                        (leader) => html`<li>${leader}</li>`
-                      )}
-                    </ul>
-                  </div>
-                  <div>
-                    <p>${ABOUT_US_CONTENT.panelLabel}</p>
-                    <ul class="aboutUsLeadershipList">
-                      ${ABOUT_US_CONTENT.panel.map(
-                        (member) => html`<li>${member}</li>`
-                      )}
-                    </ul>
-                  </div>
-                </div>
-                <div class="aboutUsActions">
-                  <button
-                    class="button yp-hard-shadow-box"
-                    aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                    @click="${this._shareYourIdea}"
-                  >
-                    ${SHARE_IDEA_BUTTON_LABEL}
-                  </button>
-                </div>
+			  </div>
+			  <div class="aboutUsPeopleGrid">
+				<div>
+				<p>${ABOUT_US_CONTENT.ledByLabel}</p>
+				<ul class="aboutUsLeadershipList">
+					${ABOUT_US_CONTENT.leaders.map(
+					(leader) => html`<li>${leader}</li>`
+					)}
+				</ul>
+				</div>
+				<div>
+				<p>${ABOUT_US_CONTENT.panelLabel}</p>
+				<ul class="aboutUsLeadershipList">
+					${ABOUT_US_CONTENT.panel.map(
+					(member) => html`<li>${member}</li>`
+					)}
+				</ul>
+			    </div>
+			  </div>
+			  <div class="aboutUsActions">
+				<button
+				class="button yp-hard-shadow-box"
+				aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+				@click="${this._shareYourIdea}"
+				>
+				${SHARE_IDEA_BUTTON_LABEL}
+				</button>
+			  </div>
               </div>
             </div>
           </div>
@@ -1589,12 +1608,11 @@ export class YpLandingPage extends YpBaseElement {
                     <article class="pressReleaseItem yp-hard-shadow-box">
                       <h3>
                         ${item.pdfUrl
-                          ? html`<a href="${item.pdfUrl}">${item.title}</a>`
+                          ? html`<a href="${item.pdfUrl}">${item.title} [pdf]</a>`
                           : item.title}
                       </h3>
                       <p>${item.description}</p>
-                      <p class="pressReleaseDate">Release date: ${item.releaseDate}</p>
-                      <p class="pressReleaseStatus">PDF forthcoming</p>
+                      <p class="pressReleaseDate">${item.releaseDate}</p>
                     </article>
                   `
                 )}

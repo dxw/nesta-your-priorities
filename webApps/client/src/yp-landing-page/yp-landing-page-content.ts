@@ -58,7 +58,7 @@ export const INTRO_CONTENT = {
     "“Ever thought ‘why don’t they just fix this’? Politicians often talk up big legacy projects, but can ignore the small things that’d make lives better. We want your ideas for practical, small, non-controversial ways to improve the UK. Then we’ll give them a serious policy workover and try to make the changes happen.”",
   attributionName: "Martin Lewis",
   attributionRole:
-    "Money Saving Expert, Chair of the Institute for Small Ideas",
+    "Chair of the Institute for Small Ideas",
 };
 
 export const GET_INVOLVED_CONTENT = {
@@ -246,14 +246,14 @@ export const ABOUT_US_CONTENT: {
   ],
   panelLabel: "Our Panel:",
   panel: [
-    "Jonathan Bartley, former Co-Leader (Green Party)",
+    "Jonathan Bartley, Councillor and former Co-Leader (Green Party)",
     "Tracy Brabin, Mayor of West Yorkshire (Labour)",
     "Tamara Finkelstein, former Permanent Secretary Department for Environment, Food & Rural Affairs",
     "Danny Kruger MP (Reform)",
     "Polly Mackenzie, former Director of Policy (Liberal Democrats)",
-    "Penny Mordaunt, former Leader of the House of",
-    "Commons (Conservative)",
-    "Kwajo Tweneboa, social housing activist"
+    "Penny Mordaunt, former Leader of the House ofCommons (Conservative)",
+	"Emma Roddick MSP (SNP)",
+    "Kwajo Tweneboa, social housing campaigner"
   ],
 };
 
@@ -313,14 +313,15 @@ export const PRESS_RELEASES_CONTENT: {
       title: "Martin Lewis launches the Institute for Small Ideas",
       description:
         "A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.",
-      releaseDate: "5th October 2026",
+      releaseDate: "8th October 2026",
+	  pdfUrl: "https://assets.instituteforsmallideas.org/press-releases/Institute-for-Small-Ideas-Press-Release-8th-October-2026.pdf"
     },
   ],
 };
 
 export const FOOTER_CONTENT = {
   heading: "Contact",
-  details: "THE INSTITUTE FOR SMALL IDEAS IS FOUNDED AND CHAIRED BY MARTIN LEWIS, AND RUN BY TWO CHARITIES:",
+  details: "The Institute for Small Ideas is founded and chaired by Martin Lewis, and run by two charities:",
   charities: [
     {
       name: "CCI",
