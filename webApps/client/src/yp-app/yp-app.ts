@@ -290,6 +290,7 @@ export class YpApp extends YpBaseElement {
     this._setupEventListeners();
     this._setupSamlCallback();
     this.updateLocation();
+    void this._showCookieNotice();
     document.addEventListener("keydown", this._boundHandleKeyDown);
     window.addEventListener("scroll", this._boundHandleScroll);
   }
@@ -1126,6 +1127,27 @@ export class YpApp extends YpBaseElement {
 
   renderFooter() {
     return html`
+      <md-dialog
+        id="cookieNotice"
+        aria-labelledby="cookieNoticeTitle"
+        aria-describedby="cookieNoticeText"
+        @close="${this._cookieNoticeClosed}"
+      >
+        <div slot="headline" id="cookieNoticeTitle">Cookies</div>
+        <div slot="content" id="cookieNoticeText">
+         We use essential cookies to help us improve this site and your experience.
+		 <br />
+		 <a href="https://www.nesta.org.uk/cookies/">Find out more.</a>
+        </div>
+        <div slot="actions">
+          <md-text-button
+            id="cookieNoticeDismiss"
+            @click="${this._dismissCookieNotice}"
+          >
+            Got it
+          </md-text-button>
+        </div>
+      </md-dialog>
       <yp-sw-update-toast
         .buttonLabel="${this.t("reload")}"
         .message="${this.t("newVersionAvailable")}"
@@ -1762,6 +1784,23 @@ export class YpApp extends YpBaseElement {
     });
   }
 
+  async _showCookieNotice() {
+    if (localStorage.getItem("yp-cookie-notice-dismissed")) {
+      return;
+    }
+    await this.updateComplete;
+    (this.$$("#cookieNotice") as Dialog).show();
+  }
+
+  _cookieNoticeClosed() {
+    localStorage.setItem("yp-cookie-notice-dismissed", "1");
+  }
+
+  _dismissCookieNotice() {
+    this._cookieNoticeClosed();
+    (this.$$("#cookieNotice") as Dialog).close();
+  }
+
   // A bookmarkable way in for admins on sites that hide the header login link.
   // On a cold load the session is restored asynchronously, so wait for it
   // rather than prompting a user who is already logged in.
@@ -2221,6 +2260,13 @@ export class YpApp extends YpBaseElement {
   }
 
   _handleKeyDown(event: KeyboardEvent) {
+    if (
+      event.key === "Escape" &&
+      (this.$$("#cookieNotice") as Dialog | null)?.open
+    ) {
+      return;
+    }
+
     if (
       event.key === "Escape" &&
       window.location.pathname.indexOf("/edit") === -1
