@@ -3,6 +3,10 @@ import { html, fixture, expect, aTimeout } from '@open-wc/testing';
 import { YpApp } from '../yp-app.js';
 import '../yp-app.js';
 import { YpTestHelpers } from '../../common/test/setup-app.js';
+import {
+  OPTIONAL_COOKIE_CONSENT_EVENT,
+  OPTIONAL_COOKIE_CONSENT_KEY,
+} from '../../yp-landing-page/yp-landing-page-content.js';
 
 describe('YpApp', () => {
   let element: YpApp;
@@ -28,6 +32,7 @@ describe('YpApp', () => {
 
   afterEach(() => {
     localStorage.removeItem(cookieNoticeKey);
+    localStorage.removeItem(OPTIONAL_COOKIE_CONSENT_KEY);
   });
 
   it('passes the a11y audit', async () => {
@@ -59,5 +64,19 @@ describe('YpApp', () => {
     element._handleKeyDown(event);
 
     expect(event.defaultPrevented).to.equal(false);
+  });
+
+  it('persists and broadcasts optional-cookie acceptance', () => {
+    let receivedConsent = false;
+    const onConsent = (event: Event) => {
+      receivedConsent = (event as CustomEvent).detail === true;
+    };
+    document.addEventListener(OPTIONAL_COOKIE_CONSENT_EVENT, onConsent);
+
+    (element.shadowRoot?.querySelector('#cookieNoticeAccept') as HTMLElement).click();
+
+    expect(localStorage.getItem(OPTIONAL_COOKIE_CONSENT_KEY)).to.equal('accepted');
+    expect(receivedConsent).to.equal(true);
+    document.removeEventListener(OPTIONAL_COOKIE_CONSENT_EVENT, onConsent);
   });
 });

@@ -49,6 +49,10 @@ import "../yp-collection/yp-domain.js";
 import "../yp-collection/yp-community.js";
 import "../yp-collection/yp-group.js";
 import "../yp-landing-page/yp-landing-page.js";
+import {
+  OPTIONAL_COOKIE_CONSENT_EVENT,
+  OPTIONAL_COOKIE_CONSENT_KEY,
+} from "../yp-landing-page/yp-landing-page-content.js";
 
 import "./yp-app-nav-drawer.js";
 import "./yp-agent-bundle-top-bar.js";
@@ -1133,18 +1137,25 @@ export class YpApp extends YpBaseElement {
         aria-describedby="cookieNoticeText"
         @close="${this._cookieNoticeClosed}"
       >
-        <div slot="headline" id="cookieNoticeTitle">Cookies</div>
+        <div slot="headline" id="cookieNoticeTitle">This website uses cookies.</div>
         <div slot="content" id="cookieNoticeText">
-         We use essential cookies to help us improve this site and your experience.
+         Some of these cookies are essential for allowing the site to function properly, while others are third party cookies that allow us to feature video content on the website. 
+		 You can also change your preferences at any point.
 		 <br />
-		 <a href="https://www.nesta.org.uk/cookies/">Find out more.</a>
+		 For more information visit <a href="https://www.nesta.org.uk/cookie-policy-institute-for-small-ideas/">our cookie policy.</a>
         </div>
         <div slot="actions">
           <md-text-button
             id="cookieNoticeDismiss"
-            @click="${this._dismissCookieNotice}"
+            @click="${this._rejectOptionalCookies}"
           >
-            Got it
+            Essential cookies only
+          </md-text-button>
+          <md-text-button
+            id="cookieNoticeAccept"
+            @click="${this._acceptOptionalCookies}"
+          >
+            Accept optional cookies
           </md-text-button>
         </div>
       </md-dialog>
@@ -1794,6 +1805,18 @@ export class YpApp extends YpBaseElement {
 
   _cookieNoticeClosed() {
     localStorage.setItem("yp-cookie-notice-dismissed", "1");
+  }
+
+  _acceptOptionalCookies() {
+    localStorage.setItem(OPTIONAL_COOKIE_CONSENT_KEY, "accepted");
+    this.fireGlobal(OPTIONAL_COOKIE_CONSENT_EVENT, true);
+    this._dismissCookieNotice();
+  }
+
+  _rejectOptionalCookies() {
+    localStorage.setItem(OPTIONAL_COOKIE_CONSENT_KEY, "rejected");
+    this.fireGlobal(OPTIONAL_COOKIE_CONSENT_EVENT, false);
+    this._dismissCookieNotice();
   }
 
   _dismissCookieNotice() {

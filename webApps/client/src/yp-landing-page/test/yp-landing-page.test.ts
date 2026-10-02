@@ -4,6 +4,10 @@ import { YpLandingPage } from '../yp-landing-page.js';
 import '../yp-landing-page.js';
 import { YpTestHelpers } from '../../common/test/setup-app.js';
 import { YpNavHelpers } from '../../common/YpNavHelpers.js';
+import {
+  OPTIONAL_COOKIE_CONSENT_EVENT,
+  OPTIONAL_COOKIE_CONSENT_KEY,
+} from '../yp-landing-page-content.js';
 
 const SECTIONS = [
   { id: 'get-involved', navLabel: 'Get Involved', heading: 'Get Involved' },
@@ -23,6 +27,7 @@ describe('YpLandingPage', () => {
   });
 
   beforeEach(async () => {
+    localStorage.removeItem(OPTIONAL_COOKIE_CONSENT_KEY);
     originalRedirectTo = YpNavHelpers.redirectTo;
     redirectedTo = [];
     YpNavHelpers.redirectTo = (path: string) => {
@@ -39,6 +44,7 @@ describe('YpLandingPage', () => {
 
   afterEach(() => {
     YpNavHelpers.redirectTo = originalRedirectTo;
+    localStorage.removeItem(OPTIONAL_COOKIE_CONSENT_KEY);
   });
 
   function getNavButton(navLabel: string): HTMLElement {
@@ -51,6 +57,18 @@ describe('YpLandingPage', () => {
 
   it('passes the a11y audit', async () => {
     await expect(element).shadowDom.to.be.accessible();
+  });
+
+  it('removes the YouTube consent overlay after optional-cookie approval', async () => {
+    expect(element.shadowRoot!.querySelector('.videoPlaceholder .consent')).to.exist;
+
+    document.dispatchEvent(
+      new CustomEvent(OPTIONAL_COOKIE_CONSENT_EVENT, { detail: true })
+    );
+    await element.updateComplete;
+
+    expect(element.shadowRoot!.querySelector('.videoPlaceholder iframe')).to.exist;
+    expect(element.shadowRoot!.querySelector('.videoPlaceholder .consent')).to.not.exist;
   });
 
   describe('navigation bar', () => {

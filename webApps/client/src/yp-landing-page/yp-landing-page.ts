@@ -25,6 +25,8 @@ import {
   FOOTER_CONTENT,
   CONSENT_BUTTON_LABEL,
   CONSENT_TEXT,
+  OPTIONAL_COOKIE_CONSENT_EVENT,
+  OPTIONAL_COOKIE_CONSENT_KEY,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -50,6 +52,8 @@ export class YpLandingPage extends YpBaseElement {
   private carouselDragStartX = 0;
   private carouselDragStartScrollLeft = 0;
   private pendingArrowFocusRedirect: "left" | "right" | null = null;
+  private _boundOptionalCookieConsent =
+    this._optionalCookieConsent.bind(this);
 
   @state()
   private openFaqIndexes = new Set<number>();
@@ -1105,11 +1109,21 @@ export class YpLandingPage extends YpBaseElement {
 
   override connectedCallback() {
     super.connectedCallback();
+    this.consented =
+      localStorage.getItem(OPTIONAL_COOKIE_CONSENT_KEY) === "accepted";
+    this.addGlobalListener(
+      OPTIONAL_COOKIE_CONSENT_EVENT,
+      this._boundOptionalCookieConsent
+    );
     window.addEventListener("resize", this._updateCarouselThumb);
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
+    this.removeGlobalListener(
+      OPTIONAL_COOKIE_CONSENT_EVENT,
+      this._boundOptionalCookieConsent
+    );
     window.removeEventListener("resize", this._updateCarouselThumb);
   }
 
@@ -1264,6 +1278,12 @@ export class YpLandingPage extends YpBaseElement {
 
   giveConsent() {
     this.consented = true;
+    localStorage.setItem(OPTIONAL_COOKIE_CONSENT_KEY, "accepted");
+    this.fireGlobal(OPTIONAL_COOKIE_CONSENT_EVENT, true);
+  }
+
+  private _optionalCookieConsent(event: CustomEvent) {
+    this.consented = event.detail === true;
   }
 
   renderIntroVideo() {
