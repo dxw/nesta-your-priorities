@@ -321,7 +321,7 @@ export const PRESS_RELEASES_CONTENT: {
 
 export const FOOTER_CONTENT = {
   heading: "Contact",
-  details: "THE INSTITUTE FOR SMALL IDEAS IS FOUNDED AND CHAIRED BY MARTIN LEWIS, AND RUN BY TWO CHARITIES:",
+  details: "The Institute for Small Ideas is founded and chaired by Martin Lewis, and run by two charities:",
   charities: [
     {
       name: "CCI",
