@@ -948,6 +948,10 @@ export class YpLandingPage extends YpBaseElement {
           text-decoration: underline;
         }
 
+		.footerTopRow {
+		  align-items: start;
+	    }
+
         .footerBottomRow {
           display: flex;
           flex-wrap: wrap;
@@ -1281,7 +1285,7 @@ export class YpLandingPage extends YpBaseElement {
   }
 
   renderIntroVideo() {
-    const youtubeVideoId = "dQw4w9WgXcQ"; // TODO: USE ACTUAL VIDEO LINK
+    const youtubeVideoId = "hJohGPpAsNc"; 
 
     return html`
       <div class="videoPlaceholder">
