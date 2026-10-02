@@ -1331,7 +1331,7 @@ export class YpLandingPage extends YpBaseElement {
                           <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                       </div>
                       <button
-                              class="shareIdeaButton yp-hard-shadow-box"
+                              class="button shareIdeaButton yp-hard-shadow-box"
                               aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                               @click="${this._shareYourIdea}"
                       >
