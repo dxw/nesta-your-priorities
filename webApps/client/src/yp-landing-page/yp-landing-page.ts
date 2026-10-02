@@ -739,7 +739,7 @@ export class YpLandingPage extends YpBaseElement {
         .aboutUsGrid {
           display: grid;
           grid-template-columns: 1fr 1.2fr;
-          gap: 48px;
+          gap: 32px 48px;
           align-items: start;
         }
 
@@ -767,9 +767,10 @@ export class YpLandingPage extends YpBaseElement {
 
         .aboutUsPeopleGrid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr 1.2fr;
           gap: 0 32px;
           margin-bottom: 24px;
+		  grid-column: 1 / span 2;
         }
 
         .aboutUsLeadershipList {
@@ -798,6 +799,7 @@ export class YpLandingPage extends YpBaseElement {
 
         .aboutUsActions {
           text-align: right;
+		  grid-column: 1 / span 2;
         }
 
         .faqsSection {
@@ -1510,33 +1512,34 @@ export class YpLandingPage extends YpBaseElement {
                 ${ABOUT_US_CONTENT.paragraphs.map(
                   (paragraph) => html`<p>${paragraph}</p>`
                 )}
-                <div class="aboutUsPeopleGrid">
-                  <div>
-                    <p>${ABOUT_US_CONTENT.ledByLabel}</p>
-                    <ul class="aboutUsLeadershipList">
-                      ${ABOUT_US_CONTENT.leaders.map(
-                        (leader) => html`<li>${leader}</li>`
-                      )}
-                    </ul>
-                  </div>
-                  <div>
-                    <p>${ABOUT_US_CONTENT.panelLabel}</p>
-                    <ul class="aboutUsLeadershipList">
-                      ${ABOUT_US_CONTENT.panel.map(
-                        (member) => html`<li>${member}</li>`
-                      )}
-                    </ul>
-                  </div>
-                </div>
-                <div class="aboutUsActions">
-                  <button
-                    class="button yp-hard-shadow-box"
-                    aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                    @click="${this._shareYourIdea}"
-                  >
-                    ${SHARE_IDEA_BUTTON_LABEL}
-                  </button>
-                </div>
+			  </div>
+			  <div class="aboutUsPeopleGrid">
+				<div>
+				<p>${ABOUT_US_CONTENT.ledByLabel}</p>
+				<ul class="aboutUsLeadershipList">
+					${ABOUT_US_CONTENT.leaders.map(
+					(leader) => html`<li>${leader}</li>`
+					)}
+				</ul>
+				</div>
+				<div>
+				<p>${ABOUT_US_CONTENT.panelLabel}</p>
+				<ul class="aboutUsLeadershipList">
+					${ABOUT_US_CONTENT.panel.map(
+					(member) => html`<li>${member}</li>`
+					)}
+				</ul>
+			    </div>
+			  </div>
+			  <div class="aboutUsActions">
+				<button
+				class="button yp-hard-shadow-box"
+				aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+				@click="${this._shareYourIdea}"
+				>
+				${SHARE_IDEA_BUTTON_LABEL}
+				</button>
+			  </div>
               </div>
             </div>
           </div>
