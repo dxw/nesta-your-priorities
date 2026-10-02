@@ -2715,6 +2715,7 @@ export class YpPostEdit extends YpEditBase {
     }
 
     if (this.newPost) {
+      window.plausible?.("Idea Submitted");
       this.thankYouMessage = text;
       this.submissionCompleted = true;
       await this.updateComplete;
