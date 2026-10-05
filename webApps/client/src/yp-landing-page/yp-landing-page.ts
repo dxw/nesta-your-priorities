@@ -1521,7 +1521,7 @@ export class YpLandingPage extends YpBaseElement {
           <div class="aboutUsSection">
             <div class="sectionInner aboutUsGrid">
               <div class="aboutUsLogo" aria-hidden="true">
-                <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
+                <img src="/images/home/logo_crop.svg" alt="Institute of Small Ideas logo">
               </div>
               <div class="aboutUsCopy">
                 <h2 class="bigHeading" aria-label="${ABOUT_US_CONTENT.heading}">${ABOUT_US_CONTENT.heading}</h2>
