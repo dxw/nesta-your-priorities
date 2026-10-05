@@ -327,7 +327,7 @@ export const FOOTER_CONTENT = {
       name: "CCI",
       url: "https://www.nesta.org.uk/centre-for-collective-intelligence/",
       logo: {
-        url: "/images/home/centre_collective_intelligence_logo.png",
+        url: "/images/home/centre_collective_intelligence_logo.svg",
         alt: "Contributing organisation Centre for Collective Intelligence's logo"
       },
       number: "1144091"
