@@ -49,6 +49,10 @@ import "../yp-collection/yp-domain.js";
 import "../yp-collection/yp-community.js";
 import "../yp-collection/yp-group.js";
 import "../yp-landing-page/yp-landing-page.js";
+import {
+  OPTIONAL_COOKIE_CONSENT_EVENT,
+  OPTIONAL_COOKIE_CONSENT_KEY,
+} from "../yp-landing-page/yp-landing-page-content.js";
 
 import "./yp-app-nav-drawer.js";
 import "./yp-agent-bundle-top-bar.js";
@@ -290,6 +294,7 @@ export class YpApp extends YpBaseElement {
     this._setupEventListeners();
     this._setupSamlCallback();
     this.updateLocation();
+    void this._showCookieNotice();
     document.addEventListener("keydown", this._boundHandleKeyDown);
     window.addEventListener("scroll", this._boundHandleScroll);
   }
@@ -1126,6 +1131,34 @@ export class YpApp extends YpBaseElement {
 
   renderFooter() {
     return html`
+      <md-dialog
+        id="cookieNotice"
+        aria-labelledby="cookieNoticeTitle"
+        aria-describedby="cookieNoticeText"
+        @close="${this._cookieNoticeClosed}"
+      >
+        <div slot="headline" id="cookieNoticeTitle">This website uses cookies.</div>
+        <div slot="content" id="cookieNoticeText">
+         Some of these cookies are essential for allowing the site to function properly, while others are third party cookies that allow us to feature video content on the website. 
+		 You can also change your preferences at any point using the cookie settings link in the footer.
+		 <br />
+		 For more information visit <a href="https://www.nesta.org.uk/cookie-policy-institute-for-small-ideas/">our cookie policy.</a>
+        </div>
+        <div slot="actions">
+          <md-text-button
+            id="cookieNoticeDismiss"
+            @click="${this._rejectOptionalCookies}"
+          >
+            Essential cookies only
+          </md-text-button>
+          <md-text-button
+            id="cookieNoticeAccept"
+            @click="${this._acceptOptionalCookies}"
+          >
+            Accept optional cookies
+          </md-text-button>
+        </div>
+      </md-dialog>
       <yp-sw-update-toast
         .buttonLabel="${this.t("reload")}"
         .message="${this.t("newVersionAvailable")}"
@@ -1762,6 +1795,43 @@ export class YpApp extends YpBaseElement {
     });
   }
 
+  async _showCookieNotice() {
+    if (localStorage.getItem("yp-cookie-notice-dismissed")) {
+      return;
+    }
+    await this.updateComplete;
+    (this.$$("#cookieNotice") as Dialog).show();
+  }
+
+  async openCookiePreferences() {
+    await this.updateComplete;
+    const dialog = this.$$("#cookieNotice") as Dialog;
+    if (!dialog.open) {
+      await dialog.show();
+    }
+  }
+
+  _cookieNoticeClosed() {
+    localStorage.setItem("yp-cookie-notice-dismissed", "1");
+  }
+
+  _acceptOptionalCookies() {
+    localStorage.setItem(OPTIONAL_COOKIE_CONSENT_KEY, "accepted");
+    this.fireGlobal(OPTIONAL_COOKIE_CONSENT_EVENT, true);
+    this._dismissCookieNotice();
+  }
+
+  _rejectOptionalCookies() {
+    localStorage.setItem(OPTIONAL_COOKIE_CONSENT_KEY, "rejected");
+    this.fireGlobal(OPTIONAL_COOKIE_CONSENT_EVENT, false);
+    this._dismissCookieNotice();
+  }
+
+  _dismissCookieNotice() {
+    this._cookieNoticeClosed();
+    (this.$$("#cookieNotice") as Dialog).close();
+  }
+
   // A bookmarkable way in for admins on sites that hide the header login link.
   // On a cold load the session is restored asynchronously, so wait for it
   // rather than prompting a user who is already logged in.
@@ -2221,6 +2291,13 @@ export class YpApp extends YpBaseElement {
   }
 
   _handleKeyDown(event: KeyboardEvent) {
+    if (
+      event.key === "Escape" &&
+      (this.$$("#cookieNotice") as Dialog | null)?.open
+    ) {
+      return;
+    }
+
     if (
       event.key === "Escape" &&
       window.location.pathname.indexOf("/edit") === -1

@@ -56,6 +56,7 @@ import sso from "passport-sso";
 import cors from "cors";
 import log from "./utils/loggerTs.js";
 import { configureServerTimeouts } from "./utils/serverTimeouts.cjs";
+import { rememberVersionChoice, landingPageCacheControl } from "./utils/webAppVersion.cjs";
 import { createClient } from "redis";
 
 import { Notifier } from "@airbrake/node";
@@ -211,11 +212,10 @@ export class YourPrioritiesApi {
     this.app.use(
       (req: YpRequest, res: express.Response, next: NextFunction) => {
         req.useNewVersion = this.determineVersion(req);
-        if (req.session) {
-          (req.session as any).useNewVersion = req.useNewVersion;
-        } else {
+        if (!req.session) {
           log.error("Session not found in request");
         }
+        rememberVersionChoice(req, req.useNewVersion);
         next();
       }
     );
@@ -808,7 +808,7 @@ export class YourPrioritiesApi {
         if (req.path === "/" || req.path === "/index.html") {
           // cache for 5 minutes to allow deployment changes to go through quickly
           // but not get overwhelmed by requests
-          res.setHeader("Cache-Control", "public, max-age=300, s-maxage=60, stale-while-revalidate=60");
+          res.setHeader("Cache-Control", landingPageCacheControl(req));
           index(req, res, next); // Use your dynamic handler
         } else {
           express.static(staticPath)(req, res, next);
