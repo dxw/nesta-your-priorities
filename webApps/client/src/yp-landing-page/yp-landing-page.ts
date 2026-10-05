@@ -392,11 +392,12 @@ export class YpLandingPage extends YpBaseElement {
             flex-direction: column;
             justify-content: space-between;
             margin-top: 20px;
+			gap: 20px;
             
             .logo {
                 margin-bottom: 20px;
                 margin-right: 0;
-                max-height: 63px;
+                max-height: 70px;
             }
             
             @media (min-width: 900px) {
