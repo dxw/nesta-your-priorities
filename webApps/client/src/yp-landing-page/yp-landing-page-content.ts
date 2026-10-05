@@ -251,7 +251,7 @@ export const ABOUT_US_CONTENT: {
     "Tamara Finkelstein, former Permanent Secretary Department for Environment, Food & Rural Affairs",
     "Danny Kruger MP (Reform)",
     "Polly Mackenzie, former Director of Policy (Liberal Democrats)",
-    "Penny Mordaunt, former Leader of the House ofCommons (Conservative)",
+    "Penny Mordaunt, former Leader of the House of Commons (Conservative)",
 	"Emma Roddick MSP (SNP)",
     "Kwajo Tweneboa, social housing campaigner"
   ],
