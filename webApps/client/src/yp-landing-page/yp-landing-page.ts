@@ -1035,7 +1035,7 @@ export class YpLandingPage extends YpBaseElement {
           .martinGrid,
           .aboutUsGrid {
             grid-template-columns: 1fr;
-            gap: 24px;
+            gap: 24px 0;
           }
 
           .aboutUsPeopleGrid {
