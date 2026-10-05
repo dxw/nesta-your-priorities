@@ -1105,6 +1105,14 @@ export class YpLandingPage extends YpBaseElement {
     window.appGlobals.activity("click", "landingPageNav", sectionId);
   }
 
+  _onAnchorClick(
+    event: Event,
+    sectionId: YpLandingSectionId,
+  ) {
+    event.preventDefault();
+    this._scrollToSection(sectionId);
+  }
+
   _shareYourIdea() {
     window.appGlobals.activity("click", "landingPageShareYourIdea");
     window.plausible?.("Share Your Idea Click");
@@ -1529,6 +1537,9 @@ export class YpLandingPage extends YpBaseElement {
                 ${ABOUT_US_CONTENT.paragraphs.map(
                   (paragraph) => html`<p>${paragraph}</p>`
                 )}
+				<p>
+          <a href="${ABOUT_US_CONTENT.pressLink}" @click="${(event: Event) => this._onAnchorClick(event, "press-releases")}">${ABOUT_US_CONTENT.pressLabel}</a>
+				</p>
 			  </div>
 			  <div class="aboutUsPeopleGrid">
 				<div>

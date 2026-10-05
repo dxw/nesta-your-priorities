@@ -271,5 +271,34 @@ describe('YpLandingPage', () => {
         expect(section!.querySelectorAll('p').length).to.be.greaterThan(0);
       });
     });
+
+    describe('internal links', () => {
+      it('scrolls to the linked section and prevents native fragment navigation', () => {
+        const aboutSection = element.shadowRoot!.querySelector('#about-us');
+        expect(aboutSection, 'about us section should exist').to.exist;
+        const link = aboutSection!.querySelector(
+          'a[href="#press-releases"]'
+        ) as HTMLAnchorElement;
+        const section = element.shadowRoot!.querySelector(
+          '#press-releases'
+        ) as HTMLElement;
+        expect(link, 'press releases link should exist in about us').to.exist;
+        expect(section, 'press releases section should exist').to.exist;
+
+        let scrolledIntoView = false;
+        section.scrollIntoView = () => {
+          scrolledIntoView = true;
+        };
+        const clickEvent = new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+        });
+
+        link.dispatchEvent(clickEvent);
+
+        expect(scrolledIntoView).to.be.true;
+        expect(clickEvent.defaultPrevented).to.be.true;
+      });
+    });
   });
 });

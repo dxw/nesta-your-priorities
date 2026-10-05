@@ -232,6 +232,8 @@ export const ABOUT_US_CONTENT: {
   leaders: string[];
   panelLabel: string;
   panel: string[];
+  pressLink: string;
+  pressLabel: string;
 } = {
   heading: "About Us",
   paragraphs: [
@@ -255,6 +257,8 @@ export const ABOUT_US_CONTENT: {
 	"Emma Roddick MSP (SNP)",
     "Kwajo Tweneboa, social housing campaigner"
   ],
+  pressLink: "#press-releases",
+  pressLabel: "Press releases and enquiries"
 };
 
 export const FAQ_ANSWER_PENDING_LABEL = "Answer coming soon.";
