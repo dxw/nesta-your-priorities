@@ -1327,7 +1327,7 @@ export class YpLandingPage extends YpBaseElement {
   }
 
   renderIntroVideo() {
-    const youtubeVideoId = "hJohGPpAsNc"; 
+    const youtubeVideoId = "8ND57M2h-JA"; 
 
     return html`
       <div class="videoPlaceholder">
