@@ -252,7 +252,7 @@ export const ABOUT_US_CONTENT: {
   panel: [
     "Jonathan Bartley, Councillor and former Co-Leader (Green Party)",
     "Tracy Brabin, Mayor of West Yorkshire (Labour)",
-    "Tamara Finkelstein, former Permanent Secretary Department for Environment, Food & Rural Affairs",
+    "Tamara Finkelstein, Chief Executive of Royal Academy of Engineering (former permanent secretary)",
     "Danny Kruger MP (Reform)",
     "Polly Mackenzie, former Director of Policy (Liberal Democrats)",
     "Penny Mordaunt, former Leader of the House of Commons (Conservative)",
