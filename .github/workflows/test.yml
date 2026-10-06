@@ -1,0 +1,73 @@
+name: Test
+
+on:
+  push:
+    branches: [master, production]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  server_api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server_api
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: server_api/package-lock.json
+      # Install scripts only build native add-ons and fetch Puppeteer's Chrome,
+      # neither of which the tests or tsc need.
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: npx tsc --noEmit -p .
+
+  client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: webApps/client
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: webApps/client/package-lock.json
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx tsc --noEmit -p .
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Same command as Dalmatian's default buildspec, with no layer cache, so a
+      # pass here means the CodeBuild build will pass too.
+      - run: docker build -t your-priorities:test .
+      # A successful build does not prove the image runs: the client bundle can
+      # land in the wrong directory, and native modules built in node:24 must
+      # load in node:24-slim.
+      - name: Check the image contents
+        run: |
+          docker run --rm your-priorities:test sh -ec '
+            test -f server_api/dist/server.js
+            test -f server_api/dist/services/workers/main.cjs
+            test -f server_api/webAppsDist/client/dist/index.html
+            test -f server_api/webAppsDist/client/dist/sw.js
+            cd server_api && node -e "require(\"bcrypt\"); require(\"sharp\")"
+          '
