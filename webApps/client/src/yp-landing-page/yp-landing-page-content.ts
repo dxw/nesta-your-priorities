@@ -39,7 +39,7 @@ export const LOGO_PLACEHOLDER_LABEL = "Logo";
 export const VIDEO_PLACEHOLDER_LABEL = "Video placeholder";
 export const IMAGE_PLACEHOLDER_LABEL = "Image placeholder";
 export const LOGO_IMAGE_PLACEHOLDER_LABEL = "Logo placeholder";
-export const SHARE_IDEA_BUTTON_LABEL = "Share your idea";
+export const SHARE_IDEA_BUTTON_LABEL = "Tell us your idea";
 export const CONSENT_BUTTON_LABEL = "I consent";
 export const CONSENT_TEXT = "This video requires third party cookies which include tracking. By clicking I consent you agree to using their service and tracking";
 export const OPTIONAL_COOKIE_CONSENT_KEY = "yp-optional-cookie-consent";
@@ -252,7 +252,7 @@ export const ABOUT_US_CONTENT: {
   panel: [
     "Jonathan Bartley, Councillor and former Co-Leader (Green Party)",
     "Tracy Brabin, Mayor of West Yorkshire (Labour)",
-    "Tamara Finkelstein, former Permanent Secretary Department for Environment, Food & Rural Affairs",
+    "Tamara Finkelstein, Chief Executive of Royal Academy of Engineering (former permanent secretary)",
     "Danny Kruger MP (Reform)",
     "Polly Mackenzie, former Director of Policy (Liberal Democrats)",
     "Penny Mordaunt, former Leader of the House of Commons (Conservative)",

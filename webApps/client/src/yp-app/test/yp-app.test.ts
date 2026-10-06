@@ -88,4 +88,33 @@ describe('YpApp', () => {
     const dialog = element.shadowRoot?.querySelector('#cookieNotice') as any;
     expect(dialog.open).to.equal(true);
   });
+
+  for (const page of ['domain', 'community', 'community_folder', 'group', 'post', 'user']) {
+    it(`scrolls to the top when returning home from ${page}`, async () => {
+      const originalScrollTo = window.scrollTo;
+      const originalScrollRestoration = window.history.scrollRestoration;
+      const scrollCalls: unknown[][] = [];
+      window.scrollTo = ((...args: unknown[]) => {
+        scrollCalls.push(args);
+      }) as typeof window.scrollTo;
+
+      try {
+        element._scrollPositionMap = { '': 800 };
+        element.route = '/';
+        element.subRoute = '';
+        element.routeData = { page: '' };
+        element._routePageChanged({ page });
+        await element.updateComplete;
+        await aTimeout(50);
+
+        expect(scrollCalls).to.deep.equal([
+          [{ top: 0, left: 0, behavior: 'instant' }],
+        ]);
+        expect(window.history.scrollRestoration).to.equal('manual');
+      } finally {
+        window.scrollTo = originalScrollTo;
+        window.history.scrollRestoration = originalScrollRestoration;
+      }
+    });
+  }
 });

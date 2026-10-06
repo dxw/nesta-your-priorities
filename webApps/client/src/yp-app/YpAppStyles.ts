@@ -214,4 +214,11 @@ export const YpAppStyles = css`
       margin: 0;
     }
   }
+
+  @media (max-width: 500px) {
+	#cookieNotice > div[slot="actions"] {
+	flex-direction: column;
+	gap: 8px;
+	}
+  }
 `;
