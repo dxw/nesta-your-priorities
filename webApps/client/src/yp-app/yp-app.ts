@@ -1551,6 +1551,8 @@ export class YpApp extends YpBaseElement {
 
   _routePageChanged(oldRouteData: Record<string, string>) {
     if (this.routeData) {
+      window.history.scrollRestoration =
+        this.routeData.page === "" ? "manual" : "auto";
       let params = this.route.split("/");
       params = params.filter((el) => {
         return el != "";
@@ -1702,7 +1704,9 @@ export class YpApp extends YpBaseElement {
             }
           }
 
-          if (
+          if (this.routeData.page === "") {
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+          } else if (
             map[this.routeData.page] != null &&
             this.routeData.page !== "post" &&
             !(
