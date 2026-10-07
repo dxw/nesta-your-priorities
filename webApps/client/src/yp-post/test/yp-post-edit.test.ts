@@ -29,6 +29,46 @@ describe('YpPostEdit', () => {
     debugger;
     await expect(element).shadowDom.to.be.accessible();
   });
+
+  it('uses native email validation for the contact email field', async () => {
+    element.group = {
+      ...YpTestHelpers.getGroup(),
+      configuration: {
+        ...YpTestHelpers.getGroup().configuration,
+        moreContactInformation: true,
+      },
+    };
+    await element.updateComplete;
+
+    const emailField = element.shadowRoot!.querySelector('#contactEmail');
+    expect(emailField?.getAttribute('type')).to.equal('email');
+  });
+
+  it('clears saved survey answers before opening a fresh idea form', async () => {
+    const originalUser = window.appUser.user;
+    const originalStructuredAnswersJson = element.structuredAnswersJson;
+    const group = YpTestHelpers.getGroup();
+    window.appUser.user = YpTestHelpers.getUser();
+    element.group = group;
+    element.new = true;
+    element.newPost = true;
+    element.structuredAnswersJson = '';
+
+    const storageKey = `yp-survey-response-v2-for-${group.id}-${window.appUser.user.id}`;
+    localStorage.setItem(storageKey, JSON.stringify('[{"uniqueId":"old","value":"old answer"}]'));
+
+    try {
+      element.setupAfterOpen({ group } as YpEditFormParams);
+      await aTimeout(20);
+
+      expect(localStorage.getItem(storageKey)).to.be.null;
+      expect(element.structuredAnswersJson).to.equal('');
+    } finally {
+      localStorage.removeItem(storageKey);
+      window.appUser.user = originalUser;
+      element.structuredAnswersJson = originalStructuredAnswersJson;
+    }
+  });
 });
 
 describe('YpPostEdit thank you screen', () => {

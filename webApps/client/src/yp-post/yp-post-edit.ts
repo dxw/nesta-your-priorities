@@ -78,9 +78,6 @@ export class YpPostEdit extends YpEditBase {
   group: YpGroupData | undefined;
 
   @property({ type: Boolean })
-  saveSurveyAnswers = true;
-
-  @property({ type: Boolean })
   disableDialog = false;
 
   @property({ type: Boolean })
@@ -2638,32 +2635,10 @@ export class YpPostEdit extends YpEditBase {
     }`;
   }
 
-  saveSurveyAnswersToLocalStorage() {
-    localStorage.setItem(
-      this.surveyAnswerLocalstorageKey,
-      JSON.stringify(this.structuredAnswersJson)
-    );
-  }
-
-  async checkSurveyAnswers() {
-    setTimeout(() => {
-      const answersText = localStorage.getItem(
-        this.surveyAnswerLocalstorageKey
-      );
-
-      if (answersText) {
-        const jsonAnswers = JSON.parse(answersText);
-        this.structuredAnswersJson = jsonAnswers;
-        const editDialog = this.$$("#editDialog") as YpEditDialog | null;
-        if (editDialog && typeof editDialog._reallySubmit === "function") {
-          editDialog._reallySubmit(false);
-        } else {
-          console.warn(
-            "Edit dialog not ready for resubmission of structured answers"
-          );
-        }
-      }
-    }, 10);
+  private _clearSavedSurveyAnswers() {
+    if (this.group?.id && window.appUser.user?.id != null) {
+      localStorage.removeItem(this.surveyAnswerLocalstorageKey);
+    }
   }
 
   override customRedirect(post: YpPostData) {
@@ -2674,10 +2649,6 @@ export class YpPostEdit extends YpEditBase {
         window.appUser.endorsementPostsIndex
       ) {
         window.appUser.endorsementPostsIndex[post.id] = post.newEndorsement;
-      }
-
-      if (this.saveSurveyAnswers && this.structuredAnswersJson) {
-        this.saveSurveyAnswersToLocalStorage();
       }
 
       if (this.uploadedVideoId) {
@@ -2896,6 +2867,7 @@ export class YpPostEdit extends YpEditBase {
 
   override setupAfterOpen(params: YpEditFormParams) {
     this._setupGroup(params.group);
+    this._clearSavedSurveyAnswers();
     if (
       this.post &&
       !this.newPost &&
@@ -2906,7 +2878,6 @@ export class YpPostEdit extends YpEditBase {
         this.post.public_data.structuredAnswersJson;
     }
 
-    this.checkSurveyAnswers();
   }
 
   _alternativeTextForNewIdeaButtonHeaderTranslation() {
