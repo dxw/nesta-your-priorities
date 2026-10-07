@@ -1381,8 +1381,6 @@ export class YpLandingPage extends YpBaseElement {
           </section>
         </div>
 
-        ${this.renderIntroVideo()}
-
           <div class="smallIdeaSection">
               <div class="sectionInner">
                   <div class="smallIdeaHeader">
