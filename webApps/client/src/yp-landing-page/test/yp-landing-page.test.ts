@@ -136,6 +136,13 @@ describe('YpLandingPage', () => {
     expect(shadowRoot.querySelector('#press-releases')?.textContent).to.contain(
       'The latest announcements and news from The Small Ideas Initiative.'
     );
+    const pressRelease = shadowRoot.querySelector('#press-releases .pressReleaseItem');
+    expect(pressRelease?.textContent).to.contain(
+      'Martin Lewis launches the Small Ideas Initiative'
+    );
+    expect(pressRelease?.querySelector('a')?.getAttribute('href')).to.equal(
+      'https://assets.small-ideas.org/press-releases/Small-Ideas-Initiative-Press-Release-8th-October-2026.pdf'
+    );
     expect(shadowRoot.querySelector('.logosContainer')?.textContent).to.contain(
       'The Small Ideas Initiative is founded and chaired by Martin Lewis, and run by two charities:'
     );
