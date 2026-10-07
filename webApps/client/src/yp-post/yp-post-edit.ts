@@ -70,6 +70,9 @@ export class YpPostEdit extends YpEditBase {
 
   @property({ type: Array })
   structuredQuestions: Array<YpStructuredQuestionData> | undefined;
+  private structuredQuestionSource:
+    | Array<YpStructuredQuestionData>
+    | undefined;
 
   @property({ type: Object })
   post: YpPostData | undefined;
@@ -2219,15 +2222,29 @@ export class YpPostEdit extends YpEditBase {
     const { post } = this;
     const { group } = this;
     if (this.translatedQuestions) {
-      this.structuredQuestions = this.translatedQuestions;
+      if (this.structuredQuestionSource !== this.translatedQuestions) {
+        this.structuredQuestionSource = this.translatedQuestions;
+        this.structuredQuestions = structuredClone(this.translatedQuestions);
+        this.structuredQuestions.forEach((question) => {
+          question.value = undefined;
+        });
+      }
     } else if (post && group && group.configuration.structuredQuestionsJson) {
-      this.structuredQuestions = group.configuration.structuredQuestionsJson;
+      const questionSource = group.configuration.structuredQuestionsJson;
+      if (this.structuredQuestionSource !== questionSource) {
+        this.structuredQuestionSource = questionSource;
+        this.structuredQuestions = structuredClone(questionSource);
+        this.structuredQuestions.forEach((question) => {
+          question.value = undefined;
+        });
+      }
     } else if (
       post &&
       group &&
       group.configuration.structuredQuestions &&
       group.configuration.structuredQuestions !== ""
     ) {
+      this.structuredQuestionSource = undefined;
       this.structuredQuestions = this._getStructuredQuestionsString();
     } else {
       return undefined;
@@ -2730,8 +2747,13 @@ export class YpPostEdit extends YpEditBase {
       this.selectedCoverMediaType = "none";
       this.submitDisabled = false;
       this.validationErrorMessage = undefined;
+      this.initialStructuredAnswersJson = undefined;
       this.structuredAnswersJson = "";
       this.structuredAnswersString = "";
+      this.structuredQuestions?.forEach((question) => {
+        question.value = undefined;
+      });
+      this._clearSavedSurveyAnswers();
       this.requestUpdate();
       if (this.$$("#imageFileUpload")) {
         //(this.$$('#imageFileUpload') as YpFileUpload).clear();

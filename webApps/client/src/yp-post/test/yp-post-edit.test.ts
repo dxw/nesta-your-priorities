@@ -112,7 +112,21 @@ describe('YpPostEdit thank you screen', () => {
   it('returns to the form when submitting another idea, without leftover content', async () => {
     element.submissionCompleted = true;
     element.thankYouMessage = 'Thank you for adding content';
+    const group = YpTestHelpers.getGroup();
+    const question = {
+      uniqueId: 'question-1',
+      text: 'What should change?',
+      type: 'textField',
+      value: 'Previous answer',
+    } as YpStructuredQuestionData;
+    group.configuration.structuredQuestionsJson = [question];
+    element.group = group;
+    element.newPost = true;
     element.post = { ...YpTestHelpers.getPost(), name: 'Submitted idea name' };
+    (element as any)._setupStructuredQuestions();
+    element.initialStructuredAnswersJson = [
+      { uniqueId: 'question-1', value: 'Previous answer' } as YpStructuredAnswer,
+    ];
     await element.updateComplete;
 
     (element as any)._submitAnotherIdea();
@@ -121,6 +135,11 @@ describe('YpPostEdit thank you screen', () => {
     expect(element.submissionCompleted).to.be.false;
     expect(element.shadowRoot!.querySelector('.thankYouMessage')).to.not.exist;
     expect(element.post?.name).to.equal('');
+    expect(element.initialStructuredAnswersJson).to.be.undefined;
+    expect(element.structuredQuestions?.[0].value).to.be.undefined;
+    expect(group.configuration.structuredQuestionsJson?.[0].value).to.equal(
+      'Previous answer'
+    );
   });
 
   it('does not clear the thank you state as a side effect of clear() (e.g. right after a successful submission)', async () => {
