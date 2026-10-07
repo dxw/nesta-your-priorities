@@ -316,11 +316,11 @@ export const PRESS_RELEASES_CONTENT: {
   description: "The latest announcements and news from The Small Ideas Initiative.",
   items: [
     // {
-    //   title: "Martin Lewis launches the Institute for Small Ideas",
+    //   title: "Martin Lewis launches the Small Ideas Initiative",
     //   description:
     //     "A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.",
     //   releaseDate: "8th October 2026",
-	//   pdfUrl: "https://assets.instituteforsmallideas.org/press-releases/Institute-for-Small-Ideas-Press-Release-8th-October-2026.pdf"
+  //   pdfUrl: "https://assets.small-ideas.org/press-releases/Small-Ideas-Initiative-Press-Release-8th-October-2026.pdf"
     // },
   ],
 };

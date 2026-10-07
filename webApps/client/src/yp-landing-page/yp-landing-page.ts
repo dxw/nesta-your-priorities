@@ -1292,7 +1292,7 @@ export class YpLandingPage extends YpBaseElement {
     return html`
       <nav class="nav" aria-label="Landing page sections">
         <div class="logoPlaceholder">
-          <img src="/images/home/logo_crop.png" alt="Institute of Small Ideas logo">
+          <img src="/images/home/logo_crop.png" alt="The Small Ideas Initiative logo">
         </div>
         <button class="skipLink" @click="${this._skipToContent}">
           Skip to content
@@ -1335,7 +1335,7 @@ export class YpLandingPage extends YpBaseElement {
                 ? html`
               <iframe
                 src="https://www.youtube-nocookie.com/embed/${youtubeVideoId}?autoplay=0"
-                title="The Institute for Small Ideas video"
+                title="The Small Ideas Initiative video"
                 allow=" encrypted-media; picture-in-picture"
                 allowfullscreen
               ></iframe>
@@ -1561,7 +1561,7 @@ export class YpLandingPage extends YpBaseElement {
           <div class="aboutUsSection">
             <div class="sectionInner aboutUsGrid">
               <div class="aboutUsLogo" aria-hidden="true">
-                <img src="/images/home/logo_crop.svg" alt="Institute of Small Ideas logo">
+                <img src="/images/home/logo_crop.svg" alt="The Small Ideas Initiative logo">
               </div>
               <div class="aboutUsCopy">
                 <h2 class="bigHeading" aria-label="${ABOUT_US_CONTENT.heading}">${ABOUT_US_CONTENT.heading}</h2>
