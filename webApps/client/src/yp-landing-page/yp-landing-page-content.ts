@@ -53,14 +53,14 @@ export const NAV_LINKS: YpLandingPageNavLink[] = [
 ];
 
 export const INTRO_CONTENT = {
-  eyebrow: "The Institute for Small Ideas",
+  eyebrow: "The Small Ideas Initiative",
   heading: "Tell us the small fixes that’ll make a difference. We’ll ensure they’re heard.",
   subHeading: "A charity initiative.",
   quote:
     "“Ever thought ‘why don’t they just fix this’? Politicians often talk up big legacy projects, but can ignore the small things that’d make lives better. We want your ideas for practical, small, non-controversial ways to improve the UK. Then we’ll give them a serious policy workover and try to make the changes happen.”",
   attributionName: "Martin Lewis",
   attributionRole:
-    "Chair of the Institute for Small Ideas",
+    "Chair of the Small Ideas Initiative",
 };
 
 export const GET_INVOLVED_CONTENT = {
@@ -239,7 +239,7 @@ export const ABOUT_US_CONTENT: {
 } = {
   heading: "About Us",
   paragraphs: [
-    "The Institute for Small Ideas is a non-partisan project. It was founded, and is funded in a personal capacity by Martin Lewis, Money Saving Expert, who is our Chair.",
+    "The Small Ideas Initiative is a non-partisan project. It was founded, and is funded in a personal capacity by Martin Lewis, Money Saving Expert, who is our Chair.",
     "It’s run by two charities, Nesta’s Centre for Collective Intelligence and Involve. They organise the logistics of taking your ideas, sharpening them, and supporting Martin to get them in front of the people who can act. And because no one trusts an idea that only one side likes, we’ve got a cross-party panel of politicians and policy experts helping us work out which ideas can actually get support, and which are workable.",
   ],
   ledByLabel: "Team:",
@@ -313,7 +313,7 @@ export const PRESS_RELEASES_CONTENT: {
   items: YpLandingPagePressRelease[];
 } = {
   heading: "Press releases",
-  description: "The latest announcements and news from the Institute for Small Ideas.",
+  description: "The latest announcements and news from The Small Ideas Initiative.",
   items: [
     // {
     //   title: "Martin Lewis launches the Institute for Small Ideas",
@@ -327,7 +327,7 @@ export const PRESS_RELEASES_CONTENT: {
 
 export const FOOTER_CONTENT = {
   heading: "Contact",
-  details: "The Institute for Small Ideas is founded and chaired by Martin Lewis, and run by two charities:",
+  details: "The Small Ideas Initiative is founded and chaired by Martin Lewis, and run by two charities:",
   charities: [
     {
       name: "CCI",
@@ -349,7 +349,7 @@ export const FOOTER_CONTENT = {
     }
   ],
   emailAddress: "smallideas@nesta.org.uk",
-  copyrightHolder: "The Institute for Small Ideas",
+  copyrightHolder: "The Small Ideas Initiative",
   privacyPolicyLabel: "Privacy Policy",
   privacyPolicyUrl: "https://www.nesta.org.uk/privacy/",
 };
