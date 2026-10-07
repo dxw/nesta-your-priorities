@@ -58,8 +58,8 @@ x-your-priorities-worker-common: &your-priorities-worker-common
   env_file: .env
   build:
     context: ../../.
-    dockerfile: development/docker/your-priorities-worker/Dockerfile
-  command: node server_api/active-citizen/workers/main.js
+    dockerfile: Dockerfile
+  command: node server_api/dist/services/workers/main.cjs
   logging:
     driver: "json-file"
     options:
