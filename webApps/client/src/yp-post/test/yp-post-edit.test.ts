@@ -29,6 +29,46 @@ describe('YpPostEdit', () => {
     debugger;
     await expect(element).shadowDom.to.be.accessible();
   });
+
+  it('uses native email validation for the contact email field', async () => {
+    element.group = {
+      ...YpTestHelpers.getGroup(),
+      configuration: {
+        ...YpTestHelpers.getGroup().configuration,
+        moreContactInformation: true,
+      },
+    };
+    await element.updateComplete;
+
+    const emailField = element.shadowRoot!.querySelector('#contactEmail');
+    expect(emailField?.getAttribute('type')).to.equal('email');
+  });
+
+  it('clears saved survey answers before opening a fresh idea form', async () => {
+    const originalUser = window.appUser.user;
+    const originalStructuredAnswersJson = element.structuredAnswersJson;
+    const group = YpTestHelpers.getGroup();
+    window.appUser.user = YpTestHelpers.getUser();
+    element.group = group;
+    element.new = true;
+    element.newPost = true;
+    element.structuredAnswersJson = '';
+
+    const storageKey = `yp-survey-response-v2-for-${group.id}-${window.appUser.user.id}`;
+    localStorage.setItem(storageKey, JSON.stringify('[{"uniqueId":"old","value":"old answer"}]'));
+
+    try {
+      element.setupAfterOpen({ group } as YpEditFormParams);
+      await aTimeout(20);
+
+      expect(localStorage.getItem(storageKey)).to.be.null;
+      expect(element.structuredAnswersJson).to.equal('');
+    } finally {
+      localStorage.removeItem(storageKey);
+      window.appUser.user = originalUser;
+      element.structuredAnswersJson = originalStructuredAnswersJson;
+    }
+  });
 });
 
 describe('YpPostEdit thank you screen', () => {
@@ -72,7 +112,21 @@ describe('YpPostEdit thank you screen', () => {
   it('returns to the form when submitting another idea, without leftover content', async () => {
     element.submissionCompleted = true;
     element.thankYouMessage = 'Thank you for adding content';
+    const group = YpTestHelpers.getGroup();
+    const question = {
+      uniqueId: 'question-1',
+      text: 'What should change?',
+      type: 'textField',
+      value: 'Previous answer',
+    } as YpStructuredQuestionData;
+    group.configuration.structuredQuestionsJson = [question];
+    element.group = group;
+    element.newPost = true;
     element.post = { ...YpTestHelpers.getPost(), name: 'Submitted idea name' };
+    (element as any)._setupStructuredQuestions();
+    element.initialStructuredAnswersJson = [
+      { uniqueId: 'question-1', value: 'Previous answer' } as YpStructuredAnswer,
+    ];
     await element.updateComplete;
 
     (element as any)._submitAnotherIdea();
@@ -81,6 +135,11 @@ describe('YpPostEdit thank you screen', () => {
     expect(element.submissionCompleted).to.be.false;
     expect(element.shadowRoot!.querySelector('.thankYouMessage')).to.not.exist;
     expect(element.post?.name).to.equal('');
+    expect(element.initialStructuredAnswersJson).to.be.undefined;
+    expect(element.structuredQuestions?.[0].value).to.be.undefined;
+    expect(group.configuration.structuredQuestionsJson?.[0].value).to.equal(
+      'Previous answer'
+    );
   });
 
   it('does not clear the thank you state as a side effect of clear() (e.g. right after a successful submission)', async () => {
