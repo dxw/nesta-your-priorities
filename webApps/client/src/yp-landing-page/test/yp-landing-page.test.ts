@@ -5,7 +5,6 @@ import '../yp-landing-page.js';
 import { YpTestHelpers } from '../../common/test/setup-app.js';
 import { YpNavHelpers } from '../../common/YpNavHelpers.js';
 import {
-  OPTIONAL_COOKIE_CONSENT_EVENT,
   OPTIONAL_COOKIE_CONSENT_KEY,
 } from '../yp-landing-page-content.js';
 
@@ -59,15 +58,17 @@ describe('YpLandingPage', () => {
     await expect(element).shadowDom.to.be.accessible();
   });
 
-  it('hides the intro video regardless of optional-cookie approval', async () => {
-    expect(element.shadowRoot!.querySelector('.videoPlaceholder')).to.not.exist;
+  it('shows the intro video after optional-cookie approval', async () => {
+    const video = element.shadowRoot!.querySelector('.videoPlaceholder');
+    expect(video).to.exist;
+    expect(video!.querySelector('iframe')).to.not.exist;
 
-    document.dispatchEvent(
-      new CustomEvent(OPTIONAL_COOKIE_CONSENT_EVENT, { detail: true })
-    );
+    (video!.querySelector('button') as HTMLButtonElement).click();
     await element.updateComplete;
 
-    expect(element.shadowRoot!.querySelector('.videoPlaceholder')).to.not.exist;
+    expect(
+      video!.querySelector('iframe')?.getAttribute('src')
+    ).to.equal('https://www.youtube-nocookie.com/embed/enfgLUpgJiQ?autoplay=0');
   });
 
   describe('navigation bar', () => {
