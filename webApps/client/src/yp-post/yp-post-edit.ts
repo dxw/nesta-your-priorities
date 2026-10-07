@@ -2896,17 +2896,6 @@ export class YpPostEdit extends YpEditBase {
 
   override setupAfterOpen(params: YpEditFormParams) {
     this._setupGroup(params.group);
-    setTimeout(() => {
-      const nameElement = this.$$("#name");
-      if (nameElement) {
-        // md-outlined-text-field's own focus() causes auto-scroll to first text input
-        // This forces scroll back to top of page, so user can see intro content.
-        nameElement.focus();
-        window.scrollTo(0, 0);
-        requestAnimationFrame(() => window.scrollTo(0, 0));
-      }
-    }, 250);
-
     if (
       this.post &&
       !this.newPost &&
