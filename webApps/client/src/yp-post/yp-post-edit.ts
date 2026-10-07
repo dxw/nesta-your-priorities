@@ -859,8 +859,8 @@ export class YpPostEdit extends YpEditBase {
         class="contactInfoField"
         id="contactEmail"
         name="contactEmail"
-        type="text"
-        autocomplete="home email"
+        type="email"
+        autocomplete="email"
         label=""
         required
         minlength="1"
