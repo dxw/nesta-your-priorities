@@ -70,15 +70,15 @@ export class YpPostEdit extends YpEditBase {
 
   @property({ type: Array })
   structuredQuestions: Array<YpStructuredQuestionData> | undefined;
+  private structuredQuestionSource:
+    | Array<YpStructuredQuestionData>
+    | undefined;
 
   @property({ type: Object })
   post: YpPostData | undefined;
 
   @property({ type: Object })
   group: YpGroupData | undefined;
-
-  @property({ type: Boolean })
-  saveSurveyAnswers = true;
 
   @property({ type: Boolean })
   disableDialog = false;
@@ -2222,15 +2222,29 @@ export class YpPostEdit extends YpEditBase {
     const { post } = this;
     const { group } = this;
     if (this.translatedQuestions) {
-      this.structuredQuestions = this.translatedQuestions;
+      if (this.structuredQuestionSource !== this.translatedQuestions) {
+        this.structuredQuestionSource = this.translatedQuestions;
+        this.structuredQuestions = structuredClone(this.translatedQuestions);
+        this.structuredQuestions.forEach((question) => {
+          question.value = undefined;
+        });
+      }
     } else if (post && group && group.configuration.structuredQuestionsJson) {
-      this.structuredQuestions = group.configuration.structuredQuestionsJson;
+      const questionSource = group.configuration.structuredQuestionsJson;
+      if (this.structuredQuestionSource !== questionSource) {
+        this.structuredQuestionSource = questionSource;
+        this.structuredQuestions = structuredClone(questionSource);
+        this.structuredQuestions.forEach((question) => {
+          question.value = undefined;
+        });
+      }
     } else if (
       post &&
       group &&
       group.configuration.structuredQuestions &&
       group.configuration.structuredQuestions !== ""
     ) {
+      this.structuredQuestionSource = undefined;
       this.structuredQuestions = this._getStructuredQuestionsString();
     } else {
       return undefined;
@@ -2638,32 +2652,10 @@ export class YpPostEdit extends YpEditBase {
     }`;
   }
 
-  saveSurveyAnswersToLocalStorage() {
-    localStorage.setItem(
-      this.surveyAnswerLocalstorageKey,
-      JSON.stringify(this.structuredAnswersJson)
-    );
-  }
-
-  async checkSurveyAnswers() {
-    setTimeout(() => {
-      const answersText = localStorage.getItem(
-        this.surveyAnswerLocalstorageKey
-      );
-
-      if (answersText) {
-        const jsonAnswers = JSON.parse(answersText);
-        this.structuredAnswersJson = jsonAnswers;
-        const editDialog = this.$$("#editDialog") as YpEditDialog | null;
-        if (editDialog && typeof editDialog._reallySubmit === "function") {
-          editDialog._reallySubmit(false);
-        } else {
-          console.warn(
-            "Edit dialog not ready for resubmission of structured answers"
-          );
-        }
-      }
-    }, 10);
+  private _clearSavedSurveyAnswers() {
+    if (this.group?.id && window.appUser.user?.id != null) {
+      localStorage.removeItem(this.surveyAnswerLocalstorageKey);
+    }
   }
 
   override customRedirect(post: YpPostData) {
@@ -2674,10 +2666,6 @@ export class YpPostEdit extends YpEditBase {
         window.appUser.endorsementPostsIndex
       ) {
         window.appUser.endorsementPostsIndex[post.id] = post.newEndorsement;
-      }
-
-      if (this.saveSurveyAnswers && this.structuredAnswersJson) {
-        this.saveSurveyAnswersToLocalStorage();
       }
 
       if (this.uploadedVideoId) {
@@ -2759,8 +2747,13 @@ export class YpPostEdit extends YpEditBase {
       this.selectedCoverMediaType = "none";
       this.submitDisabled = false;
       this.validationErrorMessage = undefined;
+      this.initialStructuredAnswersJson = undefined;
       this.structuredAnswersJson = "";
       this.structuredAnswersString = "";
+      this.structuredQuestions?.forEach((question) => {
+        question.value = undefined;
+      });
+      this._clearSavedSurveyAnswers();
       this.requestUpdate();
       if (this.$$("#imageFileUpload")) {
         //(this.$$('#imageFileUpload') as YpFileUpload).clear();
@@ -2896,6 +2889,7 @@ export class YpPostEdit extends YpEditBase {
 
   override setupAfterOpen(params: YpEditFormParams) {
     this._setupGroup(params.group);
+    this._clearSavedSurveyAnswers();
     if (
       this.post &&
       !this.newPost &&
@@ -2906,7 +2900,6 @@ export class YpPostEdit extends YpEditBase {
         this.post.public_data.structuredAnswersJson;
     }
 
-    this.checkSurveyAnswers();
   }
 
   _alternativeTextForNewIdeaButtonHeaderTranslation() {
