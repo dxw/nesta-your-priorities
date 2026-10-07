@@ -1142,7 +1142,7 @@ export class YpApp extends YpBaseElement {
          Some of these cookies are essential for allowing the site to function properly, while others are third party cookies that allow us to feature video content on the website. 
 		 You can also change your preferences at any point using the cookie settings link in the footer.
 		 <br />
-		 For more information visit <a href="https://www.nesta.org.uk/cookie-policy-institute-for-small-ideas/">our cookie policy.</a>
+     For more information visit <a href="https://www.nesta.org.uk/cookie-policy-small-ideas/">our cookie policy.</a>
         </div>
         <div slot="actions">
           <md-text-button

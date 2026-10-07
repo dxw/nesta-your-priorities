@@ -59,16 +59,15 @@ describe('YpLandingPage', () => {
     await expect(element).shadowDom.to.be.accessible();
   });
 
-  it('removes the YouTube consent overlay after optional-cookie approval', async () => {
-    expect(element.shadowRoot!.querySelector('.videoPlaceholder .consent')).to.exist;
+  it('hides the intro video regardless of optional-cookie approval', async () => {
+    expect(element.shadowRoot!.querySelector('.videoPlaceholder')).to.not.exist;
 
     document.dispatchEvent(
       new CustomEvent(OPTIONAL_COOKIE_CONSENT_EVENT, { detail: true })
     );
     await element.updateComplete;
 
-    expect(element.shadowRoot!.querySelector('.videoPlaceholder iframe')).to.exist;
-    expect(element.shadowRoot!.querySelector('.videoPlaceholder .consent')).to.not.exist;
+    expect(element.shadowRoot!.querySelector('.videoPlaceholder')).to.not.exist;
   });
 
   describe('navigation bar', () => {
@@ -123,20 +122,26 @@ describe('YpLandingPage', () => {
     });
   });
 
-  it('shows the press release and the forthcoming PDF status', () => {
-    const section = element.shadowRoot!.querySelector('#press-releases');
-    expect(section?.textContent).to.contain(
-      'The latest announcements and news from the Institute for Small Ideas.'
+  it('uses Small Ideas Initiative branding throughout the landing page', () => {
+    const shadowRoot = element.shadowRoot!;
+    expect(shadowRoot.querySelector('.introCopy .eyebrow')?.textContent).to.contain(
+      'The Small Ideas Initiative'
     );
-    expect(section?.textContent).to.contain(
-      'Martin Lewis launches the Institute for Small Ideas'
+    expect(shadowRoot.querySelector('.attribution')?.textContent).to.contain(
+      'Chair of the Small Ideas Initiative'
     );
-    expect(section?.textContent).to.contain(
-      'A major new charity initiative aims to turn the UK public’s everyday fixes into actionable policy.'
+    expect(shadowRoot.querySelector('#about-us .aboutUsCopy')?.textContent).to.contain(
+      'The Small Ideas Initiative is a non-partisan project.'
     );
-    expect(section?.textContent).to.contain('5th October 2026');
-    expect(section?.textContent).to.contain('PDF forthcoming');
-    expect(section?.querySelector('.pressReleaseItem h3 a')).to.not.exist;
+    expect(shadowRoot.querySelector('#press-releases')?.textContent).to.contain(
+      'The latest announcements and news from The Small Ideas Initiative.'
+    );
+    expect(shadowRoot.querySelector('.logosContainer')?.textContent).to.contain(
+      'The Small Ideas Initiative is founded and chaired by Martin Lewis, and run by two charities:'
+    );
+    expect(shadowRoot.querySelector('.footerCopyright')?.textContent).to.contain(
+      'The Small Ideas Initiative. All rights reserved.'
+    );
   });
 
   describe('"Share your idea" button', () => {
