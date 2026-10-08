@@ -1563,6 +1563,7 @@ export class YpLandingPage extends YpBaseElement {
             <div class="sectionInner aboutUsGrid">
               <div class="aboutUsLogo" aria-hidden="true">
                 <svg width="1429" height="574" viewBox="0 0 1429 574" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<title>Small Ideas logo</title>
 					<path d="M1036.02 278.898L1344.02 322.4L1358.02 429.898H1036.02V278.898Z" fill="#191923"/>
 					<path d="M169.523 446.398L56.0234 321.898L192.023 296.898L264.523 391.398L169.523 446.398Z" fill="#191923" stroke="black"/>
 					<path d="M334.023 459.398L220.523 334.898L289.523 230.898L378.523 405.898L334.023 459.398Z" fill="#191923" stroke="black"/>
