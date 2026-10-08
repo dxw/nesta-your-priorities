@@ -531,7 +531,7 @@ export class YourPrioritiesApi {
       async (req: YpRequest, res: express.Response) => {
         try {
           const url = req.get("host") + req.originalUrl;
-          const redisKey = "cache:sitemapv14:" + url;
+          const redisKey = "cache:sitemapv17:" + url;
 
           const sitemap = await req.redisClient.get(redisKey);
           if (sitemap) {
