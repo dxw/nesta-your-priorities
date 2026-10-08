@@ -115,7 +115,8 @@ export class YpLandingPage extends YpBaseElement {
         }
 
         .navLinks md-text-button,
-        .eyebrow {
+        .eyebrow,
+		h1.eyebrow {
           font-family: var(--yp-landing-body-font, "Atkinson Hyperlegible", sans-serif);
         }
 
@@ -233,7 +234,8 @@ export class YpLandingPage extends YpBaseElement {
           text-align: center;
         }
 
-        .eyebrow {
+        .eyebrow,
+		.intro h1.eyebrow {
           margin: 0 0 16px;
           color: var(--yp-landing-accent-text-color, #c124bc);
           font-size: clamp(1rem, 0.75rem + 1vw, 1.125rem);
@@ -243,7 +245,7 @@ export class YpLandingPage extends YpBaseElement {
           text-transform: uppercase;
         }
 
-        .intro h1 {
+        .intro h2 {
           margin: 0 0 24px;
           font-size: clamp(2rem, 6vw, 5.5rem);
           font-weight: 400;
@@ -1362,8 +1364,8 @@ export class YpLandingPage extends YpBaseElement {
         <div class="hero">
           <section class="intro" id="intro" tabindex="-1">
             <div class="introCopy">
-              <p class="eyebrow">${INTRO_CONTENT.eyebrow}</p>
-              <h1 aria-label="${INTRO_CONTENT.heading}">${INTRO_CONTENT.heading}</h1>
+              <h1 class="eyebrow">${INTRO_CONTENT.eyebrow}</h1>
+              <h2 aria-label="${INTRO_CONTENT.heading}">${INTRO_CONTENT.heading}</h2>
               <p class="quote">${INTRO_CONTENT.subHeading}</p>
               <p class="quote">${INTRO_CONTENT.quote}</p>
               <p class="attribution">
