@@ -94,11 +94,11 @@ export const HOW_IT_WORKS_CONTENT: {
       description: "And invite you to feedback.",
     },
     {
-      title: "04: Our cross-party panel, chaired by Martin, picks the final ones",
+      title: "04: Our cross-party panel, chaired by Martin, picks the final ones.",
       description: "They choose which ideas go forward.",
     },
     {
-      title: "05: We campaign to make them happen",
+      title: "05: We campaign to make them happen.",
       description:
         "Government, opposition, regulators, whoever needs to hear it.",
     },
