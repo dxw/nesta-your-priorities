@@ -1,25 +1,32 @@
+//- Link-preview robots get this page instead of the SPA's index.html, so a
+//- page with no description or image of its own falls back to the same
+//- hard-coded values index.html carries. Without them, previews show the
+//- platform footer below as the description.
+- var shareDescription = descriptionText || "Martin Lewis wants your ideas for practical, small, non-controversial ways to improve the UK."
+- var shareImageUrl = imageUrl || "https://small-ideas.org/images/home/og-image.png"
 doctype html
 html(lang="en")
     head
         title= title
+        meta(name="description" content= shareDescription)
         meta(property="og:url" content= url)
         meta(property="og:title" content= title)
-        meta(property="og:description" content= descriptionText)
-        meta(property="og:image" content= imageUrl)
+        meta(property="og:description" content= shareDescription)
+        meta(property="og:image" content= shareImageUrl)
         meta(property="og:type" content="website")
-        meta(property="og:image:width" content="864")
-        meta(property="og:image:height" content="486")
+        meta(property="og:image:width" content="1200")
+        meta(property="og:image:height" content="630")
         meta(name="twitter:card" content="summary_large_image")
         meta(name="twitter:url" content= url)
         meta(name="twitter:title" content= title)
-        meta(name="twitter:description" content= descriptionText)
-        meta(name="twitter:image" content= imageUrl)
+        meta(name="twitter:description" content= shareDescription)
+        meta(name="twitter:image" content= shareImageUrl)
         meta(name="twitter:image:alt" content= title)
 
     body
         h1= title
-        img(src= imageUrl alt= title)
-        p= descriptionText
+        img(src= shareImageUrl alt= title)
+        p= shareDescription
         if staticHtml
             div
                 != staticHtml
