@@ -13,7 +13,7 @@ var generateSitemap = async function (req, res) {
   const domainName = req.ypDomain.domain_name;
   let siteHostname = "https://" + domainName;
 
-  const redisKey = `cache:sitemap:v6:${siteHostname}-${domainId}`;
+  const redisKey = `cache:sitemap:v8:${siteHostname}-${domainId}`;
 
   try {
     const content = await req.redisClient.get(redisKey);
@@ -29,7 +29,7 @@ var generateSitemap = async function (req, res) {
     });
     const xml = (
       await streamToPromise(
-        Readable.from([ { url: "/group/1/new_post" }]).pipe(
+        Readable.from([ { url: "/" }, { url: "/group/1/new_post" } ]).pipe(
           sitemapStream
         )
       )
