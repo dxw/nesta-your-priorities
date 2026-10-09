@@ -132,13 +132,6 @@ export const KIND_OF_THING_CONTENT: {
       alt: "",
     },
     {
-      title: "Real-time sewage alerts",
-      description:
-        "Real-time sewage alerts visible at every beach (not just the ones water companies choose to monitor). We should know before we get in!",
-      image: "/images/home/beach_flag_crop.jpg",
-      alt: "",
-    },
-    {
       title: "Consistent council forms",
       description:
         "Severe Mental Impairment council tax relief is the same wherever you live, so why does each council use a different form with different requirements? One form, everywhere.",

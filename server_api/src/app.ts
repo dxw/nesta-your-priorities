@@ -56,6 +56,7 @@ import sso from "passport-sso";
 import cors from "cors";
 import log from "./utils/loggerTs.js";
 import { configureServerTimeouts } from "./utils/serverTimeouts.cjs";
+import { shouldServeBotPage, markBotPageUncacheable } from "./utils/botRouting.cjs";
 import { rememberVersionChoice, landingPageCacheControl } from "./utils/webAppVersion.cjs";
 import { createClient } from "redis";
 
@@ -500,7 +501,8 @@ export class YourPrioritiesApi {
         if (
           req.headers["content-type"] !== "application/json" &&
           req.originalUrl &&
-          !req.originalUrl.endsWith("/sitemap.xml")
+          !req.originalUrl.endsWith("/sitemap.xml") &&
+          shouldServeBotPage(req.path)
         ) {
           const isBotBad = isBadBot(ua.toLowerCase());
           if (
@@ -508,6 +510,7 @@ export class YourPrioritiesApi {
             !botsWithJavascript(ua) &&
             (isbot(ua) || isBadBot(ua))
           ) {
+            markBotPageUncacheable(res);
             if (isBotBad) {
               botRateLimiter(req, res, () => {
                 nonSPArouter(req, res, next);
