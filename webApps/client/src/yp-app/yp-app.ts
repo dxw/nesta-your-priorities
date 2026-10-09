@@ -7,7 +7,7 @@ import '../yp-app-globals/yp-sw-update-toast.js';
 
 import "../ac-notifications/ac-notification-list.js";
 
-import { html, LitElement, nothing } from "lit";
+import { css, html, LitElement, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { cache } from "lit/directives/cache.js";
@@ -186,6 +186,14 @@ export class YpApp extends YpBaseElement {
 
   @property({ type: Object })
   routeData: Record<string, string> = {};
+
+  @state()
+  private routeAccessChecking = false;
+
+  @state()
+  private routeNotFound = false;
+
+  private routeAccessRequest = 0;
 
   @property({ type: Boolean })
   userDrawerOpened = false;
@@ -542,7 +550,19 @@ export class YpApp extends YpBaseElement {
   }
 
   static override get styles() {
-    return [super.styles, YpTopAppBarTokens, YpAppStyles];
+    return [
+      super.styles,
+      YpTopAppBarTokens,
+      YpAppStyles,
+      css`
+        .routeNotFound {
+          box-sizing: border-box;
+          min-height: calc(100vh - 52px);
+          padding: 24px;
+          text-align: center;
+        }
+      `,
+    ];
   }
 
   _haveCopiedNotification() {
@@ -565,8 +585,46 @@ export class YpApp extends YpBaseElement {
     }
   }
 
-  updateLocation() {
+  async updateLocation() {
+    const requestId = ++this.routeAccessRequest;
     let path = window.location.pathname;
+
+    this.routeNotFound = false;
+    const publicUserRoute = this._isPublicUserRoute(
+      path,
+      window.location.search
+    );
+    const requiresAdmin =
+      /^\/(admin|user)(?:\/|$)/.test(path) && !publicUserRoute;
+
+    if (requiresAdmin) {
+      this.routeAccessChecking = true;
+
+      try {
+        const loggedIn = await window.appUser.ensureLoginChecked();
+        if (loggedIn) {
+          await window.appUser.getAdminRights();
+        }
+
+        if (requestId !== this.routeAccessRequest) return;
+
+        if (!loggedIn || !this._hasAdminAccess()) {
+          this.routeAccessChecking = false;
+          this.routeNotFound = true;
+          return;
+        }
+      } catch {
+        if (requestId !== this.routeAccessRequest) return;
+        this.routeAccessChecking = false;
+        this.routeNotFound = true;
+        return;
+      }
+    }
+
+    if (requestId !== this.routeAccessRequest) return;
+
+    this.routeAccessChecking = false;
+    this.routeNotFound = false;
 
     if (path.includes("/admin")) {
       this.appMode = "admin";
@@ -623,6 +681,28 @@ export class YpApp extends YpBaseElement {
 
     this._routeChanged();
     this._routePageChanged(oldRouteData);
+  }
+
+  private _isPublicUserRoute(pathname: string, search: string): boolean {
+    return [
+      /^\/user\/login\/?$/,
+      /^\/user\/reset_password\/[^/]+\/?$/,
+      /^\/user\/accept\/invite\/[^/]+\/?$/,
+      /^\/user\/open_notification_settings\/?$/,
+      /^\/user\/info_page\/\d+\/?$/,
+    ].some((pattern) => pattern.test(pathname)) ||
+      (/^\/user\/reset_password\/?$/.test(pathname) &&
+        Boolean(new URLSearchParams(search).get("reset_password_token")));
+  }
+
+  private _hasAdminAccess(): boolean {
+    const rights = window.appUser.adminRights;
+    return Boolean(
+      rights?.DomainAdmins?.length ||
+        rights?.OrganizationAdmins?.length ||
+        rights?.CommunityAdmins?.length ||
+        rights?.GroupAdmins?.length
+    );
   }
 
   _openUserEdit() {
@@ -1234,12 +1314,37 @@ export class YpApp extends YpBaseElement {
   }
 
   override render() {
+    if (this.routeAccessChecking) {
+      return html`
+        <main id="mainContent" class="mainPage" role="status" aria-label="Checking access">
+          <md-circular-progress indeterminate></md-circular-progress>
+        </main>
+      `;
+    }
+
+    if (this.routeNotFound) {
+      return html`
+        <main
+          id="mainContent"
+          class="mainPage routeNotFound layout vertical center-center"
+        >
+          <h1>${this.t("errorNotFound")}</h1>
+          <a href="/" @click="${this._returnToHome}">Return to home</a>
+        </main>
+      `;
+    }
+
     return html`
       ${this.renderDrawers()} ${this.renderMainApp()}
       <yp-app-dialogs id="dialogContainer"></yp-app-dialogs>
       ${this.renderAdminApp()} ${this.renderPromotionApp()}
       ${this.renderFooter()}
     `;
+  }
+
+  private _returnToHome(event: MouseEvent) {
+    event.preventDefault();
+    YpNavHelpers.redirectTo("/");
   }
 
   _openNotifyDialog(event: CustomEvent) {
@@ -1565,7 +1670,11 @@ export class YpApp extends YpBaseElement {
         this.route.indexOf("/user/login") > -1
       ) {
         if (this.route.indexOf("/user/reset_password") > -1) {
-          this.openResetPasswordDialog(params[params.length - 1]);
+          const resetPasswordToken =
+            new URLSearchParams(window.location.search).get(
+              "reset_password_token"
+            ) || params[params.length - 1];
+          this.openResetPasswordDialog(resetPasswordToken);
         } else if (
           this.routeData &&
           this.routeData.page === "user" &&
