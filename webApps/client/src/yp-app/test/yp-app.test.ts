@@ -89,6 +89,85 @@ describe('YpApp', () => {
     expect(dialog.open).to.equal(true);
   });
 
+  describe('restricted routes', () => {
+    let originalUrl: string;
+    let originalEnsureLoginChecked: typeof window.appUser.ensureLoginChecked;
+    let originalGetAdminRights: typeof window.appUser.getAdminRights;
+    let originalRoutePageChanged: typeof element._routePageChanged;
+
+    beforeEach(() => {
+      originalUrl = window.location.href;
+      originalEnsureLoginChecked = window.appUser.ensureLoginChecked;
+      originalGetAdminRights = window.appUser.getAdminRights;
+      originalRoutePageChanged = element._routePageChanged;
+      element._routePageChanged = () => {};
+      window.appUser.ensureLoginChecked = async () => true;
+      window.appUser.getAdminRights = async () => {
+        window.appUser.adminRights = undefined;
+      };
+    });
+
+    afterEach(() => {
+      window.history.replaceState({}, '', originalUrl);
+      window.appUser.ensureLoginChecked = originalEnsureLoginChecked;
+      window.appUser.getAdminRights = originalGetAdminRights;
+      element._routePageChanged = originalRoutePageChanged;
+    });
+
+    for (const path of ['/admin', '/admin/group/1', '/user/1']) {
+      it(`shows Not Found to a non-admin at ${path}`, async () => {
+        window.history.replaceState({}, '', path);
+
+        await element.updateLocation();
+
+        expect((element as any).routeNotFound).to.be.true;
+      });
+    }
+
+    it('does not require admin rights for public login', async () => {
+      window.history.replaceState({}, '', '/user/login');
+      let adminRightsCheckCount = 0;
+      window.appUser.getAdminRights = async () => {
+        adminRightsCheckCount += 1;
+      };
+
+      await element.updateLocation();
+
+      expect((element as any).routeNotFound).to.be.false;
+      expect(adminRightsCheckCount).to.equal(0);
+    });
+
+    it('passes query-string tokens to the password reset dialog', () => {
+      const originalUrl = window.location.href;
+      const originalRoute = element.route;
+      const originalRouteData = element.routeData;
+      const originalOpenResetPasswordDialog = element.openResetPasswordDialog;
+      let receivedToken: string | undefined;
+
+      try {
+        window.history.replaceState(
+          {},
+          '',
+          '/user/reset_password?reset_password_token=test-token'
+        );
+        element.route = '/user/reset_password';
+        element.routeData = { page: 'user' };
+        element.openResetPasswordDialog = (token: string) => {
+          receivedToken = token;
+        };
+
+        element._routePageChanged({});
+
+        expect(receivedToken).to.equal('test-token');
+      } finally {
+        window.history.replaceState({}, '', originalUrl);
+        element.route = originalRoute;
+        element.routeData = originalRouteData;
+        element.openResetPasswordDialog = originalOpenResetPasswordDialog;
+      }
+    });
+  });
+
   for (const page of ['domain', 'community', 'community_folder', 'group', 'post', 'user']) {
     it(`scrolls to the top when returning home from ${page}`, async () => {
       const originalScrollTo = window.scrollTo;
