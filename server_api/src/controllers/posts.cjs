@@ -2577,19 +2577,37 @@ router.post(
             corePost.Group.configuration &&
             corePost.Group.configuration.canVote === true
           ) {
-            models.Endorsement.findOne({
-              where: {
-                post_id: req.params.id,
-                user_id: req.user.id,
-              },
-              include: [
-                {
-                  model: models.Post,
-                  attributes: ["id", "group_id"],
-                },
-              ],
-            })
-              .then(function (endorsement) {
+            let transaction;
+            models.sequelize
+              .transaction()
+              .then(function (t) {
+                transaction = t;
+                // Lock the user's row so that this user's votes are handled
+                // one at a time; otherwise two simultaneous votes could both
+                // pass the vote limit check below.
+                return models.User.findOne({
+                  where: { id: req.user.id },
+                  attributes: ["id"],
+                  lock: transaction.LOCK.UPDATE,
+                  transaction,
+                });
+              })
+              .then(function () {
+                return models.Endorsement.findOne({
+                  where: {
+                    post_id: req.params.id,
+                    user_id: req.user.id,
+                  },
+                  include: [
+                    {
+                      model: models.Post,
+                      attributes: ["id", "group_id"],
+                    },
+                  ],
+                  transaction,
+                });
+              })
+              .then(async function (endorsement) {
                 var oldEndorsementValue;
                 if (endorsement) {
                   post = endorsement.Post;
@@ -2613,7 +2631,43 @@ router.post(
                     ip_address: req.clientIp,
                   });
                 }
-                endorsement.save().then(function () {
+
+                const maxNumberOfGroupVotes =
+                  corePost.Group.configuration.maxNumberOfGroupVotes;
+                const addsUpVote =
+                  endorsement.value > 0 && !(oldEndorsementValue > 0);
+                if (maxNumberOfGroupVotes && addsUpVote) {
+                  // Same count as the client's calculateVotesLeftForGroup.
+                  const upVotesInGroup = await models.Endorsement.count({
+                    where: {
+                      user_id: req.user.id,
+                      value: { $gt: 0 },
+                    },
+                    include: [
+                      {
+                        model: models.Post,
+                        attributes: [],
+                        where: { group_id: corePost.Group.id },
+                      },
+                    ],
+                    transaction,
+                  });
+                  if (upVotesInGroup >= maxNumberOfGroupVotes) {
+                    await transaction.rollback();
+                    log.info("Vote limit reached", {
+                      context: "endorse",
+                      post: req.params.id,
+                      userId: req.user.id,
+                    });
+                    res.status(403).send({ error: "voteLimitReached" });
+                    return;
+                  }
+                }
+
+                await endorsement.save({ transaction });
+                await transaction.commit();
+
+                Promise.resolve().then(function () {
                   log.info("Endorsements Created", {
                     endorsementId: endorsement ? endorsement.id : -1,
                     userId: req.user ? req.user.id : -1,
@@ -2742,6 +2796,9 @@ router.post(
                 });
               })
               .catch(function (error) {
+                if (transaction && !transaction.finished) {
+                  transaction.rollback();
+                }
                 log.error("Endorsements Error", {
                   context: "create",
                   post: req.params.id,
