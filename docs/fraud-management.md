@@ -29,20 +29,19 @@ An **after-the-fact** admin tool. It looks through votes and other content for c
 - The **tabs** choose the detection method.
 - Opening the page, changing tab or changing the dropdown starts a scan.
 
-![Fraud management grid, IP & USER AGENT & POST](images/fraud-management/grid.png)
+![Fraud management grid, IP & user agent & post](images/fraud-management/grid.png)
 
 ## Detection methods (tabs)
 
 | Tab | Clusters votes sharing | Useful now? |
 |---|---|---|
-/* claude why are these all in capitals?! */
-| **IP & USER AGENT & POST** | the same IP address, browser and post (shown if 2 or more votes) | **Yes**: the same device and network voting repeatedly on one post |
-| IP ADDRESS | IP only, across posts (shown if an IP has more votes than there are posts) | Noisy: offices, schools and mobile networks share IPs |
+| **IP & user agent & post** | the same IP address, browser and post (shown if 2 or more votes) | **Yes**: the same device and network voting repeatedly on one post |
+| IP address | IP only, across posts (shown if an IP has more votes than there are posts) | Noisy: offices, schools and mobile networks share IPs |
 
 **Confidence (`%`)** combines the cluster's size (bigger is more suspicious) with how close together its votes were (a burst is more suspicious). It ignores *who* the user is, so different people on the same network and browser cluster together. That's why an admin reviews before deleting.
 
 > [!note]
-> There are also "IP & fingerprint & post", "IP & fingerprint", and "No fingerprint" tabs, but these are of no use to use since we disabled fingerprinting for this project in https://github.com/dxw/nesta-your-priorities/pull/13/.
+> There are also "IP & fingerprint & post", "IP & fingerprint", and "No fingerprint" tabs, but these are of no use to us since we disabled fingerprinting for this project in https://github.com/dxw/nesta-your-priorities/pull/13/.
 
 ## Columns
 
