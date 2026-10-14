@@ -1,23 +1,31 @@
 # Fraud management
 
+When we allow users to vote, we're going to allow them to do it anonymously. So it's probably going to be important to be able to detect suspicious patterns of voting.
+
+Your Priorities already advertises "fraud management" functionality so I thought I'd try to understand that better.
+
+I got Claude to look into it and then I also played around with it myself locally in the admin UI. The admin UI is rather unintuitive (especially its repurposing of the term "group") and also the effect of the delete button is not very obvious. So I've gotten Claude to write up this report on the fraud management feature and the meanings of the stuff you see in the UI.
+
+We can discuss internally whether we consider the fraud detection that YP offers to be sufficient or not.
+
+This functionality is all after-the-fact; i.e. it doesn't do anything to prevent users from submitting votes. We need to understand whether this is likely to be a problem.
+
 ## What it is
 
 An **after-the-fact** admin tool. It looks through votes and other content for clusters of suspicious activity (same IP, browser and so on), then lets an admin review them and delete them. It doesn't block anything as it happens. It's enabled per **community** and covers every group in that community.
 
-## Setup (local development)
+## Switching it on
 
-1. **Run the worker.** Scans and deletions run as background jobs.
-   - `cd server_api && cp startWorkerWithEnv.sh-dist startWorkerWithEnv.sh`
-   - Set the `YP_DEV_DATABASE_*` values in it (same as in `startWatchWithEnv.sh`), then run `./startWorkerWithEnv.sh`.
-   - Without the worker, the progress bar sticks at 0. The worker doesn't restart when code changes.
-2. **Enable it for the community:** `/admin/community/1` → **Access** tab → tick **"Enable fraud detection"** → save.
-3. **Optional, for downloading the fraud audit report only:** minio (local S3). See "Audit report" below.
+`/admin/community/1` → **Access** tab → tick **"Enable fraud detection"** → save.
+
+> [!important]
+> In local development, you need to make sure you're also [running the worker](../quick_start_guide.md#optional-terminal-4-worker), else the scans will never happen.
 
 ## Getting to the page
 
 `http://localhost:4444/admin/community/1` → **Moderation** → **Fraud management** tab. The tab only appears once fraud detection is enabled.
 
-- The **dropdown** chooses the content type: Endorsements (votes), Ratings, Point qualities (helpful/unhelpful votes on comments), Points (comments) or Posts.
+- The **dropdown** chooses the content type: Endorsements (votes), Ratings, Point qualities (helpful/unhelpful votes on comments), Points (comments) or Posts. In the rest of this document, we only consider endorsements since we're considering fraud at the voting stage.
 - The **tabs** choose the detection method.
 - Opening the page, changing tab or changing the dropdown starts a scan.
 
@@ -27,13 +35,14 @@ An **after-the-fact** admin tool. It looks through votes and other content for c
 
 | Tab | Clusters votes sharing | Useful now? |
 |---|---|---|
+/* claude why are these all in capitals?! */
 | **IP & USER AGENT & POST** | the same IP address, browser and post (shown if 2 or more votes) | **Yes**: the same device and network voting repeatedly on one post |
-| IP & FINGERPRINT & POST | IP, browser fingerprint and post | **No.** Browser fingerprints are no longer collected, so this finds nothing. |
-| IP & FINGERPRINT | IP and fingerprint, across posts | **No**, same reason |
-| NO FINGERPRINT | every vote without a fingerprint | **No.** It flags *every* vote at 100%. Bulk delete is disabled on this tab. |
 | IP ADDRESS | IP only, across posts (shown if an IP has more votes than there are posts) | Noisy: offices, schools and mobile networks share IPs |
 
 **Confidence (`%`)** combines the cluster's size (bigger is more suspicious) with how close together its votes were (a burst is more suspicious). It ignores *who* the user is, so different people on the same network and browser cluster together. That's why an admin reviews before deleting.
+
+> [!note]
+> There are also "IP & fingerprint & post", "IP & fingerprint", and "No fingerprint" tabs, but these are of no use to use since we disabled fingerprinting for this project in https://github.com/dxw/nesta-your-priorities/pull/13/.
 
 ## Columns
 
