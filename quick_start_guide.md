@@ -9,9 +9,35 @@ From repo root:
 cp development/docker/.env-dist development/docker/.env
 cp development/docker/plausible-conf.env.dist development/docker/plausible-conf.env
 cp server_api/startWatchWithEnv.sh-dist server_api/startWatchWithEnv.sh
+cp server_api/startWorkerWithEnv.sh-dist server_api/startWorkerWithEnv.sh
 ```
 
-Edit server_api/startWatchWithEnv.sh to set your SESSION_SECRET and database variables
+1. Set the following variables in `server_api/startWatchWithEnv.sh` and `server_api/startWorkerWithEnv.sh`:
+
+   - `YP_DEV_DATABASE_NAME`: yrpri_dev
+   - `YP_DEV_DATABASE_USERNAME`: postgres
+   - `YP_DEV_DATABASE_PASSWORD`: postgres
+   - `YP_DEV_DATABASE_HOST`: localhost
+
+2. Add the following variable to the same file:
+
+   - `SESSION_SECRET`: A random string
+
+3. Set the following variables in `development/docker/.env`:
+
+   - `MINIO_ROOT_USER`: minio
+   - `MINIO_ROOT_PASSWORD`: minio123
+
+4. Set the following variables in `server_api/startWorkerWithEnv.sh`:
+
+   - `AWS_ACCESS_KEY_ID`: minio
+   - `AWS_SECRET_ACCESS_KEY`: minio123
+   - `S3_REPORTS_BUCKET`: minio.yrpri.reports
+
+5. Add the following variables to the same file:
+
+   - `S3_ENDPOINT`: http://localhost:9012
+   - `S3_FORCE_PATH_STYLE`: true
 
 ## 1) First-Time Setup (Do Once Per Machine/Clone)
 
@@ -58,14 +84,26 @@ cd ../..
 
 ### 1.6 Setup first user
 
-First, start both the server and client (see [Daily local run](#2-daily-local-run-normal-development-startup)), run
+First, start both the server and client (see [Daily local run](#2-daily-local-run-normal-development-startup)).
 
-`YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/domains/createDomain.js 1 "here.com" "example"`
-`YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/users/createUserAddDomain.js 1 your.email@here.com yourusername yourpassword`
+> [!note]
+> It appears to be necessary to start the client to create the first domain.
 
-to create a new user, and `node server_api/ts-out/scripts/setAdminOnAll.cjs your.email@here.com` with the same environment variables to make that user an admin.
+Then run the following to create a new domain and admin user:
 
-(It appears to be necessary to start the client to create the first domain)
+```bash
+YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/domains/createDomain.js 0 "here.com" "example"
+YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/users/createUserAddDomain.js 1 your.email@here.com yourusername yourpassword
+YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/setAdminOnAll.cjs your.email@here.com
+```
+
+### 1.7 Create the community and group
+
+The landing page's buttons link to the idea submission form of group 1. Run the following to create a correctly-configured community and, within it, a correctly-configured group with that ID, with your user as their admin:
+
+```bash
+YP_DEV_DATABASE_NAME=yrpri_dev YP_DEV_DATABASE_USERNAME=postgres YP_DEV_DATABASE_PASSWORD=postgres node server_api/ts-out/scripts/custom/createCommunityAndGroup.js 1 your.email@here.com
+```
 
 ## 2) Daily Local Run (Normal Development Startup)
 
@@ -75,23 +113,26 @@ Use three terminals.
 
 ```bash
 cd development/docker
-docker compose up db redis -d
+docker compose up db redis minio mc -d
 ```
 
-Postgres and redis should respond to healthchecks:
+Postgres, Redis, and MinIO should respond to healthchecks, and `mc` should have completed successfully:
 
 ```bash
-docker exec postgres pg_isready -U postgres -d yrpri_dev
-docker exec redis redis-cli ping
+docker exec postgres pg_isready -U postgres -d yrpri_dev # Should show "/var/run/postgresql:5432 - accepting connections"
+docker exec redis redis-cli ping # Should show "PONG"
+curl -I http://localhost:9012/minio/health/live # Should show "HTTP/1.1 200 OK"
+docker compose ps -a mc # Should show STATUS of "Exited (0)"
 ```
+
+> [!note]
+> MinIO provides a local S3, and `mc` configures it to have the right buckets (probably only needed once).
 
 Optional full local stack:
 
 ```bash
 docker compose up db redis minio mc elasticsearch mail -d
 ```
-
-Minio provides a local S3, and mc configures it to have the right buckets (probably only needed once).
 
 ### Terminal 2: Backend API
 
@@ -126,7 +167,18 @@ cd server_api
 ./startWorkerWithEnv.sh
 ```
 
-Worker env defaults align with backend local values above (including NODE_ENV and YP_DEV_DATABASE_*), but worker startup does not export SESSION_SECRET.
+### Using the app
+
+To submit an idea as a member of the public:
+
+1. Visit http://localhost:4444 to see the public homepage.
+2. Follow the "Tell us your idea" link.
+3. Fill in the form and submit it.
+
+To view submitted ideas in the admin site:
+
+1. Visit http://localhost:4444/user/login and log in using the admin email address (your.email@here.com) and password (yourpassword) that you set earlier.
+2. Visit http://localhost:4444/admin/group/1 and then navigate to Moderation → Manage all content.
 
 ## 3) Testing the New vs Legacy Client (`useNewVersion`)
 
