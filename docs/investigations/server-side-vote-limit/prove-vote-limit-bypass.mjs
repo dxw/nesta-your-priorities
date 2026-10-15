@@ -10,6 +10,11 @@
 // --parallel sends all the votes at once instead of one after another, to
 // test for a race between counting and saving votes.
 //
+// Note: when we ran --parallel against a local dev server, the server
+// sometimes exited, apparently because each vote request tries to add the
+// new user to the group (Group.addUserToGroupIfNeeded) and the duplicate
+// insert causes an unhandled rejection. This needs investigation.
+//
 // --host-header sends a different Host header from the one in --base-url.
 // The server picks the domain from the Host header, so this lets a second
 // server on another port answer as the usual localhost:4242 domain.
