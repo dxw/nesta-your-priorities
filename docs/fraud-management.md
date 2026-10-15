@@ -10,6 +10,9 @@ We can discuss internally whether we consider the fraud detection that YP offers
 
 This functionality is all after-the-fact; i.e. it doesn't do anything to prevent users from submitting votes. We need to understand whether this is likely to be a problem.
 
+> [!important]
+> The rest of this document is Claude-written and lightly human-edited; it shouldn't be put in front of the client as-is.
+
 ## What it is
 
 An **after-the-fact** admin tool. It looks through votes and other content for clusters of suspicious activity (same IP, browser and so on), then lets an admin review them and delete them. It doesn't block anything as it happens. It's enabled per **community** and covers every group in that community.
