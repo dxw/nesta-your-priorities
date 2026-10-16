@@ -28,4 +28,50 @@ describe('YpPostActions', () => {
     debugger;
     await expect(element).shadowDom.to.be.accessible();
   });
+
+  it('tries anonymous login before prompting when casting a vote', async () => {
+    const calls: string[] = [];
+    const appUser = window.appUser as any;
+    const serverApi = window.serverApi as any;
+    const originalEnsureLoginChecked = appUser.ensureLoginChecked;
+    const originalSilentAnonymousLogin = appUser.silentAnonymousLoginIfAllowed;
+    const originalLoggedIn = appUser.loggedIn;
+    const originalLoginForEndorse = appUser.loginForEndorse;
+    const originalFingerprintData = appUser.getBrowserFingerprintData;
+    const originalEndorsePost = serverApi.endorsePost;
+
+    try {
+      appUser.ensureLoginChecked = async () => {
+        calls.push('session-check');
+        return false;
+      };
+      appUser.silentAnonymousLoginIfAllowed = async (group: YpGroupData) => {
+        calls.push('anonymous-login');
+        expect(group).to.equal(element.post.Group);
+        return true;
+      };
+      appUser.loggedIn = () => false;
+      appUser.loginForEndorse = () => calls.push('login-prompt');
+      appUser.getBrowserFingerprintData = async () => ({});
+      serverApi.endorsePost = async () => {
+        calls.push('cast-vote');
+        return undefined;
+      };
+
+      await element.generateEndorsement(1);
+
+      expect(calls).to.deep.equal([
+        'session-check',
+        'anonymous-login',
+        'cast-vote',
+      ]);
+    } finally {
+      appUser.ensureLoginChecked = originalEnsureLoginChecked;
+      appUser.silentAnonymousLoginIfAllowed = originalSilentAnonymousLogin;
+      appUser.loggedIn = originalLoggedIn;
+      appUser.loginForEndorse = originalLoginForEndorse;
+      appUser.getBrowserFingerprintData = originalFingerprintData;
+      serverApi.endorsePost = originalEndorsePost;
+    }
+  });
 });
