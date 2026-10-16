@@ -305,7 +305,7 @@ module.exports = (sequelize, DataTypes) => {
     options.value = 0;
     options.status = 'published';
     options.user_agent = req.useragent.source;
-    options.ip_address = req.clientIp;
+    options.ip_address = req.ip;
 
     async.series([
       (seriesCallback) => {
@@ -562,7 +562,7 @@ module.exports = (sequelize, DataTypes) => {
       options.value = 0;
       options.status = 'published';
       options.user_agent = req.useragent.source;
-      options.ip_address = req.clientIp;
+      options.ip_address = req.ip;
       const body = req.body || {};
       const data = options.data ? { ...options.data } : {};
       const fingerprintData = getFingerprintDataFromBody(body, "point");

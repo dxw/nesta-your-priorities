@@ -4,7 +4,6 @@ import path from "path";
 import bodyParser from "body-parser";
 import { RedisStore } from "connect-redis";
 import { express as useragentExpress } from "express-useragent";
-import requestIp from "request-ip";
 import compression from "compression";
 import { isbot } from "isbot";
 import rateLimit from "express-rate-limit";
@@ -612,7 +611,6 @@ export class YourPrioritiesApi {
   initializeMiddlewares() {
     this.app.use(this.setupExpresLogger);
     this.app.use(useragentExpress());
-    this.app.use(requestIp.mw());
     this.app.use(bodyParser.json({ limit: "150mb", strict: false }));
     this.app.use(bodyParser.urlencoded({ limit: "150mb", extended: true }));
     if (process.env.ALLOWED_ORIGINS) {
@@ -656,8 +654,11 @@ export class YourPrioritiesApi {
     // The number of proxies that we've placed in front of this server.
     //
     // Express uses this value plus the X-Forwarded-For request header to
-    // derive the value of req.ip, which we use for the `ip` field in our
-    // request logs.
+    // derive the value of req.ip, which we use for:
+    //
+    // - the `ip` field in our request logs
+    // - the ip_address database column on models like Endorsement — used
+    //   by Your Priorities's fraud detection module
     //
     // For example, in the case where we've put CloudFront and an ALB in front
     // of our server and the sequence of proxied requests is thus

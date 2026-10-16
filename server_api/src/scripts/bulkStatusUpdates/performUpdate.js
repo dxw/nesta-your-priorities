@@ -75,7 +75,7 @@ models.BulkStatusUpdate.findOne({
                   function (doCallback) {
                     models.Point.createNewsStory({
                       useragent: { source: 'performBulkUpdateScript' },
-                      clientIp: '127.0.0.1',
+                      ip: '127.0.0.1',
                       user: { id: userIdToPostNewsStory }
                     }, {
                       subType: 'bulkOperation',

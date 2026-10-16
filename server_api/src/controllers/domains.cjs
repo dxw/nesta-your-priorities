@@ -989,7 +989,7 @@ router.post('/:id', auth.can('edit domain'), function(req, res) {
     description: req.body.description,
     user_id: req.user.id,
     user_agent: req.useragent.source,
-    ip_address: req.clientIp,
+    ip_address: req.ip,
     access: req.body.access ? req.body.access : 2,
     status: "active",
     domain_name: randomDomainName

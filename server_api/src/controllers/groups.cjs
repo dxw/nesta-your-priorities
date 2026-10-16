@@ -1872,7 +1872,7 @@ router.post(
       },
       hostname: req.body.hostname || `${uuidv4()}.${req.ypDomain.domain_name}`,
       user_agent: req.useragent.source,
-      ip_address: req.clientIp,
+      ip_address: req.ip,
     });
 
     community
@@ -3112,7 +3112,7 @@ const createGroup = async (req, res) => {
     user_id: req.user.id,
     community_id: req.params.communityId,
     user_agent: req.useragent.source,
-    ip_address: req.clientIp,
+    ip_address: req.ip,
   });
 
   group.theme_id = req.body.themeId ? parseInt(req.body.themeId) : null;
@@ -5384,7 +5384,7 @@ router.post("/:groupId/survey", auth.can("view group"), (req, res) => {
           counter_endorsements_up: 0,
           content_type: models.Post.CONTENT_SURVEY,
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
         });
 
         post.set("public_data", {});
