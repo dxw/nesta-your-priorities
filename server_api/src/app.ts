@@ -653,8 +653,52 @@ export class YourPrioritiesApi {
       saveUninitialized: false,
     };
 
+    // The number of proxies that we've placed in front of this server.
+    //
+    // Express uses this value plus the X-Forwarded-For request header to
+    // derive the value of req.ip, which we use for the `ip` field in our
+    // request logs.
+    //
+    // For example, in the case where we've put CloudFront and an ALB in front
+    // of our server and the sequence of proxied requests is thus
+    //
+    // client -> CloudFront -> ALB -> this server
+    //
+    // then the X-Forwarded-For request headers look like this:
+    //
+    // 1. Request to CloudFront: none
+    // 2. Request from CloudFront to ALB: [real client IP]
+    // 3. Request from ALB to app server: [real client IP, CloudFront edge IP]
+    //
+    // and the correct value is 2.
+    //
+    // To set this value correctly, you need to know the sequence of proxies
+    // that we've placed this server behind:
+    //
+    // - If you set it too low, then req.ip will always be the address of one
+    //   of our proxies.
+    //
+    // - If you set it too high, then bad actors can spoof req.ip by adding a
+    //   fake IP address to the X-Forwarded-For request header that they send.
+    //   In our example, if the client sends an X-Forwarded-For of [fake IP]
+    //   then the app server will receive a value of [fake IP, real client IP,
+    //   CloudFront edge IP]. With TRUST_PROXY_HOPS set to 2, Express will
+    //   still take the real client IP, but with a value of 3, it will take
+    //   the fake IP.
+    const trustProxyHops = process.env.TRUST_PROXY_HOPS;
+    if (trustProxyHops === undefined) {
+      if (this.app.get("env") === "production") {
+        throw new Error("TRUST_PROXY_HOPS is not set.");
+      }
+    } else {
+      if (!/^\d+$/.test(trustProxyHops)) {
+        throw new Error("TRUST_PROXY_HOPS must be a non-negative integer.");
+      }
+
+      this.app.set("trust proxy", Number(trustProxyHops));
+    }
+
     if (this.app.get("env") === "production") {
-      this.app.set("trust proxy", 3); // Trust three proxies
       //@ts-ignore
       sessionConfig.cookie.secure = true; // serve secure cookies
     }
