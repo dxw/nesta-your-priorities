@@ -10,6 +10,36 @@ const groupIncludes = require('./get_moderation_items.cjs').groupIncludes;
 const userIncludes = require('./get_moderation_items.cjs').userIncludes;
 
 const recountCommunity = require('../../../utils/recount_utils.cjs').recountCommunity;
+const recountPosts = require('../../../utils/recount_utils.cjs').recountPosts;
+
+const createPointActivity = (point, callback) => {
+  models.AcActivity.createActivity({
+    type: 'activity.point.new',
+    userId: point.user_id,
+    groupId: point.group_id,
+    postId: point.post_id,
+    pointId: point.id,
+    access: models.AcActivity.ACCESS_PUBLIC
+  }, callback);
+};
+
+const publishApprovedPostPoint = (req, point, callback) => {
+  models.Post.findOne({ where: { id: point.post_id } }).then((post) => {
+    if (!post) {
+      callback(new Error('Post not found for approved point'));
+      return;
+    }
+    post.updateAllExternalCounters(req, 'up', 'counter_points', (error) => {
+      if (error) {
+        callback(error);
+      } else {
+        post.increment('counter_points').then(() => {
+          callback();
+        }).catch(callback);
+      }
+    });
+  }).catch(callback);
+};
 
 const moderationItemActionMaster = (req, res, options) => {
   getAnonymousUser((error, anonymousUser) => {
@@ -25,10 +55,18 @@ const moderationItemActionMaster = (req, res, options) => {
         include: options.includes
       }).then(item => {
         if (item) {
+          const queuedPostPoint = options.itemType === 'point' &&
+            options.actionType === 'approve' &&
+            item.status === 'in_moderation_queue' &&
+            item.content_type === models.Point.CONTENT_DEBATE &&
+            !item.parent_point_id &&
+            item.post_id;
           if (options.actionType==='delete') {
             item.deleted = true;
           } else if (options.actionType==='approve') {
-            item.status = 'published';
+            if (!queuedPostPoint) {
+              item.status = 'published';
+            }
           } else if (options.actionType==='block') {
             item.status = 'blocked';
           } else if (options.actionType==='anonymize') {
@@ -36,28 +74,55 @@ const moderationItemActionMaster = (req, res, options) => {
           } else if (options.actionType==='clearFlags') {
             item.counter_flags = 0;
           }
-          item.save().then( () => {
-            log.info('Moderation Action Done', { item, options });
-            if (options.itemType==='point') {
-              if (options.actionType==='anonymize') {
-                queue.add('process-anonymization', { type: 'anonymize-point-activities', pointId: options.itemId }, 'high');
-              } else if (options.actionType==='delete') {
-                queue.add('process-deletion', { type: 'delete-point-activities', pointId: options.itemId }, 'high');
+          const finishAction = (publishError) => {
+              if (publishError) {
+                log.error('Error publishing approved point', { error: publishError, pointId: item.id });
+                res.sendStatus(500);
+                return;
               }
-              queue.add('process-similarities', { type: 'update-collection', pointId: options.itemId }, 'low', { delay: 5000});
-            } else if (options.itemType==='post') {
-              if (options.actionType==='anonymize') {
-                queue.add('process-anonymization', { type: 'anonymize-post-activities', pointId: options.itemId }, 'high');
-              } else if (options.actionType==='delete') {
-                queue.add('process-deletion', { type: 'delete-post-activities', postId: options.itemId }, 'high');
+              log.info('Moderation Action Done', { item, options });
+              if (options.itemType==='point') {
+                if (options.actionType==='anonymize') {
+                  queue.add('process-anonymization', { type: 'anonymize-point-activities', pointId: options.itemId }, 'high');
+                } else if (options.actionType==='delete') {
+                  queue.add('process-deletion', { type: 'delete-point-activities', pointId: options.itemId }, 'high');
+                }
+                queue.add('process-similarities', { type: 'update-collection', pointId: options.itemId }, 'low', { delay: 5000});
+              } else if (options.itemType==='post') {
+                if (options.actionType==='anonymize') {
+                  queue.add('process-anonymization', { type: 'anonymize-post-activities', pointId: options.itemId }, 'high');
+                } else if (options.actionType==='delete') {
+                  queue.add('process-deletion', { type: 'delete-post-activities', postId: options.itemId }, 'high');
+                }
+                queue.add('process-similarities', { type: 'update-collection', postId: options.itemId }, 'low', { delay: 5000 });
               }
-              queue.add('process-similarities', { type: 'update-collection', postId: options.itemId }, 'low', { delay: 5000 });
-            }
-            res.sendStatus(200);
-          }).catch( error => {
-            log.error("Error deleting moderated item", { error });
-            res.sendStatus(500);
-          });
+              res.sendStatus(200);
+          };
+          const saveItem = () => {
+            item.save().then(() => {
+              if (queuedPostPoint) {
+                publishApprovedPostPoint(req, item, finishAction);
+              } else {
+                finishAction();
+              }
+            }).catch((error) => {
+              log.error("Error saving moderated item", { error });
+              res.sendStatus(500);
+            });
+          };
+          if (queuedPostPoint) {
+            createPointActivity(item, (activityError) => {
+              if (activityError) {
+                log.error('Error queueing activity for approved point', { error: activityError, pointId: item.id });
+                res.sendStatus(500);
+                return;
+              }
+              item.status = 'published';
+              saveItem();
+            });
+          } else {
+            saveItem();
+          }
         } else {
           log.error("Can't find item", { options });
           res.sendStatus(404);
@@ -139,28 +204,48 @@ const moderationManyItemsActionMaster = (workPackage, callback) => {
         };
       }
       if (updateValues) {
-        preProcessActivities(workPackage, (error) => {
-          if (error) {
-            callback(error);
-          } else {
-            workPackage.model.unscoped().update(
-              updateValues,
-              {
-                where: {
-                  deleted: false,
-                  id: {
-                    $in: workPackage.itemIds
-                  }
-                },
-                include: workPackage.includes
-              }).then((spread, other) => {
-              log.info('Moderation Action Many', { spread, workPackage });
-              callback();
-            }).catch(error => {
+        const applyUpdates = (queuedPostPoints = []) => {
+          workPackage.approvedPostPointIds = queuedPostPoints.map((point) => point.id);
+          preProcessActivities(workPackage, (error) => {
+            if (error) {
               callback(error);
-            })
-          }
-        });
+            } else {
+              async.each(queuedPostPoints, createPointActivity, (activityError) => {
+                if (activityError) {
+                  callback(activityError);
+                  return;
+                }
+                workPackage.model.unscoped().update(updateValues, {
+                  where: {
+                    deleted: false,
+                    id: { $in: workPackage.itemIds }
+                  },
+                  include: workPackage.includes
+                }).then((spread) => {
+                  log.info('Moderation Action Many', { spread, workPackage });
+                  callback();
+                }).catch(callback);
+              });
+            }
+          });
+        };
+
+        if (workPackage.actionType === 'approve' && workPackage.itemType === 'point') {
+          models.Point.unscoped().findAll({
+            where: {
+              id: { [models.Sequelize.Op.in]: workPackage.itemIds },
+              status: 'in_moderation_queue',
+              content_type: models.Point.CONTENT_DEBATE,
+              parent_point_id: null,
+              post_id: { [models.Sequelize.Op.ne]: null }
+            },
+            attributes: ['id', 'group_id', 'post_id', 'user_id']
+          }).then((points) => {
+            applyUpdates(points);
+          }).catch(callback);
+        } else {
+          applyUpdates();
+        }
       } else {
         callback("Couldn't find update values")
       }
@@ -298,28 +383,44 @@ const performManyModerationActions = async (workPackage, callback) => {
             queue.add('process-similarities', { type: 'update-collection', postId: postId }, 'low', { delay: 5000 });
           });
         }
-        if (postIds.length>0 ||
-            pointIds.length>0) {
-          if (workPackage.groupId) {
-            models.Group.findOne({
-              where: {
-                id: workPackage.groupId
-              },
-              attributes: ['id','community_id']
-            }).then( group => {
-              if (group) {
-                recountCommunity(group.community_id, callback)
-              } else {
-                callback("Can't find group for recount")
-              }
-            })
-          } else if (workPackage.communityId) {
-            recountCommunity(workPackage.communityId, callback)
+        const finishRecount = () => {
+          if (postIds.length > 0 || pointIds.length > 0) {
+            if (workPackage.groupId) {
+              models.Group.findOne({
+                where: {
+                  id: workPackage.groupId
+                },
+                attributes: ['id', 'community_id']
+              }).then(group => {
+                if (group) {
+                  recountCommunity(group.community_id, callback);
+                } else {
+                  callback("Can't find group for recount");
+                }
+              });
+            } else if (workPackage.communityId) {
+              recountCommunity(workPackage.communityId, callback);
+            } else {
+              callback();
+            }
           } else {
             callback();
           }
+        };
+
+        const approvedPostPointIds = pointWorkPackage.approvedPostPointIds || [];
+        if (approvedPostPointIds.length > 0) {
+          models.Point.unscoped().findAll({
+            where: {
+              id: { [models.Sequelize.Op.in]: approvedPostPointIds }
+            },
+            attributes: ['post_id']
+          }).then((points) => {
+            const affectedPostIds = _.uniq(points.map((point) => point.post_id).filter(Boolean));
+            recountPosts(affectedPostIds, finishRecount);
+          }).catch(callback);
         } else {
-          callback();
+          finishRecount();
         }
       } else {
         callback(error);
