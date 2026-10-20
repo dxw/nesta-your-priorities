@@ -2057,7 +2057,13 @@ export class YpPostPoints extends YpBaseElementWithLogin {
     videoId: number | undefined,
     audioId: number | undefined
   ) {
-    if (window.appUser.loggedIn() === true) {
+    let canAddPoint = await window.appUser.ensureLoginChecked();
+    if (!canAddPoint) {
+      canAddPoint = await window.appUser.silentAnonymousLoginIfAllowed(
+        this.post.Group
+      ) || window.appUser.loggedIn();
+    }
+    if (canAddPoint ) {
       if (videoId) this.currentVideoId = videoId;
       else if (audioId) this.currentAudioId = audioId;
       this.addPointDisabled = true;
