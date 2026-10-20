@@ -6,6 +6,7 @@ import { YpTestHelpers } from '../../common/test/setup-app.js';
 import { YpNavHelpers } from '../../common/YpNavHelpers.js';
 import {
   OPTIONAL_COOKIE_CONSENT_KEY,
+  SHARE_IDEA_BUTTON_LABEL,
 } from '../yp-landing-page-content.js';
 
 const SECTIONS = [
@@ -160,7 +161,7 @@ describe('YpLandingPage', () => {
         window.appGlobals.domain = domain;
 
         const button = element.shadowRoot!.querySelector(
-          '.shareIdeaButton'
+          `button[aria-label="${SHARE_IDEA_BUTTON_LABEL}"]`
         ) as HTMLButtonElement;
         expect(button, 'share idea button should exist').to.exist;
 
@@ -170,12 +171,11 @@ describe('YpLandingPage', () => {
       });
     });
 
-    // TODO: Skipped because this fails. Claude's speculation as to why:
-    // only one of the "Share your idea" buttons still has the
-    // shareIdeaButton class.
-    it.skip('redirects every "Share your idea" button on the page to the same place', () => {
+    it('redirects every "Share your idea" button on the page to the same place', () => {
       const buttons = Array.from(
-        element.shadowRoot!.querySelectorAll('.shareIdeaButton')
+        element.shadowRoot!.querySelectorAll(
+          `button[aria-label="${SHARE_IDEA_BUTTON_LABEL}"]`
+        )
       ) as HTMLButtonElement[];
 
       expect(buttons.length).to.be.greaterThan(1);
