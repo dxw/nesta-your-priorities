@@ -283,16 +283,14 @@ describe('YpLandingPage', () => {
   });
 
   describe('sections', () => {
-    // TODO: Skipped because this fails. Claude's speculation as to why:
-    // the intro's <h1> text has changed.
-    it.skip('renders the intro section first, as the first thing a user sees', () => {
+    it('renders the intro section first, as the first thing a user sees', () => {
       const sections = element.shadowRoot!.querySelectorAll('section');
       expect(sections.length).to.be.greaterThan(0);
       expect(sections[0].id).to.equal('intro');
 
       const intro = sections[0];
       expect(intro.querySelector('h1')?.textContent).to.contain(
-        'Getting government to fix the small stuff'
+        'The Small Ideas Initiative'
       );
       expect(intro.querySelectorAll('p').length).to.be.greaterThan(0);
     });
