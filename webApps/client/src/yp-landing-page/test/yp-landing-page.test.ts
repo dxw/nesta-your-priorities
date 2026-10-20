@@ -106,16 +106,13 @@ describe('YpLandingPage', () => {
       });
     });
 
-    // TODO: Skipped because this fails. Claude's speculation as to why:
-    // the mobile label's text has surrounding whitespace, which this test
-    // doesn't trim.
-    it.skip('uses short mobile labels without shortening accessible names', () => {
+    it('uses short mobile labels without shortening accessible names', () => {
       const getInvolvedButton = getNavButton('Get Involved');
       const aboutButton = getNavButton('About Us');
       const faqsButton = getNavButton('FAQs');
 
       expect(getInvolvedButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('Get Involved');
-      expect(aboutButton.querySelector('.navLabelMobile')?.textContent).to.equal('about');
+      expect(aboutButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('about');
       expect(faqsButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('FAQs');
       expect(getInvolvedButton.getAttribute('aria-label')).to.equal('Get Involved');
       expect(aboutButton.getAttribute('aria-label')).to.equal('About Us');
