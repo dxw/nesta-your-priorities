@@ -1804,7 +1804,7 @@ export class YpApp extends YpBaseElement {
       return;
     }
     await this.updateComplete;
-    (this.$$("#cookieNotice") as Dialog).show();
+    await (this.$$("#cookieNotice") as Dialog).show();
   }
 
   async openCookiePreferences() {

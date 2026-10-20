@@ -42,8 +42,7 @@ describe('YpApp', () => {
   });
 
   // TODO: Skipped because this fails. Claude's speculation as to why: it
-  // checks the dialog's state before md-dialog has finished opening and
-  // closing.
+  // checks the dialog's state before md-dialog has finished closing.
   it.skip('shows the cookie notice until it is dismissed', async () => {
     localStorage.removeItem(cookieNoticeKey);
     await element._showCookieNotice();
@@ -57,10 +56,7 @@ describe('YpApp', () => {
     expect(localStorage.getItem(cookieNoticeKey)).to.equal('1');
   });
 
-  // TODO: Skipped because this fails. Claude's speculation as to why:
-  // _showCookieNotice() resolves before the dialog is open, so
-  // _handleKeyDown() doesn't leave Escape to it.
-  it.skip('does not prevent Escape while the cookie notice is open', async () => {
+  it('does not prevent Escape while the cookie notice is open', async () => {
     localStorage.removeItem(cookieNoticeKey);
     await element._showCookieNotice();
 
