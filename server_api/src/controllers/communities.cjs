@@ -2514,7 +2514,7 @@ const createNewCommunity = (req, res) => {
     admin_email: admin_email,
     admin_name: admin_name,
     user_agent: req.useragent.source,
-    ip_address: req.clientIp,
+    ip_address: req.ip,
   });
 
   updateCommunityConfigParameters(req, community);

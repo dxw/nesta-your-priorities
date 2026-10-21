@@ -153,7 +153,7 @@ router.post('/:domainId', auth.can('create domainOrganization'), function(req, r
     user_id: req.user.id,
     website: req.body.website,
     user_agent: req.useragent.source,
-    ip_address: req.clientIp
+    ip_address: req.ip
   });
   organization.save().then(function() {
     log.info('Organization Created', { organization: toJson(organization), context: 'create', user: toJson(req.user) });

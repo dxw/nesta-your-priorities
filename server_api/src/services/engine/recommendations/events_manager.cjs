@@ -209,7 +209,7 @@ const getRecommendationFor = (req, userId, dateOptions, options, callback, userL
       headers: {
         'X-API-KEY': process.env["AC_ANALYTICS_KEY"]
       },
-      json: { user_agent: req.useragent.source, ip_address: req.clientIp, date_options: dateOptions }
+      json: { user_agent: req.useragent.source, ip_address: req.ip, date_options: dateOptions }
     };
 
     request.put(options, (error, content) => {

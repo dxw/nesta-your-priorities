@@ -502,7 +502,7 @@ module.exports = (sequelize, DataTypes) => {
       this_id: post.id,
       status: post.status,
       user_agent: req.useragent.source,
-      ip_address: req.clientIp
+      ip_address: req.ip
     });
     thisRevision.save().then(() => {
       if (req.body.pointFor && req.body.pointFor!=="") {
@@ -514,7 +514,7 @@ module.exports = (sequelize, DataTypes) => {
           user_id: req.user.id,
           status: post.status,
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
           data: {
             ...getFingerprintDataFromBody(req.body, "point"),
             originalQueryString: req.body.originalQueryString,
@@ -535,7 +535,7 @@ module.exports = (sequelize, DataTypes) => {
             point_id: point.id,
             status: post.status,
             user_agent: req.useragent.source,
-            ip_address: req.clientIp
+            ip_address: req.ip
           });
           pointRevision.save().then(() => {
             log.info("process-moderation point toxicity after post and point has been saved");
