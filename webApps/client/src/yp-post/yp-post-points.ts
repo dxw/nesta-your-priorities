@@ -2050,7 +2050,7 @@ export class YpPostPoints extends YpBaseElementWithLogin {
         this.post.Group
       ) || window.appUser.loggedIn();
     }
-    if (canAddPoint ) {
+    if (canAddPoint) {
       if (videoId) this.currentVideoId = videoId;
       else if (audioId) this.currentAudioId = audioId;
       this.addPointDisabled = true;
