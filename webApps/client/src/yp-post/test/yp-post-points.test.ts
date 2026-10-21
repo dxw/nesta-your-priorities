@@ -81,4 +81,34 @@ describe('YpPostPoints', () => {
     debugger;
     await expect(element).shadowDom.to.be.accessible();
   });
+
+  it('shows a submitted toast and does not list a point queued for moderation', async () => {
+    const toast: any = {};
+    const originalAppDialogs = window.appDialogs;
+    window.appDialogs = {
+      getDialogAsync: (name: string, callback: Function) => {
+        if (name === 'masterToast') callback(toast);
+      },
+    } as any;
+    const counterBefore = element.post.counter_points;
+    let insertedPoint = false;
+    element._insertNewPoint = async () => { insertedPoint = true; };
+
+    try {
+      element._completeNewPointResponse({
+        id: 99,
+        value: 1,
+        content: 'Awaiting review',
+        status: 'in_moderation_queue',
+      } as YpPointData);
+    } finally {
+      window.appDialogs = originalAppDialogs;
+    }
+
+    expect(insertedPoint).to.be.false;
+    expect(element.post.counter_points).to.equal(counterBefore);
+    expect(toast.open).to.be.true;
+    expect(toast.labelText).to.equal(element.t('point.submittedForModeration'));
+    expect(element.addPointDisabled).to.be.false;
+  });
 });

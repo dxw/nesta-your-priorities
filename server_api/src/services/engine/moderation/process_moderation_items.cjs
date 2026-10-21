@@ -10,6 +10,10 @@ const groupIncludes = require('./get_moderation_items.cjs').groupIncludes;
 const userIncludes = require('./get_moderation_items.cjs').userIncludes;
 
 const recountCommunity = require('../../../utils/recount_utils.cjs').recountCommunity;
+const { isQueuedPostPoint, publishApprovedPostPoint } = require('../../../utils/pointModeration.cjs');
+
+const isApprovingQueuedPostPoint = (itemType, actionType, item) =>
+  itemType === 'point' && actionType === 'approve' && isQueuedPostPoint(item);
 
 const moderationItemActionMaster = (req, res, options) => {
   getAnonymousUser((error, anonymousUser) => {
@@ -25,6 +29,8 @@ const moderationItemActionMaster = (req, res, options) => {
         include: options.includes
       }).then(item => {
         if (item) {
+          const publishQueuedPostPoint =
+            isApprovingQueuedPostPoint(options.itemType, options.actionType, item);
           if (options.actionType==='delete') {
             item.deleted = true;
           } else if (options.actionType==='approve') {
@@ -36,7 +42,10 @@ const moderationItemActionMaster = (req, res, options) => {
           } else if (options.actionType==='clearFlags') {
             item.counter_flags = 0;
           }
-          item.save().then( () => {
+          item.save().then(async () => {
+            if (publishQueuedPostPoint) {
+              await publishApprovedPostPoint(models, req, item);
+            }
             log.info('Moderation Action Done', { item, options });
             if (options.itemType==='point') {
               if (options.actionType==='anonymize') {
@@ -87,6 +96,7 @@ const createActivityJob = (workPackage, model) => {
 };
 
 const preProcessActivities = (workPackage, callback) => {
+  const queuedPostPoints = [];
   async.forEachLimit(workPackage.itemIds, 20, (id, forEachCallback) => {
     workPackage.model.unscoped().findOne(
       {
@@ -97,6 +107,9 @@ const preProcessActivities = (workPackage, callback) => {
       }).then((model) => {
       if (model) {
         createActivityJob(workPackage, model);
+        if (isApprovingQueuedPostPoint(workPackage.itemType, workPackage.actionType, model)) {
+          queuedPostPoints.push(model);
+        }
         forEachCallback();
       } else {
         log.error("Trying to change activities on an unknown item");
@@ -106,7 +119,7 @@ const preProcessActivities = (workPackage, callback) => {
       forEachCallback(error);
     });
   }, error => {
-    callback(error);
+    callback(error, queuedPostPoints);
   })
 };
 
@@ -139,7 +152,7 @@ const moderationManyItemsActionMaster = (workPackage, callback) => {
         };
       }
       if (updateValues) {
-        preProcessActivities(workPackage, (error) => {
+        preProcessActivities(workPackage, (error, queuedPostPoints) => {
           if (error) {
             callback(error);
           } else {
@@ -155,7 +168,10 @@ const moderationManyItemsActionMaster = (workPackage, callback) => {
                 include: workPackage.includes
               }).then((spread, other) => {
               log.info('Moderation Action Many', { spread, workPackage });
-              callback();
+              // Bulk jobs run in a worker without a request, so the domain counter is left to recounts
+              async.eachLimit(queuedPostPoints, 5, (point, eachCallback) => {
+                publishApprovedPostPoint(models, {}, point).then(() => eachCallback()).catch(eachCallback);
+              }, callback);
             }).catch(error => {
               callback(error);
             })
