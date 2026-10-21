@@ -310,7 +310,7 @@ export class YpPostHeader extends YpPostBaseWithAnswers(
                 .contentId="${this.post.id}"
                 class="description"
                 .truncate="${this.post.Group.configuration
-                  .descriptionTruncateAmount || 500}"
+                  .descriptionTruncateAmount || 2500}"
                 .moreText="${this.t("readMore")}"
                 .closeDialogText="${this.t("close")}"
               >
