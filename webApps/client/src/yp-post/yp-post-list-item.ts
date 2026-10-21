@@ -487,14 +487,14 @@ export class YpPostListItem extends YpBaseElement {
 
       for (
         let i = 0;
-        i < this.post.public_data.structuredAnswersJson.length;
+        i < 1;
         i++
       ) {
         const answer = this.post.public_data.structuredAnswersJson[i];
         if (answer && answer.value) {
           const question = questionHash[answer.uniqueId];
           if (question) {
-            outText += question.text + ": ";
+            // outText += question.text + ": ";
             outText += answer.value + " ";
           }
           if (outText.length > 120) {
