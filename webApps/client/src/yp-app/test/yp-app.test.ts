@@ -1,4 +1,4 @@
-import { html, fixture, expect, aTimeout } from '@open-wc/testing';
+import { html, fixture, expect, aTimeout, oneEvent } from '@open-wc/testing';
 
 import { YpApp } from '../yp-app.js';
 import '../yp-app.js';
@@ -41,26 +41,21 @@ describe('YpApp', () => {
     await expect(element).shadowDom.to.be.accessible();
   });
 
-  // TODO: Skipped because this fails. Claude's speculation as to why: it
-  // checks the dialog's state before md-dialog has finished opening and
-  // closing.
-  it.skip('shows the cookie notice until it is dismissed', async () => {
+  it('shows the cookie notice until it is dismissed', async () => {
     localStorage.removeItem(cookieNoticeKey);
     await element._showCookieNotice();
 
     const dialog = element.shadowRoot?.querySelector('#cookieNotice') as any;
     expect(dialog.open).to.equal(true);
+    const closed = oneEvent(dialog, 'closed');
     (dialog.querySelector('#cookieNoticeDismiss') as HTMLElement).click();
-    await aTimeout(0);
+    await closed;
 
     expect(dialog.open).to.equal(false);
     expect(localStorage.getItem(cookieNoticeKey)).to.equal('1');
   });
 
-  // TODO: Skipped because this fails. Claude's speculation as to why:
-  // _showCookieNotice() resolves before the dialog is open, so
-  // _handleKeyDown() doesn't leave Escape to it.
-  it.skip('does not prevent Escape while the cookie notice is open', async () => {
+  it('does not prevent Escape while the cookie notice is open', async () => {
     localStorage.removeItem(cookieNoticeKey);
     await element._showCookieNotice();
 
