@@ -1392,7 +1392,7 @@ export class YpLandingPage extends YpBaseElement {
                           <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                       </div>
                       <button
-                              class="button shareIdeaButton yp-hard-shadow-box"
+                              class="button yp-hard-shadow-box"
                               aria-label="${SHARE_IDEA_BUTTON_LABEL}"
                               @click="${this._shareYourIdea}"
                       >
