@@ -6,6 +6,7 @@ import { YpTestHelpers } from '../../common/test/setup-app.js';
 import { YpNavHelpers } from '../../common/YpNavHelpers.js';
 import {
   OPTIONAL_COOKIE_CONSENT_KEY,
+  SHARE_IDEA_BUTTON_LABEL,
 } from '../yp-landing-page-content.js';
 
 const SECTIONS = [
@@ -106,16 +107,13 @@ describe('YpLandingPage', () => {
       });
     });
 
-    // TODO: Skipped because this fails. Claude's speculation as to why:
-    // the mobile label's text has surrounding whitespace, which this test
-    // doesn't trim.
-    it.skip('uses short mobile labels without shortening accessible names', () => {
+    it('uses short mobile labels without shortening accessible names', () => {
       const getInvolvedButton = getNavButton('Get Involved');
       const aboutButton = getNavButton('About Us');
       const faqsButton = getNavButton('FAQs');
 
       expect(getInvolvedButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('Get Involved');
-      expect(aboutButton.querySelector('.navLabelMobile')?.textContent).to.equal('about');
+      expect(aboutButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('about');
       expect(faqsButton.querySelector('.navLabelMobile')?.textContent?.trim()).to.equal('FAQs');
       expect(getInvolvedButton.getAttribute('aria-label')).to.equal('Get Involved');
       expect(aboutButton.getAttribute('aria-label')).to.equal('About Us');
@@ -163,7 +161,7 @@ describe('YpLandingPage', () => {
         window.appGlobals.domain = domain;
 
         const button = element.shadowRoot!.querySelector(
-          '.shareIdeaButton'
+          `button[aria-label="${SHARE_IDEA_BUTTON_LABEL}"]`
         ) as HTMLButtonElement;
         expect(button, 'share idea button should exist').to.exist;
 
@@ -173,12 +171,11 @@ describe('YpLandingPage', () => {
       });
     });
 
-    // TODO: Skipped because this fails. Claude's speculation as to why:
-    // only one of the "Share your idea" buttons still has the
-    // shareIdeaButton class.
-    it.skip('redirects every "Share your idea" button on the page to the same place', () => {
+    it('redirects every "Share your idea" button on the page to the same place', () => {
       const buttons = Array.from(
-        element.shadowRoot!.querySelectorAll('.shareIdeaButton')
+        element.shadowRoot!.querySelectorAll(
+          `button[aria-label="${SHARE_IDEA_BUTTON_LABEL}"]`
+        )
       ) as HTMLButtonElement[];
 
       expect(buttons.length).to.be.greaterThan(1);
@@ -286,16 +283,14 @@ describe('YpLandingPage', () => {
   });
 
   describe('sections', () => {
-    // TODO: Skipped because this fails. Claude's speculation as to why:
-    // the intro's <h1> text has changed.
-    it.skip('renders the intro section first, as the first thing a user sees', () => {
+    it('renders the intro section first, as the first thing a user sees', () => {
       const sections = element.shadowRoot!.querySelectorAll('section');
       expect(sections.length).to.be.greaterThan(0);
       expect(sections[0].id).to.equal('intro');
 
       const intro = sections[0];
       expect(intro.querySelector('h1')?.textContent).to.contain(
-        'Getting government to fix the small stuff'
+        'The Small Ideas Initiative'
       );
       expect(intro.querySelectorAll('p').length).to.be.greaterThan(0);
     });
