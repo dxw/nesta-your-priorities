@@ -11,15 +11,13 @@ describe('YpPointCommentList', () => {
   before(async () => {
     fetchMock = YpTestHelpers.getFetchMock();
     await YpTestHelpers.setupApp();
+    fetchMock.get('/api/points/1/comments',YpTestHelpers.getPoint(), YpTestHelpers.fetchMockConfig);
 
     const commentList = [YpTestHelpers.getPoint(), YpTestHelpers.getPoint(), YpTestHelpers.getPoint()];
   });
 
-  fetchMock.get('/api/points/1/comments',YpTestHelpers.getPoint(), YpTestHelpers.fetchMockConfig);
-
   beforeEach(async () => {
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-point-comment-list
       ></yp-point-comment-list>
     `);

@@ -1,7 +1,7 @@
 import { html, fixture, expect, aTimeout } from '@open-wc/testing';
 
 import { YpLanguageSelector } from '../languages/yp-language-selector.js';
-import '../yp-language-selector.js';
+import '../languages/yp-language-selector.js';
 import { YpTestHelpers } from '../../common/test/setup-app.js';
 
 describe('YpLanguageSelector', () => {
@@ -16,7 +16,6 @@ describe('YpLanguageSelector', () => {
   beforeEach(async () => {
 
     element = await fixture(html`
-      ${YpTestHelpers.renderCommonHeader()}
       <yp-language-selector
       selectedLocale="en"
       ></yp-language-selector>
