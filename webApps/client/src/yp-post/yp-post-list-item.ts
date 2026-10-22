@@ -487,14 +487,16 @@ export class YpPostListItem extends YpBaseElement {
 
       for (
         let i = 0;
-        i < this.post.public_data.structuredAnswersJson.length;
+		// Limit to the first structured answer on listing page, to give users a preview without overwhelming them
+        i < 1;
         i++
       ) {
         const answer = this.post.public_data.structuredAnswersJson[i];
         if (answer && answer.value) {
           const question = questionHash[answer.uniqueId];
           if (question) {
-            outText += question.text + ": ";
+			// Only include the answer value for the preview, not the question
+            // outText += question.text + ": ";
             outText += answer.value + " ";
           }
           if (outText.length > 120) {
