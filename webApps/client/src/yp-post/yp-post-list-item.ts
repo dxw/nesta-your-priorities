@@ -487,6 +487,7 @@ export class YpPostListItem extends YpBaseElement {
 
       for (
         let i = 0;
+		// Limit to the first structured answer on listing page, to give users a preview without overwhelming them
         i < 1;
         i++
       ) {
@@ -494,6 +495,7 @@ export class YpPostListItem extends YpBaseElement {
         if (answer && answer.value) {
           const question = questionHash[answer.uniqueId];
           if (question) {
+			// Only include the answer value for the preview, not the question
             // outText += question.text + ": ";
             outText += answer.value + " ";
           }
