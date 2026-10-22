@@ -67,7 +67,8 @@ describe('YpGroup', () => {
     await expect(element).shadowDom.to.be.accessible();
   });
 
-  // TODO: Skipped because this fails, as it already did upstream at
+  // TODO (https://trello.com/c/WPD0cQBD):
+  // Skipped because this fails, as it already did upstream at
   // f187715 (where we forked from). We haven't investigated why.
   it.skip('selects the first non-empty post status tab when open is empty', async () => {
     element.collection = YpTestHelpers.getGroup();
@@ -85,7 +86,8 @@ describe('YpGroup', () => {
     expect(element.selectedGroupTab).to.equal(GroupTabTypes.InProgress);
   });
 
-  // TODO: Skipped because this fails, as it already did upstream at
+  // TODO (https://trello.com/c/WPD0cQBD):
+  // Skipped because this fails, as it already did upstream at
   // f187715 (where we forked from). We haven't investigated why.
   it.skip('does not move back to the default status after a user selects an empty tab', async () => {
     element.collection = YpTestHelpers.getGroup();
@@ -108,7 +110,8 @@ describe('YpGroup', () => {
     expect(element.selectedGroupTab).to.equal(GroupTabTypes.Open);
   });
 
-  // TODO: Skipped because this fails, as it already did upstream at
+  // TODO (https://trello.com/c/WPD0cQBD):
+  // Skipped because this fails, as it already did upstream at
   // f187715 (where we forked from). We haven't investigated why.
   it.skip('loads tab post counts after cached group refresh detects non-open posts', async () => {
     let didLoadTabPostCounts = false;
