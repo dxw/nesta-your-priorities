@@ -26,6 +26,7 @@ module.exports = function(sequelize, DataTypes) {
 
     indexes: [
       {
+        unique: true,
         fields: ['user_id', 'post_id'],
         where: {
           deleted: false
