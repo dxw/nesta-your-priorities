@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs";
 import moment from "moment";
+import { parseArgs } from "node:util";
 import models from "../../models/index.cjs";
 import log from "../../utils/loggerTs.js";
 
@@ -14,7 +15,7 @@ const TEXT_ANSWER_TYPES = [
 ];
 
 const usage =
-  "Usage: node importPostsForGroupFromXls.js <xlsFilePath> <groupId> [--dry-run]";
+  "Usage: node importPostsForGroupFromXls.js <xlsFilePath> <groupId> [--dry-run] [--default-author-id <userId>]";
 
 const isTruthy = (value: string) =>
   ["true", "yes", "1", "on"].includes(value.trim().toLowerCase());
@@ -36,14 +37,33 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
 
 (async () => {
   try {
-    const args = process.argv.slice(2);
-    const dryRun = args.includes("--dry-run");
-    const [filePath, groupIdArg] = args.filter((a) => a !== "--dry-run");
+    const { values, positionals } = parseArgs({
+      args: process.argv.slice(2),
+      allowPositionals: true,
+      options: {
+        "dry-run": { type: "boolean", default: false },
+        "default-author-id": { type: "string" },
+      },
+    });
+    const dryRun = values["dry-run"];
+    const [filePath, groupIdArg] = positionals;
     const groupId = Number(groupIdArg);
 
-    if (!filePath || !Number.isInteger(groupId) || groupId <= 0) {
+    if (positionals.length !== 2 || !filePath || !Number.isInteger(groupId) || groupId <= 0) {
       log.info(usage);
       process.exit(1);
+    }
+
+    let defaultAuthor = null;
+    if (values["default-author-id"] !== undefined) {
+      const defaultAuthorId = Number(values["default-author-id"]);
+      if (!Number.isSafeInteger(defaultAuthorId) || defaultAuthorId <= 0) {
+        throw new Error("--default-author-id must be a positive integer");
+      }
+      defaultAuthor = await models.User.findByPk(defaultAuthorId);
+      if (!defaultAuthor) {
+        throw new Error(`Default author ${defaultAuthorId} not found`);
+      }
     }
 
     // Generated model types lack association helpers (addGroupUser etc.)
@@ -72,7 +92,7 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
       columns.set(cell.text.trim(), colNumber);
     });
 
-    for (const required of ["Post name", "Email"]) {
+    for (const required of defaultAuthor ? ["Post name"] : ["Post name", "Email"]) {
       if (!columns.has(required)) {
         throw new Error(`Missing required column "${required}"`);
       }
@@ -149,7 +169,7 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
 
         const name = cellText(row, "Post name");
         const email = cellText(row, "Email").toLowerCase();
-        if (!name || !email || !email.includes("@")) {
+        if (!name || (email ? !email.includes("@") : !defaultAuthor)) {
           throw new Error(`Row ${i}: missing Post name or valid Email`);
         }
 
@@ -163,10 +183,12 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
           ? parseCreatedAt(row.getCell(createdAtCol), i)
           : new Date();
 
-        let user = await models.User.findOne({
-          where: { email },
-          transaction,
-        });
+        let user = email
+          ? await models.User.findOne({
+              where: { email },
+              transaction,
+            })
+          : defaultAuthor;
         if (!user) {
           user = await models.User.create(
             {
