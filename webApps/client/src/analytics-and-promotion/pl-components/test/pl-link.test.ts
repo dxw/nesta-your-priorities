@@ -16,6 +16,7 @@ describe('PlausibleLink', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-link></pl-link>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

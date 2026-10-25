@@ -20,6 +20,7 @@ describe('YpPost', () => {
       <yp-post
         collectionId="1"
       ></yp-post>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

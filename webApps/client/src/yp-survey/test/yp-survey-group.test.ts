@@ -50,6 +50,7 @@ describe('YpSurveyGroup', () => {
       <yp-survey-group
         surveyGroupId="1">
       </yp-survey-group>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

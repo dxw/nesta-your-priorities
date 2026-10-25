@@ -16,6 +16,7 @@ describe('PsAiModelSelector', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <ps-ai-model-selector></ps-ai-model-selector>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

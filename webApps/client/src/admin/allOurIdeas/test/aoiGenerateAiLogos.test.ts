@@ -16,6 +16,7 @@ describe('AoiGenerateAiLogos', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <aoi-generate-ai-logos></aoi-generate-ai-logos>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

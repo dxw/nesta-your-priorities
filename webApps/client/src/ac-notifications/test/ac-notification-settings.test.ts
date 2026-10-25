@@ -57,6 +57,7 @@ describe('AcNotificationSettings', () => {
         <ac-notification-settings
           .notificationsSettings="${settings}"
         ></ac-notification-settings>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

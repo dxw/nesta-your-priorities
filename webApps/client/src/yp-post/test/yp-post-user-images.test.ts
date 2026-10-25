@@ -20,6 +20,7 @@ describe('YpPostUserImages', () => {
       <yp-post-user-images
       .post="${YpTestHelpers.getPost()}"
       ></yp-post-user-images>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

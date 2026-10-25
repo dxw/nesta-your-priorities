@@ -22,6 +22,7 @@ describe('YpAutoTranslateDialog', () => {
       <yp-autotranslate-dialog
         confirmationText="ALEXOSS">
       </yp-autotranslate-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -25,6 +25,7 @@ describe('YpThemeSelector', () => {
       <yp-theme-selector
         .theme="${theme}">
       </yp-theme-selector>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

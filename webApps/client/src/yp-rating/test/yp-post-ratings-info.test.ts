@@ -50,6 +50,7 @@ describe('YpPostRatingsInfo', () => {
       <yp-post-ratings-info
         .post="${post}"
       ></yp-post-ratings-info>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

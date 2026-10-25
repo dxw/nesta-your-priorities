@@ -16,6 +16,7 @@ describe('YpFraudManagement', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-fraud-management></yp-fraud-management>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

@@ -16,6 +16,7 @@ describe('YpAdminHtmlEditor', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-admin-html-editor></yp-admin-html-editor>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

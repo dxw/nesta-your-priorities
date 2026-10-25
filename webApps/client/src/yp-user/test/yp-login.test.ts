@@ -16,6 +16,7 @@ describe('YpLogin', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-login></yp-login>
+      ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
 

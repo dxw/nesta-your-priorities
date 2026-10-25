@@ -16,6 +16,7 @@ describe('YpPostListItem', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-post-list-item></yp-post-list-item>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

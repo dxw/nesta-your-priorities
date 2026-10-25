@@ -16,6 +16,7 @@ describe('PlausibleTopStats', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-top-stats></pl-top-stats>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

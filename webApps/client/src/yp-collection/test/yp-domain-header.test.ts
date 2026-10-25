@@ -16,6 +16,7 @@ describe('YpDomainHeader', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-domain-header></yp-domain-header>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

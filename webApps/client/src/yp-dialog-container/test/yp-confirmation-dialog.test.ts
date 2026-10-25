@@ -19,6 +19,7 @@ describe('YpConfirmationDialog', () => {
       <yp-confirmation-dialog
         confirmationText="good morning">
       </yp-confirmation-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -62,6 +62,7 @@ describe('AcActivities', () => {
         collectionId="1"
         collectionType="group">
       </ac-activities>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(150);

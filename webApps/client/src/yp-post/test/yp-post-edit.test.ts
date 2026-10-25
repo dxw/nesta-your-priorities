@@ -19,6 +19,7 @@ describe('YpPostEdit', () => {
         .group="${YpTestHelpers.getGroup()}"
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
     element.open(true, {})

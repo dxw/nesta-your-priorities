@@ -16,6 +16,7 @@ describe('YpPagesGrid', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-pages-grid></yp-pages-grid>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

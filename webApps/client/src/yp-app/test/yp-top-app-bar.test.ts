@@ -16,6 +16,7 @@ describe('YpTopAppBar', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-top-app-bar></yp-top-app-bar>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

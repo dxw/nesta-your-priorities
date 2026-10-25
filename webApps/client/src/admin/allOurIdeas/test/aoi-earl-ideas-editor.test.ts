@@ -16,6 +16,7 @@ describe('AoiEarlIdeasEditor', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <aoi-earl-ideas-editor></aoi-earl-ideas-editor>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

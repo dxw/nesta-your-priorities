@@ -18,6 +18,7 @@ describe('YpPostUserImageEdit', () => {
       <yp-post-user-image-edit
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-user-image-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

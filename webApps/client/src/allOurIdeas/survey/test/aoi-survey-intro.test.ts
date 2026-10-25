@@ -16,6 +16,7 @@ describe('AoiSurveyIntro', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <aoi-survey-intro></aoi-survey-intro>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

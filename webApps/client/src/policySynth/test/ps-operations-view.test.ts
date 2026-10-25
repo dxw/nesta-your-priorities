@@ -16,6 +16,7 @@ describe('PsOperationsView', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <ps-operations-view></ps-operations-view>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

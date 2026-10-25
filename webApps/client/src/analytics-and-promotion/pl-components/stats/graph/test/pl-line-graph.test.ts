@@ -16,6 +16,7 @@ describe('PlausibleLineGraph', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-line-graph></pl-line-graph>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

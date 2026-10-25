@@ -16,6 +16,7 @@ describe('YpAssistantWelcome', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-assistant-welcome></yp-assistant-welcome>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

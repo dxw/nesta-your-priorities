@@ -16,6 +16,7 @@ describe('PsAgentNode', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <ps-agent-node></ps-agent-node>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

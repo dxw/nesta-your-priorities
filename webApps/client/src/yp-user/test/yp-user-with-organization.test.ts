@@ -18,6 +18,7 @@ describe('YpUserWithOrganization', () => {
       <yp-user-with-organization
         .user="${YpTestHelpers.getUser()}">
       </yp-user-with-organization>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -16,6 +16,7 @@ describe('PlausibleSourcesList', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-sources-list></pl-sources-list>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

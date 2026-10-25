@@ -33,6 +33,7 @@ describe('AcActivityPostStatusUpdate', () => {
        .activity="${activity}">
       </ac-activity-post-status-update
       >
+    ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -18,6 +18,7 @@ describe('AcNotificationToast', () => {
         <ac-notification-toast
           .user="${YpTestHelpers.getUser()}"
         ></ac-notification-toast>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

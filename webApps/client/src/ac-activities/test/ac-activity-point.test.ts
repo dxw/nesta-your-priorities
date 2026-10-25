@@ -26,6 +26,7 @@ describe('AcActivityPoint', () => {
         .activity="${activity}">
       </ac-activity-point
       >
+    ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

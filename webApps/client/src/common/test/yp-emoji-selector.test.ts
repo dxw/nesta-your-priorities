@@ -16,6 +16,7 @@ describe('YpEmojiSelector', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-emoji-selector></yp-emoji-selector>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

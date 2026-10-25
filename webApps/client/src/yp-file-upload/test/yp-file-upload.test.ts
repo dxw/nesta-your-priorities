@@ -19,6 +19,7 @@ describe('YpFileUpload', () => {
           .group="${YpTestHelpers.getGroup()}"
           subText="Test">
         </yp-file-upload>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

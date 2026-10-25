@@ -16,6 +16,7 @@ describe('YpConfigurationSubmitted', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-configuration-submitted></yp-configuration-submitted>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

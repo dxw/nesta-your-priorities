@@ -16,6 +16,7 @@ describe('PlausibleSourcesReferres', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-sources-referrers></pl-sources-referrers>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

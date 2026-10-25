@@ -18,6 +18,7 @@ describe('YpMagicTextDialog', () => {
       <yp-magic-text-dialog
         content='ALXOEz'>
       </yp-magic-text-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

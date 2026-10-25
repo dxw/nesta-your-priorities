@@ -28,6 +28,7 @@ describe('YpSetVideoCover', () => {
           .video="${video}"
           .videoImages="${videoImages}">
         </yp-set-video-cover>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

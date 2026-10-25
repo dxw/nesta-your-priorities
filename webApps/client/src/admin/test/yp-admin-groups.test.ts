@@ -16,6 +16,7 @@ describe('YpAdminGroups', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-admin-groups></yp-admin-groups>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

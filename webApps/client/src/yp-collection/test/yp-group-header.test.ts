@@ -16,6 +16,7 @@ describe('YpGroupHeader', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-group-header></yp-group-header>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

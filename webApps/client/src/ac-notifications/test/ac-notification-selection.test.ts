@@ -23,6 +23,7 @@ describe('AcNotificationSelection', () => {
         <ac-notification-selection
           .settings="${settings}"
         ></ac-notification-selection>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

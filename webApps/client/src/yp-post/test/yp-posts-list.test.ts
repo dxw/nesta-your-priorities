@@ -62,6 +62,7 @@ describe('YpPostslist', () => {
         <yp-posts-list
           .group="${YpTestHelpers.getGroup()}"
         ></yp-posts-list>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

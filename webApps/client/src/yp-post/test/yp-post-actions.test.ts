@@ -19,6 +19,7 @@ describe('YpPostActions', () => {
       <yp-post-actions
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-actions>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -16,6 +16,7 @@ describe('PsAddConnectorDialog', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <ps-add-connector-dialog></ps-add-connector-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

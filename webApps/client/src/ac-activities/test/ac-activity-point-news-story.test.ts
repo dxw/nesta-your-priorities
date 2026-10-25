@@ -28,6 +28,7 @@ describe('AcActivityPointNewsStory', () => {
         .activity="${activity}">
       </ac-activity-point-news-story
       >
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -16,6 +16,7 @@ describe('YpRealtime', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-realtime></yp-realtime>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

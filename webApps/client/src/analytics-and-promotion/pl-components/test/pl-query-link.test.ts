@@ -16,6 +16,7 @@ describe('PlausibleQueryLink', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-query-link></pl-query-link>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

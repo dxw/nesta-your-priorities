@@ -53,6 +53,7 @@ describe('YpUserEdit', () => {
 
     element = await fixture(html`
       <yp-user-edit .settings="${settings}" .user="${YpTestHelpers.getUser()}"></yp-user-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
     element.open(true, { id: 1 });

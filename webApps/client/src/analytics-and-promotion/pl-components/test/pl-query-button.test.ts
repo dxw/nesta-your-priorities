@@ -16,6 +16,7 @@ describe('PlausibleQueryButton', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-query-button></pl-query-button>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

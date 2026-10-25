@@ -33,6 +33,7 @@ describe('AcNotificationListGenaralItem', () => {
         <ac-notification-list-general-item
           .notification="${notification}"
         ></ac-notification-list-general-item>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

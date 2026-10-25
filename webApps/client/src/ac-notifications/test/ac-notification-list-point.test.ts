@@ -34,6 +34,7 @@ describe('AcNotificationListPoint', () => {
         <ac-notification-list-point
           .notification="${notification}"
         ></ac-notification-list-point>
+        ${YpTestHelpers.renderCommonHeader()}
       `);
       await aTimeout(100);
     });

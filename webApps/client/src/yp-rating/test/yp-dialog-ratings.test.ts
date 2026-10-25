@@ -21,6 +21,7 @@ describe('YpDialogRatings', () => {
       <yp-dialog-ratings
         .post="${YpTestHelpers.getPost()}"
       ></yp-dialog-ratings>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

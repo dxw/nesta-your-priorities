@@ -19,6 +19,7 @@ describe('YpResetPassword', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-reset-password></yp-reset-password>
+      ${YpTestHelpers.renderCommonHeader()}
       `);
         await aTimeout(100);
   });

@@ -27,6 +27,7 @@ describe('YpPostUserImageCard', () => {
         .post="${YpTestHelpers.getPost()}"
         .image="${image}"
       ></yp-post-user-image-card>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

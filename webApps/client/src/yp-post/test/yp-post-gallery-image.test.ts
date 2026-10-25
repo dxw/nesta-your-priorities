@@ -16,6 +16,7 @@ describe('YpPostGalleryImage', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-post-gallery-image></yp-post-gallery-image>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

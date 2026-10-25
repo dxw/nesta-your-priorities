@@ -16,6 +16,7 @@ describe('YpRegistrationQuestions', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-registration-questions></yp-registration-questions>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

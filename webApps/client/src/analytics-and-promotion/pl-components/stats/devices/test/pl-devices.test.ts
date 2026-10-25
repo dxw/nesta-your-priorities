@@ -16,6 +16,7 @@ describe('PlausableDevices', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-devices></pl-devices>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

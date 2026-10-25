@@ -16,6 +16,7 @@ describe('PlausableLocations', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-locations></pl-locations>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

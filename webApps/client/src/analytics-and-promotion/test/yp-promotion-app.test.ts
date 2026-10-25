@@ -16,6 +16,7 @@ describe('YpPromotionApp', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-promotion-app></yp-promotion-app>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

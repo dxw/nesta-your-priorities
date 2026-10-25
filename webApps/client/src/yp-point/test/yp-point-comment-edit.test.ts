@@ -20,6 +20,7 @@ describe('YpPointCommentEdit', () => {
         .point="${YpTestHelpers.getPoint()}"
         .comment="${YpTestHelpers.getPoint()}"
       ></yp-point-comment-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(200);
   });

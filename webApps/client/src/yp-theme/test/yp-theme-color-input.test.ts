@@ -16,6 +16,7 @@ describe('YpThemeColorInput', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-theme-color-input></yp-theme-color-input>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

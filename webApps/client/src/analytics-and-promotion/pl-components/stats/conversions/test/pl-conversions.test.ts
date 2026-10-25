@@ -16,6 +16,7 @@ describe('PlausibleConversions', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-conversions></pl-conversions>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

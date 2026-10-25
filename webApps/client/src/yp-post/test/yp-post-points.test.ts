@@ -73,6 +73,7 @@ describe('YpPostPoints', () => {
       <yp-post-points
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-points>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

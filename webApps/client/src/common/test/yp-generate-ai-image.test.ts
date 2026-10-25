@@ -16,6 +16,7 @@ describe('YpGenerateAiImage', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-generate-ai-image></yp-generate-ai-image>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

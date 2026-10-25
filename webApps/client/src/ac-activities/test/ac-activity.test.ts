@@ -28,6 +28,7 @@ describe('AcActivity', () => {
         .activity="${activity}">
       </ac-activity
       >
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

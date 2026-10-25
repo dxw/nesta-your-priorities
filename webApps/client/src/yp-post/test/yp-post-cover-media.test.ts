@@ -18,6 +18,7 @@ describe('YpPostCoverMedia', () => {
       <yp-post-cover-media
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-cover-media>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

@@ -16,6 +16,7 @@ describe('YpXlsDownload', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-xls-download></yp-xls-download>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

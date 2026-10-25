@@ -16,6 +16,7 @@ describe('YpShareDialog', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-share-dialog></yp-share-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

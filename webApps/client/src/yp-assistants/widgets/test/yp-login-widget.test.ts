@@ -16,6 +16,7 @@ describe('YpLoginWidget', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-login-widget></yp-login-widget>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

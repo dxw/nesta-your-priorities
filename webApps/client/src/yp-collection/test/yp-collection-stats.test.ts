@@ -24,6 +24,7 @@ describe('YpCollectionStats', () => {
       <yp-collection-stats
         .collection="${YpTestHelpers.getDomain()}"
         .collectionType="${collectionType}"></yp-collection-stats>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100)
   });

@@ -16,6 +16,7 @@ describe('YpSnackbar', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-snackbar></yp-snackbar>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

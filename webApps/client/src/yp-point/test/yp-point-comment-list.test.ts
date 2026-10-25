@@ -20,6 +20,7 @@ describe('YpPointCommentList', () => {
     element = await fixture(html`
       <yp-point-comment-list
       ></yp-point-comment-list>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

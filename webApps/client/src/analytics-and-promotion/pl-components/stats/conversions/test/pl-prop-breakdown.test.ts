@@ -16,6 +16,7 @@ describe('PlausiblePropBreakdown', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-prop-breakdown></pl-prop-breakdown>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

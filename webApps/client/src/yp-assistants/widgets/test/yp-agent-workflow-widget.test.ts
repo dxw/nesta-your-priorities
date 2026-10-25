@@ -16,6 +16,7 @@ describe('YpAgentWorkflowWidget', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-agent-workflow-widget></yp-agent-workflow-widget>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

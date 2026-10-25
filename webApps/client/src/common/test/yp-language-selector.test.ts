@@ -19,6 +19,7 @@ describe('YpLanguageSelector', () => {
       <yp-language-selector
       selectedLocale="en"
       ></yp-language-selector>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

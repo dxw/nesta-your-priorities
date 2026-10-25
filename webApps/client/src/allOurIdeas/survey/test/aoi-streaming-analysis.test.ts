@@ -16,6 +16,7 @@ describe('AoiStreamingAnalysis', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <aoi-streaming-analysis></aoi-streaming-analysis>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

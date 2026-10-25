@@ -20,6 +20,7 @@ describe('YpPostMap', () => {
         collectionId="1"
         collectionType="LEXO"
       ></yp-post-map>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

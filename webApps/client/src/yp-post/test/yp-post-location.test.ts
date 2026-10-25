@@ -19,6 +19,7 @@ describe('YpPostLocation', () => {
         .group="${YpTestHelpers.getGroup()}"
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-location>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

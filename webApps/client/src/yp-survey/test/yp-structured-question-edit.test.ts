@@ -22,6 +22,7 @@ describe('YpStructuredQuestionEdit', () => {
       <yp-structured-question-edit
         .question="${question}">
       </yp-structured-question-edit>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

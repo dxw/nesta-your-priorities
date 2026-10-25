@@ -16,6 +16,7 @@ describe('PlausablePages', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-pages></pl-pages>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

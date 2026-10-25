@@ -25,6 +25,7 @@ describe('YpApp', () => {
       <yp-app
 
       ></yp-app>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

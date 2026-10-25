@@ -46,6 +46,7 @@ describe('AcActivityRecommendedPosts', () => {
         .recommendedPosts ="${recommendedPosts}">
       </ac-activity-recommended-posts
       >
+    ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

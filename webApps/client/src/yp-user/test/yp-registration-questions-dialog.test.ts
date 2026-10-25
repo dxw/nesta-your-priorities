@@ -16,6 +16,7 @@ describe('YpRegistrationQuestionsDialog', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <yp-registration-questions-dialog></yp-registration-questions-dialog>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

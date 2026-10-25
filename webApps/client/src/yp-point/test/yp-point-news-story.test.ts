@@ -18,6 +18,7 @@ describe('YpPointNewsStory', () => {
       <yp-point-news-story
         .point="${YpTestHelpers.getPoint()}"
       ></yp-point-news-story>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

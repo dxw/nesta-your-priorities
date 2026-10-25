@@ -18,6 +18,7 @@ describe('YpMagicText', () => {
       <yp-magic-text
         content='ALXOE'>
       </yp-magic-text>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

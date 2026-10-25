@@ -58,6 +58,7 @@ describe('YpGroup', () => {
       <yp-group
         collectionId="1">
       </yp-group>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(200);
   });

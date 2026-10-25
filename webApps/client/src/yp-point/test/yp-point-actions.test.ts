@@ -18,6 +18,7 @@ describe('YpPointActions', () => {
       <yp-point-actions
         .point="${YpTestHelpers.getPoint()}"
       ></yp-point-actions>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

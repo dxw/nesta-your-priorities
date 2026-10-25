@@ -18,6 +18,7 @@ describe('YpPostTranscript', () => {
       <yp-post-transcript
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-transcript>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });

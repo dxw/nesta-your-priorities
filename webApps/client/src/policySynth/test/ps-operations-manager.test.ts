@@ -16,6 +16,7 @@ describe('PsOperationsManager', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <ps-operations-manager></ps-operations-manager>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

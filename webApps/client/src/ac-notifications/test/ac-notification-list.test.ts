@@ -38,6 +38,7 @@ describe('AcNotificationList', () => {
       <ac-notification-list
         .user="${YpTestHelpers.getUser()}"
       ></ac-notification-list>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(200);
   });

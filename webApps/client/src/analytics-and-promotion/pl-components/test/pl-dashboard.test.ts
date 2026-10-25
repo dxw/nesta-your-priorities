@@ -16,6 +16,7 @@ describe('PlausibleDashboard', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <pl-dashboard></pl-dashboard>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
 
     await aTimeout(100);

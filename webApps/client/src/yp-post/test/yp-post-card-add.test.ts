@@ -18,6 +18,7 @@ describe('YpPostCardAdd', () => {
       <yp-post-card-add
         .post="${YpTestHelpers.getPost()}"
       ></yp-post-card-add>
+      ${YpTestHelpers.renderCommonHeader()}
     `);
     await aTimeout(100);
   });
