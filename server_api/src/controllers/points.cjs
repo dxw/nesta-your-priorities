@@ -187,9 +187,10 @@ var validateEmbedUrl = function (urlIn) {
   return urls != null && urls.length > 0;
 };
 
-var loadPointWithAll = function (pointId, callback) {
+var loadPointWithAll = function (pointId, callback, includeUnpublished = false) {
   let outPoint;
-  models.Point.findOne({
+  const pointModel = includeUnpublished ? models.Point.unscoped() : models.Point;
+  pointModel.findOne({
     where: {
       id: pointId,
     },
@@ -987,7 +988,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
     content: req.body.content,
     value: req.body.value,
     user_id: req.user.id,
-    status: "published",
+    status: req.body.postId ? "in_moderation_queue" : "published",
     language: getTranscriptAppLanguage(req),
     user_agent: req.useragent.source,
     ip_address: req.clientIp,
@@ -1034,6 +1035,10 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
           },
 
           (parallelCallback) => {
+            if (point.status !== "published") {
+              parallelCallback();
+              return;
+            }
             models.Group.findOne({
               where: { id: point.group_id },
               attributes: ["id", "community_id"],
@@ -1076,6 +1081,10 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
           },
 
           (parallelCallback) => {
+            if (point.status !== "published") {
+              parallelCallback();
+              return;
+            }
             models.Post.findOne({
               where: { id: point.post_id },
               attributes: ["id", "counter_points", "group_id"],
@@ -1173,11 +1182,13 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
                 { type: "estimate-point-toxicity", pointId: point.id },
                 "high"
               );
-              queue.add(
-                "process-similarities",
-                { type: "update-collection", pointId: point.id },
-                "low"
-              );
+              if (point.status === "published") {
+                queue.add(
+                  "process-similarities",
+                  { type: "update-collection", pointId: point.id },
+                  "low"
+                );
+              }
             } else {
               log.info(
                 "No process-moderation toxicity for empty text on point"
@@ -1223,7 +1234,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
                 req.redisClient.setEx(newPointRedisKey, 30, JSON.stringify({}));
                 res.send(loadedPoint);
               }
-            });
+            }, point.status !== "published");
           }
         }
       );

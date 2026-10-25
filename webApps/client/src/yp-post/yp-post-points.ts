@@ -1951,6 +1951,19 @@ export class YpPostPoints extends YpBaseElementWithLogin {
 
   _completeNewPointResponse(point: YpPointData) {
     this.addPointDisabled = false;
+    if (point.status === "in_moderation_queue") {
+      this.newPointTextCombined = this.t("point.submittedForModeration");
+      this._clearTextValueUp();
+      this._clearTextValueDown();
+      this._clearTextValueMobileUpOrDown();
+      this._clearVideo();
+      this._clearAudio();
+      window.appDialogs.getDialogAsync("masterToast", (toast: any) => {
+        toast.labelText = this.newPointTextCombined;
+        toast.open = true;
+      });
+      return;
+    }
     point = this._preProcessPoints([point])[0];
     if (!point.checkTranscriptFor && window.appGlobals.hasTranscriptSupport === true) {
       if (this.currentVideoId || (point.PointVideos && point.PointVideos.length > 0)) {
@@ -2044,7 +2057,13 @@ export class YpPostPoints extends YpBaseElementWithLogin {
     videoId: number | undefined,
     audioId: number | undefined
   ) {
-    if (window.appUser.loggedIn() === true) {
+    let canAddPoint = await window.appUser.ensureLoginChecked();
+    if (!canAddPoint) {
+      canAddPoint = await window.appUser.silentAnonymousLoginIfAllowed(
+        this.post.Group
+      ) || window.appUser.loggedIn();
+    }
+    if (canAddPoint ) {
       if (videoId) this.currentVideoId = videoId;
       else if (audioId) this.currentAudioId = audioId;
       this.addPointDisabled = true;

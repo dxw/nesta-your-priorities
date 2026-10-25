@@ -81,4 +81,67 @@ describe('YpPostPoints', () => {
     debugger;
     await expect(element).shadowDom.to.be.accessible();
   });
+
+  describe('addPoint when not logged in', () => {
+    let originalAppUser: any;
+    let originalAddPoint: any;
+    let addPointCalls: Array<unknown>;
+    let loginForNewPointCalls: Array<unknown>;
+
+    const stubAppUser = (silentLoginSucceeds: boolean) => {
+      window.appUser = {
+        ensureLoginChecked: async () => false,
+        loggedIn: () => false,
+        silentAnonymousLoginIfAllowed: async () => silentLoginSucceeds,
+        getBrowserFingerprintData: async () => ({}),
+        loginForNewPoint: (...args: Array<unknown>) => {
+          loginForNewPointCalls.push(args);
+        },
+      } as any;
+    };
+
+    beforeEach(async () => {
+      // Omits renderCommonHeader() so the fixture root is <yp-post-points> itself.
+      element = await fixture(html`
+        <yp-post-points .post="${YpTestHelpers.getPost()}"></yp-post-points>
+      `);
+      originalAppUser = window.appUser;
+      originalAddPoint = window.serverApi.addPoint;
+      addPointCalls = [];
+      loginForNewPointCalls = [];
+      window.serverApi.addPoint = (async (...args: Array<unknown>) => {
+        addPointCalls.push(args);
+        return { id: 99 } as YpPointData;
+      }) as any;
+      (element as any)._preProcessPoints = (points: Array<YpPointData>) => points;
+      (element as any)._completeNewPointResponse = () => {};
+    });
+
+    afterEach(() => {
+      window.appUser = originalAppUser;
+      window.serverApi.addPoint = originalAddPoint;
+    });
+
+    it('submits the point without the login popup when silent anonymous login succeeds', async () => {
+      stubAppUser(true);
+
+      await element.addPoint('A typed point', 1, undefined, undefined);
+
+      expect(addPointCalls.length).to.equal(1);
+      expect(loginForNewPointCalls.length).to.equal(0);
+    });
+
+    it('shows the login popup with the typed point when silent anonymous login is not allowed', async () => {
+      stubAppUser(false);
+
+      await element.addPoint('A typed point', -1, undefined, undefined);
+
+      expect(addPointCalls.length).to.equal(0);
+      expect(loginForNewPointCalls.length).to.equal(1);
+      expect((loginForNewPointCalls[0] as Array<unknown>)[1]).to.deep.equal({
+        content: 'A typed point',
+        value: -1,
+      });
+    });
+  });
 });
