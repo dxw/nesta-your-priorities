@@ -702,8 +702,14 @@ export class YpAppUser extends YpCodeBase {
     ) {
       this.calculateVotesLeftForGroup(group);
     } else {
-      this.fireGlobal("got-endorsements-and-qualities", null);
+      this.fireGlobal("yp-got-endorsements-and-qualities", null);
     }
+  }
+
+  getGroupVoteCount(groupId: number): number {
+    return this.user?.Endorsements?.filter((endorsement) =>
+      endorsement.Post?.group_id === groupId && endorsement.value > 0
+    ).length ?? 0;
   }
 
   calculateVotesLeftForGroup(group: YpGroupData) {
@@ -711,14 +717,7 @@ export class YpAppUser extends YpCodeBase {
       if (this.user && this.user.Endorsements) {
         const lastVoteCount = this.groupCurrentVoteCountIndex[group.id];
         this.groupCurrentVoteCountIndex[group.id] =
-          this.user.Endorsements.filter(function (endorsement) {
-            return (
-              endorsement.Post &&
-              endorsement.Post.group_id === group.id &&
-              endorsement.value !== -1 &&
-              endorsement.value !== 0
-            );
-          }).length;
+          this.getGroupVoteCount(group.id);
 
         if (lastVoteCount != this.groupCurrentVoteCountIndex[group.id]) {
           const text = `${this.t("youHaveUsed")} ${
@@ -736,7 +735,7 @@ export class YpAppUser extends YpCodeBase {
           );
         }
 
-        this.fireGlobal("got-endorsements-and-qualities", {
+        this.fireGlobal("yp-got-endorsements-and-qualities", {
           maxGroupId: group.id,
           groupCurrentVoteCount: this.groupCurrentVoteCountIndex[group.id],
         });
@@ -851,7 +850,7 @@ export class YpAppUser extends YpCodeBase {
       this._updateEndorsementPostsIndex(user);
       this._updatePointQualitiesIndex(user);
       this._updateRatingPostsIndex(user);
-      this.fireGlobal("got-endorsements-and-qualities", null);
+      this.fireGlobal("yp-got-endorsements-and-qualities", null);
     }
   }
 
