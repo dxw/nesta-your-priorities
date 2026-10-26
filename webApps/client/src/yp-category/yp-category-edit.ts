@@ -137,7 +137,7 @@ export class YpCategoryEdit extends YpEditBase {
     if (category) {
       this.action = `/categories/${category.id}`;
     } else {
-      this.action = `/groups/${this.group.id}/categories`;
+      this.action = `/categories/${this.group.id}`;
     }
     this.setupTranslation();
   }
