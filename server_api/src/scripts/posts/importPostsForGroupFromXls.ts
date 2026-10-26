@@ -1,5 +1,4 @@
 import ExcelJS from "exceljs";
-import moment from "moment";
 import { HeadBucketCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
@@ -12,18 +11,8 @@ import { createS3ClientForBucket } from "../../utils/awsS3Client.cjs";
 import s3Storage from "../../utils/multerSharpS3Compat.cjs";
 import log from "../../utils/loggerTs.js";
 
-// Expects the column layout produced by the group XLS export (xls_group_report.cjs)
-const ALLOWED_STATUSES = ["published", "blocked"];
-const TEXT_ANSWER_TYPES = [
-  "textfield",
-  "textarea",
-  "textfieldlong",
-  "textarealong",
-  "numberfield",
-];
-
 const usage =
-  "Usage: node importPostsForGroupFromXls.js <xlsFilePath> <groupId> [--dry-run] [--default-author-id <userId>] [--images-dir <directory>]";
+  "Usage: node importPostsForGroupFromXls.js <xlsFilePath> <groupId> --default-author-id <userId> --images-dir <directory> [--dry-run]";
 
 type ImportImage = {
   filePath: string;
@@ -67,24 +56,6 @@ const validateImage = async (
   }
 };
 
-const isTruthy = (value: string) =>
-  ["true", "yes", "1", "on"].includes(value.trim().toLowerCase());
-
-const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
-  if (cell.value instanceof Date) {
-    return cell.value;
-  }
-  const text = cell.text.trim();
-  if (!text) {
-    return new Date();
-  }
-  const parsed = moment(text, "DD/MM/YY HH:mm", true);
-  if (!parsed.isValid()) {
-    throw new Error(`Row ${rowNumber}: invalid Created date "${text}"`);
-  }
-  return parsed.toDate();
-};
-
 (async () => {
   try {
     const { values, positionals } = parseArgs({
@@ -105,18 +76,17 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
       process.exit(1);
     }
 
-    let defaultAuthor = null;
-    if (values["default-author-id"] !== undefined) {
-      const defaultAuthorId = Number(values["default-author-id"]);
-      if (!Number.isSafeInteger(defaultAuthorId) || defaultAuthorId <= 0) {
-        throw new Error("--default-author-id must be a positive integer");
-      }
-      defaultAuthor = await models.User.findByPk(defaultAuthorId);
-      if (!defaultAuthor) {
-        throw new Error(`Default author ${defaultAuthorId} not found`);
-      }
+    if (values["default-author-id"] === undefined) {
+      throw new Error("--default-author-id is required");
     }
-
+    const defaultAuthorId = Number(values["default-author-id"]);
+    if (!Number.isSafeInteger(defaultAuthorId) || defaultAuthorId <= 0) {
+      throw new Error("--default-author-id must be a positive integer");
+    }
+    const defaultAuthor = await models.User.findByPk(defaultAuthorId);
+    if (!defaultAuthor) {
+      throw new Error(`Default author ${defaultAuthorId} not found`);
+    }
     // Generated model types lack association helpers (addGroupUser etc.)
     const group: any = await models.Group.findOne({
       where: { id: groupId },
@@ -143,55 +113,10 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
       columns.set(cell.text.trim(), colNumber);
     });
 
-    for (const required of defaultAuthor ? ["Post name"] : ["Post name", "Email"]) {
+    for (const required of ["Post name", "Description", "Category", "Image filename"]) {
       if (!columns.has(required)) {
         throw new Error(`Missing required column "${required}"`);
       }
-    }
-
-    if (values["images-dir"] !== undefined && !columns.has("Image filename")) {
-      throw new Error('--images-dir requires an "Image filename" column; rename the exported "Images" column if it contains local filenames');
-    }
-
-    const questions: YpStructuredQuestionData[] =
-      group.configuration?.structuredQuestionsJson || [];
-    // uniqueId may be stored as a number in the group configuration
-    const questionsById = new Map(
-      questions
-        .filter((q) => q.uniqueId !== undefined && q.uniqueId !== null && q.uniqueId !== "")
-        .map((q) => [String(q.uniqueId).trim(), q])
-    );
-
-    // Export headers for structured questions are "<uniqueId>-<question text>"
-    const answerColumns: { uniqueId: string; col: number }[] = [];
-    for (const [header, col] of columns) {
-      const dash = header.indexOf("-");
-      if (dash <= 0) continue;
-      const question = questionsById.get(header.slice(0, dash).trim());
-      if (!question) continue;
-
-      if (question.text.trim() !== header.slice(dash + 1).trim()) {
-        throw new Error(
-          `Column "${header}" does not match group question ${question.uniqueId}: "${question.text}"`
-        );
-      }
-      if (!TEXT_ANSWER_TYPES.includes(question.type.toLowerCase())) {
-        throw new Error(
-          `Question ${question.uniqueId} has unsupported type "${question.type}"`
-        );
-      }
-      answerColumns.push({ uniqueId: question.uniqueId!, col });
-    }
-
-    if (questionsById.size > 0 && answerColumns.length === 0) {
-      const groupQuestions = [...questionsById.entries()]
-        .map(([id, q]) => `${id}-${q.text}`)
-        .join(" | ");
-      throw new Error(
-        `Group has structured questions but no matching columns were found. ` +
-          `Group questions: ${groupQuestions}. ` +
-          `XLS headers: ${[...columns.keys()].join(" | ")}`
-      );
     }
 
     const categories = await (models.Category as any).findAll({
@@ -199,7 +124,10 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
       attributes: ["id", "name"],
     });
     const categoryIdByName = new Map<string, number>(
-      categories.map((c: any) => [c.name.trim().toLowerCase(), c.id])
+      categories.map((category: any) => [
+        category.name.trim().toLowerCase(),
+        category.id,
+      ])
     );
 
     const cellText = (row: ExcelJS.Row, header: string) => {
@@ -207,17 +135,20 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
       return col ? row.getCell(col).text.trim() : "";
     };
 
-    const imagesDirectory = values["images-dir"] === undefined
-      ? undefined
-      : await realpath(values["images-dir"]);
-    if (imagesDirectory && !(await stat(imagesDirectory)).isDirectory()) {
+    if (values["images-dir"] === undefined) {
+      throw new Error("--images-dir is required");
+    }
+    const imagesDirectory = await realpath(values["images-dir"]);
+    if (!(await stat(imagesDirectory)).isDirectory()) {
       throw new Error("--images-dir must be a directory");
     }
     const imageFiles = new Map<number, ImportImage>();
     const validatedImages = new Map<string, ImportImage>();
     for (let rowNumber = 2; rowNumber <= sheet.rowCount; rowNumber++) {
       const filename = cellText(sheet.getRow(rowNumber), "Image filename");
-      if (!filename) continue;
+      if (!filename) {
+        throw new Error(`Row ${rowNumber}: missing Image filename`);
+      }
       let image = validatedImages.get(filename);
       if (!image) {
         image = await validateImage(filename, imagesDirectory, rowNumber);
@@ -271,7 +202,6 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
 
     let created = 0;
     let skipped = 0;
-    let usersCreated = 0;
     let imagesAttached = 0;
     let imagesSkipped = 0;
     let imagesToUpload = 0;
@@ -285,38 +215,11 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
         if (!row.hasValues) continue;
 
         const name = cellText(row, "Post name");
-        const email = cellText(row, "Email").toLowerCase();
-        if (!name || (email ? !email.includes("@") : !defaultAuthor)) {
-          throw new Error(`Row ${i}: missing Post name or valid Email`);
+        const description = cellText(row, "Description");
+        if (!name || !description) {
+          throw new Error(`Row ${i}: missing Post name or Description`);
         }
-
-        const status = cellText(row, "Status").toLowerCase() || defaultStatus;
-        if (!ALLOWED_STATUSES.includes(status)) {
-          throw new Error(`Row ${i}: unsupported Status "${status}"`);
-        }
-
-        const createdAtCol = columns.get("Created");
-        const createdAt = createdAtCol
-          ? parseCreatedAt(row.getCell(createdAtCol), i)
-          : new Date();
-
-        let user = email
-          ? await models.User.findOne({
-              where: { email },
-              transaction,
-            })
-          : defaultAuthor;
-        if (!user) {
-          user = await models.User.create(
-            {
-              email,
-              name: cellText(row, "User name") || email.split("@")[0],
-              status: "active",
-            },
-            { transaction }
-          );
-          usersCreated++;
-        }
+        const user = defaultAuthor;
 
         const duplicate = await (models.Post as any).unscoped().findOne({
           where: { group_id: groupId, user_id: user.id, name, deleted: false },
@@ -332,49 +235,47 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
           continue;
         }
 
-        const categoryName = cellText(row, "Category").toLowerCase();
-        const categoryId = categoryName
-          ? categoryIdByName.get(categoryName) ?? null
-          : null;
-        if (categoryName && !categoryId) {
-          log.warn(`Row ${i}: category "${categoryName}" not found in group`);
+        const categoryName = cellText(row, "Category");
+        let categoryId: number | null = null;
+        if (categoryName) {
+          const categoryKey = categoryName.toLowerCase();
+          categoryId = categoryIdByName.get(categoryKey) ?? null;
+          if (categoryId === null) {
+            const category = await (models.Category as any).create(
+              {
+                name: categoryName,
+                description: "",
+                group_id: groupId,
+                user_id: user.id,
+              },
+              { transaction }
+            );
+            const createdCategoryId: number = category.id;
+            categoryId = createdCategoryId;
+            categoryIdByName.set(categoryKey, createdCategoryId);
+          }
         }
-
-        const structuredAnswersJson: YpStructuredAnswer[] = answerColumns.map(
-          ({ uniqueId, col }) => ({
-            uniqueId,
-            value: row.getCell(col).text.trim(),
-          })
-        );
 
         const Post = models.Post as any;
         const post = await Post.create(
           {
             name,
-            description: "",
+            description,
             group_id: groupId,
             category_id: categoryId,
             user_id: user.id,
-            status,
-            language: cellText(row, "Locale") || null,
+            status: "published",
+            language: null,
             counter_endorsements_up: 0,
             content_type: Post.CONTENT_IDEA,
-            ...(imageFiles.has(i) ? { cover_media_type: "image" } : {}),
+            cover_media_type: "image",
             user_agent: "xls-import",
             ip_address: "127.0.0.1",
-            created_at: createdAt,
             data: {
-              contact: {
-                name: cellText(row, "Contact Name") || null,
-                email: cellText(row, "Contact Email") || null,
-                telephone: cellText(row, "Contact telephone") || null,
-                address: cellText(row, "Contact Address") || null,
-                agreeMedia: isTruthy(cellText(row, "Agree Media")),
-                agreeEmail: isTruthy(cellText(row, "Agree Email")),
-              },
+              contact: {},
               attachment: {},
             },
-            public_data: answerColumns.length > 0 ? { structuredAnswersJson } : {},
+            public_data: {},
           },
           { transaction }
         );
@@ -436,7 +337,7 @@ const parseCreatedAt = (cell: ExcelJS.Cell, rowNumber: number): Date => {
         transactionFinished = true;
       }
       log.info(
-        `Import ${dryRun ? "(dry run) " : ""}completed: ${created} posts created, ${skipped} duplicates skipped, ${usersCreated} users created`
+        `Import ${dryRun ? "(dry run) " : ""}completed: ${created} posts created, ${skipped} duplicates skipped`
       );
       log.info(
         `Images: ${imageFiles.size} referenced, ${uploadedImages.length} uploaded, ${imagesAttached} attached, ${imagesSkipped} skipped` +

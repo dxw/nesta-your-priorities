@@ -22,12 +22,24 @@ async function runImport(
   args: string[], headers: string[], rows: string[][],
   options: { duplicate?: boolean; failImageSave?: boolean; failAssociation?: boolean;
     failUpload?: boolean; failCommit?: boolean; failCleanup?: boolean;
+    categories?: { id: number; name: string }[];
     storageError?: { name: string; $metadata?: { httpStatusCode: number } } } = {}
 ) {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Ideas");
-  sheet.addRow(headers);
-  rows.forEach((row) => sheet.addRow(row));
+  const inputHeaders = [...headers];
+  const inputRows = rows.map((row) => [...row]);
+  for (const [header, defaultValue] of [
+    ["Description", "A post description"],
+    ["Category", ""],
+  ]) {
+    if (!inputHeaders.includes(header)) {
+      inputHeaders.push(header);
+      inputRows.forEach((row) => row.push(defaultValue));
+    }
+  }
+  sheet.addRow(inputHeaders);
+  inputRows.forEach((row) => sheet.addRow(row));
   const posts: any[] = [];
   const createdUsers: any[] = [];
   const errors: string[] = [];
@@ -38,6 +50,7 @@ async function runImport(
   const uploads: any[] = [];
   const removedUploads: any[] = [];
   const images: any[] = [];
+  const createdCategories: any[] = [];
   const links: any[] = [];
   const storage = {
     _handleFile: async (_request: any, file: any, callback: Function) => {
@@ -71,7 +84,15 @@ async function runImport(
       }),
     },
     Domain: { findByPk: async () => collection },
-    Category: { findAll: async () => [] },
+    Category: {
+      findAll: async () => options.categories || [],
+      create: async (data: any, createOptions: any) => {
+        assert.ok(createOptions.transaction);
+        const category = { ...data, id: 100 + createdCategories.length };
+        createdCategories.push(category);
+        return category;
+      },
+    },
     User: {
       findByPk: async (id: number) => id === 42 ? defaultAuthor : null,
       findOne: async () => null,
@@ -168,37 +189,58 @@ async function runImport(
   } catch (error) {
     if (error !== exitSignal) throw error;
   }
-  return { exitCode, posts, createdUsers, errors, memberships, transactionCalls,
+  return { exitCode, posts, createdUsers, createdCategories, errors, memberships, transactionCalls,
     uploads, removedUploads, images, links, messages, storageChecks };
 }
 
-test("imports rows without an Email column using the default author", async () => {
-  const result = await runImport(
-    ["ideas.xlsx", "1", "--default-author-id", "42"],
-    ["Post name"], [["Garden"]]
-  );
-  assert.equal(result.exitCode, 0);
-  assert.equal(result.posts[0]?.user_id, 42);
-  assert.deepEqual(result.createdUsers, []);
-  assert.deepEqual(result.memberships, [42]);
-  assert.deepEqual(result.transactionCalls, ["begin", "commit"]);
+test("imports the description column into the native post description", async () => {
+  await withImageFolder(async (folder) => {
+    const result = await runImport(
+      ["ideas.xlsx", "1", "--default-author-id", "42", "--images-dir", folder],
+      ["Post name", "Description", "Image filename"],
+      [["Garden", "A shared garden", "garden.png"]]
+    );
+    assert.equal(result.exitCode, 0);
+    assert.equal(result.posts[0]?.user_id, 42);
+    assert.equal(result.posts[0]?.description, "A shared garden");
+    assert.equal(result.posts[0]?.category_id, null);
+    assert.equal(result.posts[0]?.public_data.structuredAnswersJson, undefined);
+    assert.deepEqual(result.createdUsers, []);
+    assert.deepEqual(result.memberships, [42]);
+    assert.deepEqual(result.transactionCalls, ["begin", "commit"]);
+  });
 });
 
-test("uses the default for blank emails but preserves supplied email authors", async () => {
-  const result = await runImport(
-    ["ideas.xlsx", "1", "--default-author-id", "42", "--dry-run"],
-    ["Post name", "Email"], [["Garden", ""], ["Park", "AUTHOR@example.org"]]
-  );
-  assert.equal(result.exitCode, 0);
-  assert.deepEqual(result.posts.map((post) => post.user_id), [42, 99]);
-  assert.equal(result.createdUsers[0]?.email, "author@example.org");
-  assert.deepEqual(result.transactionCalls, ["begin", "rollback"]);
+test("reuses existing categories and creates missing categories once", async () => {
+  await withImageFolder(async (folder) => {
+    const result = await runImport(
+      ["ideas.xlsx", "1", "--default-author-id", "42", "--images-dir", folder],
+      ["Post name", "Description", "Category", "Image filename"],
+      [
+        ["Garden", "A shared garden", "Community", "garden.png"],
+        ["Park", "A new park", "Play areas", "garden.png"],
+        ["Trail", "A safe route", "play areas", "garden.png"],
+      ],
+      { categories: [{ id: 23, name: "Community" }] }
+    );
+    assert.equal(result.exitCode, 0);
+    assert.deepEqual(result.posts.map((post) => post.category_id), [23, 100, 100]);
+    assert.equal(result.createdCategories.length, 1);
+    assert.equal(result.createdCategories[0]?.name, "Play areas");
+    assert.equal(result.createdCategories[0]?.description, "");
+    assert.equal(result.createdCategories[0]?.group_id, 1);
+    assert.equal(result.createdCategories[0]?.user_id, 42);
+    assert.deepEqual(result.transactionCalls, ["begin", "commit"]);
+  });
 });
 
-test("still requires Email when no default author is supplied", async () => {
-  const result = await runImport(["ideas.xlsx", "1"], ["Post name"], [["Garden"]]);
+test("requires an existing default author", async () => {
+  const result = await runImport(
+    ["ideas.xlsx", "1"],
+    ["Post name", "Description", "Image filename"], [["Garden", "Answer", "garden.png"]]
+  );
   assert.equal(result.exitCode, 1);
-  assert.match(result.errors.join("\n"), /Missing required column "Email"/);
+  assert.match(result.errors.join("\n"), /--default-author-id is required/);
   assert.equal(result.posts.length, 0);
 });
 
@@ -223,16 +265,6 @@ test("rejects malformed or missing default author IDs", async () => {
   }
 });
 
-test("does not substitute the default author for an invalid nonblank email", async () => {
-  const result = await runImport(
-    ["ideas.xlsx", "1", "--default-author-id", "42"],
-    ["Post name", "Email"], [["Garden", "invalid"]]
-  );
-  assert.equal(result.exitCode, 1);
-  assert.equal(result.posts.length, 0);
-  assert.deepEqual(result.transactionCalls, ["begin", "rollback"]);
-});
-
 async function withImageFolder(run: (folder: string) => Promise<void>) {
   const folder = await mkdtemp(path.join(tmpdir(), "yp-import-images-"));
   try {
@@ -246,11 +278,11 @@ async function withImageFolder(run: (folder: string) => Promise<void>) {
   }
 }
 
-test("uploads and attaches a cover image while allowing blank image filenames", async () => {
+test("uploads and attaches a cover image", async () => {
   await withImageFolder(async (folder) => {
     const result = await runImport(
       ["ideas.xlsx", "1", "--default-author-id", "42", "--images-dir", folder],
-      ["Post name", "Image filename"], [["Garden", "garden.png"], ["Park", ""]]
+      ["Post name", "Image filename"], [["Garden", "garden.png"]]
     );
     assert.equal(result.exitCode, 0, result.errors.join("\n"));
     assert.equal(result.uploads.length, 1);
@@ -258,7 +290,6 @@ test("uploads and attaches a cover image while allowing blank image filenames", 
     assert.equal(result.images[0]?.original_filename, "garden.png");
     assert.equal(result.links[0]?.id, 77);
     assert.equal(result.posts[0]?.cover_media_type, "image");
-    assert.notEqual(result.posts[1]?.cover_media_type, "image");
     assert.deepEqual(result.removedUploads, []);
     assert.deepEqual(result.storageChecks, ["test"]);
     assert.match(result.messages.join("\n"), /Images: 1 referenced, 1 uploaded, 1 attached, 0 skipped/);
@@ -376,34 +407,30 @@ test("duplicate ideas are not uploaded again", async () => {
   });
 });
 
-test("rejects --images-dir without the exact Image filename column, including on dry runs", async () => {
+test("requires the exact Image filename column", async () => {
   await withImageFolder(async (folder) => {
-    for (const header of ["Images", "Image Filename"]) {
-      for (const dryRun of [false, true]) {
-        const result = await runImport(
-          ["ideas.xlsx", "1", "--default-author-id", "42", "--images-dir", folder,
-            ...(dryRun ? ["--dry-run"] : [])],
-          ["Post name", header], [["Garden", "garden.png"]]
-        );
-        assert.equal(result.exitCode, 1);
-        assert.match(result.errors.join("\n"), /--images-dir requires an "Image filename" column/);
-        assert.deepEqual(result.transactionCalls, []);
-        assert.deepEqual(result.storageChecks, []);
-        assert.deepEqual(result.uploads, []);
-      }
-    }
+    const result = await runImport(
+      ["ideas.xlsx", "1", "--default-author-id", "42", "--images-dir", folder],
+      ["Post name", "Images"], [["Garden", "garden.png"]]
+    );
+    assert.equal(result.exitCode, 1);
+    assert.match(result.errors.join("\n"), /Missing required column "Image filename"/);
+    assert.deepEqual(result.transactionCalls, []);
+    assert.deepEqual(result.storageChecks, []);
+    assert.deepEqual(result.uploads, []);
   });
 });
 
-test("reports zero images without checking storage when image filenames are blank", async () => {
+test("requires an image filename for every entry", async () => {
   await withImageFolder(async (folder) => {
     const result = await runImport(
       ["ideas.xlsx", "1", "--default-author-id", "42", "--images-dir", folder],
       ["Post name", "Image filename"], [["Garden", ""]]
     );
-    assert.equal(result.exitCode, 0);
+    assert.equal(result.exitCode, 1);
+    assert.match(result.errors.join("\n"), /Row 2: missing Image filename/);
+    assert.deepEqual(result.transactionCalls, []);
     assert.deepEqual(result.storageChecks, []);
-    assert.match(result.messages.join("\n"), /Images: 0 referenced, 0 uploaded, 0 attached, 0 skipped/);
   });
 });
 
