@@ -1953,8 +1953,11 @@ export class YpPostPoints extends YpBaseElementWithLogin {
     this.addPointDisabled = false;
     if (point.status === "admin_only") {
       this.newPointTextCombined = this.t("point.sentToAdmins");
-      this._clearTextValueUp();
-      this._clearTextValueDown();
+      if (point.value > 0) {
+        this._clearTextValueUp();
+      } else {
+        this._clearTextValueDown();
+      }
       this._clearTextValueMobileUpOrDown();
       this._clearVideo();
       this._clearAudio();
