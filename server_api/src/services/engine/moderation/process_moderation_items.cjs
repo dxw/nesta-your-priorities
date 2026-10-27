@@ -10,10 +10,7 @@ const groupIncludes = require('./get_moderation_items.cjs').groupIncludes;
 const userIncludes = require('./get_moderation_items.cjs').userIncludes;
 
 const recountCommunity = require('../../../utils/recount_utils.cjs').recountCommunity;
-const { isQueuedPostPoint, publishApprovedPostPoint } = require('../../../utils/pointModeration.cjs');
-
-const isApprovingQueuedPostPoint = (itemType, actionType, item) =>
-  itemType === 'point' && actionType === 'approve' && isQueuedPostPoint(item);
+const { isAdminOnlyComment } = require('../../../utils/privatePointComments.cjs');
 
 const moderationItemActionMaster = (req, res, options) => {
   getAnonymousUser((error, anonymousUser) => {
@@ -29,8 +26,10 @@ const moderationItemActionMaster = (req, res, options) => {
         include: options.includes
       }).then(item => {
         if (item) {
-          const publishQueuedPostPoint =
-            isApprovingQueuedPostPoint(options.itemType, options.actionType, item);
+          if (options.itemType === 'point' && isAdminOnlyComment(models, item)) {
+            res.sendStatus(403);
+            return;
+          }
           if (options.actionType==='delete') {
             item.deleted = true;
           } else if (options.actionType==='approve') {
@@ -42,10 +41,7 @@ const moderationItemActionMaster = (req, res, options) => {
           } else if (options.actionType==='clearFlags') {
             item.counter_flags = 0;
           }
-          item.save().then(async () => {
-            if (publishQueuedPostPoint) {
-              await publishApprovedPostPoint(models, req, item);
-            }
+          item.save().then(() => {
             log.info('Moderation Action Done', { item, options });
             if (options.itemType==='point') {
               if (options.actionType==='anonymize') {
@@ -96,7 +92,6 @@ const createActivityJob = (workPackage, model) => {
 };
 
 const preProcessActivities = (workPackage, callback) => {
-  const queuedPostPoints = [];
   async.forEachLimit(workPackage.itemIds, 20, (id, forEachCallback) => {
     workPackage.model.unscoped().findOne(
       {
@@ -107,9 +102,6 @@ const preProcessActivities = (workPackage, callback) => {
       }).then((model) => {
       if (model) {
         createActivityJob(workPackage, model);
-        if (isApprovingQueuedPostPoint(workPackage.itemType, workPackage.actionType, model)) {
-          queuedPostPoints.push(model);
-        }
         forEachCallback();
       } else {
         log.error("Trying to change activities on an unknown item");
@@ -119,7 +111,7 @@ const preProcessActivities = (workPackage, callback) => {
       forEachCallback(error);
     });
   }, error => {
-    callback(error, queuedPostPoints);
+    callback(error);
   })
 };
 
@@ -152,7 +144,7 @@ const moderationManyItemsActionMaster = (workPackage, callback) => {
         };
       }
       if (updateValues) {
-        preProcessActivities(workPackage, (error, queuedPostPoints) => {
+        preProcessActivities(workPackage, (error) => {
           if (error) {
             callback(error);
           } else {
@@ -166,12 +158,9 @@ const moderationManyItemsActionMaster = (workPackage, callback) => {
                   }
                 },
                 include: workPackage.includes
-              }).then((spread, other) => {
+              }).then((spread) => {
               log.info('Moderation Action Many', { spread, workPackage });
-              // Bulk jobs run in a worker without a request, so the domain counter is left to recounts
-              async.eachLimit(queuedPostPoints, 5, (point, eachCallback) => {
-                publishApprovedPostPoint(models, {}, point).then(() => eachCallback()).catch(eachCallback);
-              }, callback);
+              callback();
             }).catch(error => {
               callback(error);
             })
@@ -281,6 +270,26 @@ const performManyModerationActions = async (workPackage, callback) => {
       }
     } catch (error) {
       log.error();
+    }
+  }
+
+  if (pointIds.length > 0) {
+    try {
+      const selectedPoints = await models.Point.unscoped().findAll({
+        where: {
+          id: { $in: pointIds },
+        },
+        attributes: ['id', 'content_type', 'status'],
+      });
+      const privateCommentIds = new Set(
+        selectedPoints
+          .filter((point) => isAdminOnlyComment(models, point))
+          .map((point) => point.id)
+      );
+      pointIds = pointIds.filter((pointId) => !privateCommentIds.has(pointId));
+    } catch (error) {
+      callback(error);
+      return;
     }
   }
 

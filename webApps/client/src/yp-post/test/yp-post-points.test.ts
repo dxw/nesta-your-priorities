@@ -82,7 +82,7 @@ describe('YpPostPoints', () => {
     await expect(element).shadowDom.to.be.accessible();
   });
 
-  it('shows a submitted toast and does not list a point queued for moderation', async () => {
+  it('shows a private-comment toast and does not list an admin-only point', async () => {
     const toast: any = {};
     const originalAppDialogs = window.appDialogs;
     window.appDialogs = {
@@ -98,8 +98,8 @@ describe('YpPostPoints', () => {
       element._completeNewPointResponse({
         id: 99,
         value: 1,
-        content: 'Awaiting review',
-        status: 'in_moderation_queue',
+        content: 'For admin review only',
+        status: 'admin_only',
       } as YpPointData);
     } finally {
       window.appDialogs = originalAppDialogs;
@@ -108,7 +108,7 @@ describe('YpPostPoints', () => {
     expect(insertedPoint).to.be.false;
     expect(element.post.counter_points).to.equal(counterBefore);
     expect(toast.open).to.be.true;
-    expect(toast.labelText).to.equal(element.t('point.submittedForModeration'));
+    expect(toast.labelText).to.equal(element.t('point.sentToAdmins'));
     expect(element.addPointDisabled).to.be.false;
   });
 });

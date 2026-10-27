@@ -198,6 +198,7 @@ const importAllPosts = (done) => {
 
 const importAllPoints = (done) => {
   models.Point.unscoped().findAll({
+    where: { status: "published" },
     attributes: ['id', 'name', 'content', 'user_id', 'post_id', 'value', 'status', 'counter_quality_up', 'counter_quality_down', 'language', 'created_at', 'updated_at'],
     order: [
       ['id', 'desc' ],

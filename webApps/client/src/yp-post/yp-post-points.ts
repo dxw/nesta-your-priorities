@@ -1951,8 +1951,8 @@ export class YpPostPoints extends YpBaseElementWithLogin {
 
   _completeNewPointResponse(point: YpPointData) {
     this.addPointDisabled = false;
-    if (point.status === "in_moderation_queue") {
-      this.newPointTextCombined = this.t("point.submittedForModeration");
+    if (point.status === "admin_only") {
+      this.newPointTextCombined = this.t("point.sentToAdmins");
       this._clearTextValueUp();
       this._clearTextValueDown();
       this._clearTextValueMobileUpOrDown();

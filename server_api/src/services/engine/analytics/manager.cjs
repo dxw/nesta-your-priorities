@@ -112,6 +112,7 @@ const updatePost = (postId, done) => {
         {
           model: models.Point.unscoped(),
           required: false,
+          where: { status: "published" },
           attributes: ['id','content'],
         },
         {
@@ -195,7 +196,8 @@ const updatePoint = (pointId, done) => {
 
   models.Point.unscoped().findOne({
     where: {
-      id: pointId
+      id: pointId,
+      status: "published",
     },
     attributes: ['id', 'name', 'content', 'user_id', 'post_id', 'value', 'status', 'counter_quality_up', 'counter_quality_down', 'language','created_at', 'updated_at'],
     order: [

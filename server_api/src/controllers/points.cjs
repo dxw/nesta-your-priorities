@@ -15,7 +15,9 @@ const {
   getSpeechToTextSupportConfig,
   hasSpeechToTextSupport,
 } = require("../utils/speechToTextSupport.cjs");
-const { initialPointStatus } = require("../utils/pointModeration.cjs");
+const {
+  getPointSubmissionAttributes,
+} = require("../utils/privatePointComments.cjs");
 
 const transcriptTimeoutMs = 15 * 60 * 1000;
 
@@ -989,7 +991,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
     content: req.body.content,
     value: req.body.value,
     user_id: req.user.id,
-    status: initialPointStatus(req.body.postId),
+    ...getPointSubmissionAttributes(models.Point, req.body.postId),
     language: getTranscriptAppLanguage(req),
     user_agent: req.useragent.source,
     ip_address: req.clientIp,
@@ -1072,13 +1074,17 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
           },
 
           (parallelCallback) => {
-            models.Group.addUserToGroupIfNeeded(
-              point.group_id,
-              req,
-              function () {
-                parallelCallback();
-              }
-            );
+            if (point.status !== "published") {
+              parallelCallback();
+            } else {
+              models.Group.addUserToGroupIfNeeded(
+                point.group_id,
+                req,
+                function () {
+                  parallelCallback();
+                }
+              );
+            }
           },
 
           (parallelCallback) => {
@@ -1176,20 +1182,18 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
             log.error(error);
             res.sendStatus(500);
           } else {
-            if (point.content && point.content !== "") {
+            if (point.content && point.content !== "" && point.status === "published") {
               log.info("process-moderation point toxicity after create point");
               queue.add(
                 "process-moderation",
                 { type: "estimate-point-toxicity", pointId: point.id },
                 "high"
               );
-              if (point.status === "published") {
-                queue.add(
-                  "process-similarities",
-                  { type: "update-collection", pointId: point.id },
-                  "low"
-                );
-              }
+              queue.add(
+                "process-similarities",
+                { type: "update-collection", pointId: point.id },
+                "low"
+              );
             } else {
               log.info(
                 "No process-moderation toxicity for empty text on point"
