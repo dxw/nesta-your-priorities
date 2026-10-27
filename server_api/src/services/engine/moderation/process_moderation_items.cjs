@@ -281,12 +281,9 @@ const performManyModerationActions = async (workPackage, callback) => {
         },
         attributes: ['id', 'content_type', 'status'],
       });
-      const privateCommentIds = new Set(
-        selectedPoints
-          .filter((point) => isAdminOnlyComment(models, point))
-          .map((point) => point.id)
-      );
-      pointIds = pointIds.filter((pointId) => !privateCommentIds.has(pointId));
+      pointIds = selectedPoints
+        .filter((point) => !isAdminOnlyComment(models, point))
+        .map((point) => point.id);
     } catch (error) {
       callback(error);
       return;
