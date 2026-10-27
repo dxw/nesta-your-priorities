@@ -1199,11 +1199,13 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
                 "No process-moderation toxicity for empty text on point"
               );
             }
-            queue.add(
-              "process-moderation",
-              { type: "point-review-and-annotate-images", pointId: point.id },
-              "medium"
-            );
+            if (point.status === "published") {
+              queue.add(
+                "process-moderation",
+                { type: "point-review-and-annotate-images", pointId: point.id },
+                "medium"
+              );
+            }
             loadPointWithAll(point.id, function (error, loadedPoint) {
               if (error) {
                 log.error("Could not reload point point", {
