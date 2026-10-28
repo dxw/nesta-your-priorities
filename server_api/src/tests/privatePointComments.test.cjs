@@ -6,6 +6,7 @@ const test = require("node:test");
 const {
   ADMIN_ONLY_COMMENT_STATUS,
   isAdminOnlyComment,
+  canModerateAdminOnlyComment,
   getPointSubmissionAttributes,
 } = require("../utils/privatePointComments.cjs");
 
@@ -25,6 +26,14 @@ test("only admin-only comment records are private comments", () => {
     isAdminOnlyComment(models, { content_type: 0, status: "admin_only" }),
     false
   );
+});
+
+test("only status-preserving moderation actions are allowed on private comments", () => {
+  assert.equal(canModerateAdminOnlyComment("delete"), true);
+  assert.equal(canModerateAdminOnlyComment("anonymize"), true);
+  assert.equal(canModerateAdminOnlyComment("clearFlags"), true);
+  assert.equal(canModerateAdminOnlyComment("approve"), false);
+  assert.equal(canModerateAdminOnlyComment("block"), false);
 });
 
 test("all post-linked points become private comments regardless of direction", () => {

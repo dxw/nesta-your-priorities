@@ -10,7 +10,10 @@ const groupIncludes = require('./get_moderation_items.cjs').groupIncludes;
 const userIncludes = require('./get_moderation_items.cjs').userIncludes;
 
 const recountCommunity = require('../../../utils/recount_utils.cjs').recountCommunity;
-const { isAdminOnlyComment } = require('../../../utils/privatePointComments.cjs');
+const {
+  isAdminOnlyComment,
+  canModerateAdminOnlyComment,
+} = require('../../../utils/privatePointComments.cjs');
 
 const moderationItemActionMaster = (req, res, options) => {
   getAnonymousUser((error, anonymousUser) => {
@@ -26,7 +29,12 @@ const moderationItemActionMaster = (req, res, options) => {
         include: options.includes
       }).then(item => {
         if (item) {
-          if (options.itemType === 'point' && isAdminOnlyComment(models, item)) {
+          const adminOnlyComment =
+            options.itemType === 'point' && isAdminOnlyComment(models, item);
+          if (
+            adminOnlyComment &&
+            !canModerateAdminOnlyComment(options.actionType)
+          ) {
             res.sendStatus(403);
             return;
           }
@@ -49,7 +57,9 @@ const moderationItemActionMaster = (req, res, options) => {
               } else if (options.actionType==='delete') {
                 queue.add('process-deletion', { type: 'delete-point-activities', pointId: options.itemId }, 'high');
               }
-              queue.add('process-similarities', { type: 'update-collection', pointId: options.itemId }, 'low', { delay: 5000});
+              if (!adminOnlyComment) {
+                queue.add('process-similarities', { type: 'update-collection', pointId: options.itemId }, 'low', { delay: 5000});
+              }
             } else if (options.itemType==='post') {
               if (options.actionType==='anonymize') {
                 queue.add('process-anonymization', { type: 'anonymize-post-activities', pointId: options.itemId }, 'high');
@@ -241,6 +251,8 @@ const performManyModerationActions = async (workPackage, callback) => {
 
   //TODO: Also do this for singleModerationAction and refactor
   if (postIds && postIds.length>0) {
+    const includePrivateChildren =
+      workPackage.actionType === 'delete' || workPackage.actionType === 'anonymize';
     try {
       const posts = await models.Post.findAll({
         where: {
@@ -251,9 +263,15 @@ const performManyModerationActions = async (workPackage, callback) => {
         attributes: ['id'],
         include: [
           {
-            model: models.Point,
+            model:
+              includePrivateChildren
+                ? models.Point.unscoped()
+                : models.Point,
             required: true,
-            attributes: ['id']
+            attributes: ['id'],
+            ...(includePrivateChildren
+              ? { where: { deleted: false } }
+              : {}),
           }
         ]
       });
@@ -273,6 +291,7 @@ const performManyModerationActions = async (workPackage, callback) => {
     }
   }
 
+  const privateCommentIds = new Set();
   if (pointIds.length > 0) {
     try {
       const selectedPoints = await models.Point.unscoped().findAll({
@@ -281,8 +300,16 @@ const performManyModerationActions = async (workPackage, callback) => {
         },
         attributes: ['id', 'content_type', 'status'],
       });
+      for (const point of selectedPoints) {
+        if (isAdminOnlyComment(models, point)) {
+          privateCommentIds.add(point.id);
+        }
+      }
       pointIds = selectedPoints
-        .filter((point) => !isAdminOnlyComment(models, point))
+        .filter((point) =>
+          !isAdminOnlyComment(models, point) ||
+          canModerateAdminOnlyComment(workPackage.actionType)
+        )
         .map((point) => point.id);
     } catch (error) {
       callback(error);
@@ -310,8 +337,11 @@ const performManyModerationActions = async (workPackage, callback) => {
     }
     ], async error => {
       if (!error) {
-        if (pointIds.length>0) {
-          _.map(pointIds, (pointId) => {
+        const searchablePointIds = pointIds.filter(
+          (pointId) => !privateCommentIds.has(pointId)
+        );
+        if (searchablePointIds.length>0) {
+          _.map(searchablePointIds, (pointId) => {
             queue.add('process-similarities', { type: 'update-collection', pointId: pointId }, 'low', { delay: 5000 });
           });
         }
