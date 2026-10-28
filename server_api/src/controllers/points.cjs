@@ -15,6 +15,9 @@ const {
   getSpeechToTextSupportConfig,
   hasSpeechToTextSupport,
 } = require("../utils/speechToTextSupport.cjs");
+const {
+  getPointSubmissionAttributes,
+} = require("../utils/privatePointComments.cjs");
 
 const transcriptTimeoutMs = 15 * 60 * 1000;
 
@@ -187,9 +190,10 @@ var validateEmbedUrl = function (urlIn) {
   return urls != null && urls.length > 0;
 };
 
-var loadPointWithAll = function (pointId, callback) {
+var loadPointWithAll = function (pointId, callback, includeUnpublished = false) {
   let outPoint;
-  models.Point.findOne({
+  const pointModel = includeUnpublished ? models.Point.unscoped() : models.Point;
+  pointModel.findOne({
     where: {
       id: pointId,
     },
@@ -987,7 +991,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
     content: req.body.content,
     value: req.body.value,
     user_id: req.user.id,
-    status: "published",
+    ...getPointSubmissionAttributes(models.Point, req.body.postId),
     language: getTranscriptAppLanguage(req),
     user_agent: req.useragent.source,
     ip_address: req.clientIp,
@@ -1034,6 +1038,10 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
           },
 
           (parallelCallback) => {
+            if (point.status !== "published") {
+              parallelCallback();
+              return;
+            }
             models.Group.findOne({
               where: { id: point.group_id },
               attributes: ["id", "community_id"],
@@ -1066,16 +1074,24 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
           },
 
           (parallelCallback) => {
-            models.Group.addUserToGroupIfNeeded(
-              point.group_id,
-              req,
-              function () {
-                parallelCallback();
-              }
-            );
+            if (point.status !== "published") {
+              parallelCallback();
+            } else {
+              models.Group.addUserToGroupIfNeeded(
+                point.group_id,
+                req,
+                function () {
+                  parallelCallback();
+                }
+              );
+            }
           },
 
           (parallelCallback) => {
+            if (point.status !== "published") {
+              parallelCallback();
+              return;
+            }
             models.Post.findOne({
               where: { id: point.post_id },
               attributes: ["id", "counter_points", "group_id"],
@@ -1166,7 +1182,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
             log.error(error);
             res.sendStatus(500);
           } else {
-            if (point.content && point.content !== "") {
+            if (point.content && point.content !== "" && point.status === "published") {
               log.info("process-moderation point toxicity after create point");
               queue.add(
                 "process-moderation",
@@ -1183,11 +1199,13 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
                 "No process-moderation toxicity for empty text on point"
               );
             }
-            queue.add(
-              "process-moderation",
-              { type: "point-review-and-annotate-images", pointId: point.id },
-              "medium"
-            );
+            if (point.status === "published") {
+              queue.add(
+                "process-moderation",
+                { type: "point-review-and-annotate-images", pointId: point.id },
+                "medium"
+              );
+            }
             loadPointWithAll(point.id, function (error, loadedPoint) {
               if (error) {
                 log.error("Could not reload point point", {
@@ -1223,7 +1241,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
                 req.redisClient.setEx(newPointRedisKey, 30, JSON.stringify({}));
                 res.send(loadedPoint);
               }
-            });
+            }, point.status !== "published");
           }
         }
       );

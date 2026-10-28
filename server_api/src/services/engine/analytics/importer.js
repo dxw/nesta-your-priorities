@@ -7,6 +7,8 @@ const importCommunity = require('./utils.js').importCommunity;
 const importGroup = require('./utils.js').importGroup;
 const importPost = require('./utils.js').importPost;
 const importPoint = require('./utils.js').importPoint;
+const { Op } = require("sequelize");
+const { ADMIN_ONLY_COMMENT_STATUS } = require("../../../utils/privatePointComments.cjs");
 
 let updateAsyncLimit = 5;
 
@@ -198,6 +200,7 @@ const importAllPosts = (done) => {
 
 const importAllPoints = (done) => {
   models.Point.unscoped().findAll({
+    where: { status: { [Op.ne]: ADMIN_ONLY_COMMENT_STATUS } },
     attributes: ['id', 'name', 'content', 'user_id', 'post_id', 'value', 'status', 'counter_quality_up', 'counter_quality_down', 'language', 'created_at', 'updated_at'],
     order: [
       ['id', 'desc' ],
