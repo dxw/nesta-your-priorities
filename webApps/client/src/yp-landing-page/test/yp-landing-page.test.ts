@@ -20,6 +20,7 @@ describe('YpLandingPage', () => {
   let fetchMock: any;
   let redirectedTo: string[];
   let originalRedirectTo: typeof YpNavHelpers.redirectTo;
+  let originalGetGroupConfiguration: typeof window.serverApi.getGroupConfiguration;
 
   before(async () => {
     fetchMock = YpTestHelpers.getFetchMock();
@@ -30,6 +31,10 @@ describe('YpLandingPage', () => {
     localStorage.removeItem(OPTIONAL_COOKIE_CONSENT_KEY);
     originalRedirectTo = YpNavHelpers.redirectTo;
     redirectedTo = [];
+    originalGetGroupConfiguration = window.serverApi.getGroupConfiguration;
+    window.serverApi.getGroupConfiguration = async () => ({
+      canAddNewPosts: true,
+    });
     YpNavHelpers.redirectTo = (path: string) => {
       redirectedTo.push(path);
     };
@@ -44,6 +49,7 @@ describe('YpLandingPage', () => {
 
   afterEach(() => {
     YpNavHelpers.redirectTo = originalRedirectTo;
+    window.serverApi.getGroupConfiguration = originalGetGroupConfiguration;
     localStorage.removeItem(OPTIONAL_COOKIE_CONSENT_KEY);
   });
 
@@ -154,6 +160,30 @@ describe('YpLandingPage', () => {
   });
 
   describe('"Share your idea" button', () => {
+    it('keeps only the Get Involved idea button when submissions are closed', async () => {
+      window.serverApi.getGroupConfiguration = async () => ({
+        canAddNewPosts: false,
+        alternativeTextForNewIdeaButtonClosed: 'Ideas are closed',
+      });
+      element.remove();
+      element = await fixture(html`<yp-landing-page></yp-landing-page>`);
+      await aTimeout(50);
+
+      const buttons = Array.from(
+        element.shadowRoot!.querySelectorAll('.shareIdeaButton')
+      ) as HTMLButtonElement[];
+
+      expect(buttons).to.have.length(1);
+      expect(buttons[0].closest('#get-involved')).to.exist;
+      buttons.forEach((button) => {
+        expect(button.disabled).to.be.true;
+        expect(button.textContent?.trim()).to.equal('Ideas are closed');
+        expect(button.getAttribute('aria-label')).to.equal('Ideas are closed');
+        button.click();
+      });
+      expect(redirectedTo).to.deep.equal([]);
+    });
+
     [YpTestHelpers.getDomain(), undefined].forEach((domain) => {
       it(`redirects to /group/1/new_post regardless of domain (domain ${
         domain ? 'loaded' : 'not loaded'
