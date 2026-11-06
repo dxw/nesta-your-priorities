@@ -37,6 +37,12 @@ export class YpLandingPage extends YpBaseElement {
   private consented = false;
 
   @state()
+  private disableNewIdeaSubmission = false;
+
+  @state()
+  private closedNewIdeaButtonText = "";
+
+  @state()
   private carouselThumbWidthPercent = 100;
 
   @state()
@@ -290,6 +296,14 @@ export class YpLandingPage extends YpBaseElement {
         .button:hover {
           transform: translate(2px, 2px);
           box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e144dc);
+        }
+
+        .button:disabled,
+        .button:disabled:hover {
+          cursor: not-allowed;
+          opacity: 0.7;
+          transform: none;
+          box-shadow: none;
         }
 
         .button:active {
@@ -1133,9 +1147,32 @@ export class YpLandingPage extends YpBaseElement {
   }
 
   _shareYourIdea() {
+    if (this.disableNewIdeaSubmission) {
+      return;
+    }
+
     window.appGlobals.activity("click", "landingPageShareYourIdea");
     window.plausible?.("Share Your Idea Click");
     YpNavHelpers.redirectTo("/group/1/new_post");
+  }
+
+  private get shareYourIdeaButtonLabel() {
+    return this.disableNewIdeaSubmission
+      ? this.closedNewIdeaButtonText || this.t("closedForNewPosts")
+      : SHARE_IDEA_BUTTON_LABEL;
+  }
+
+  private async _loadGroupConfiguration() {
+    try {
+      const configuration = (await window.serverApi.getGroupConfiguration(
+        1
+      )) as YpGroupConfiguration;
+      this.disableNewIdeaSubmission = configuration?.canAddNewPosts === false;
+      this.closedNewIdeaButtonText =
+        configuration?.alternativeTextForNewIdeaButtonClosed || "";
+    } catch (error) {
+      console.warn("Unable to load idea submission settings", error);
+    }
   }
 
   _toggleFaq(index: number) {
@@ -1157,6 +1194,7 @@ export class YpLandingPage extends YpBaseElement {
       OPTIONAL_COOKIE_CONSENT_EVENT,
       this._boundOptionalCookieConsent
     );
+    void this._loadGroupConfiguration();
     window.addEventListener("resize", this._updateCarouselThumb);
   }
 
@@ -1372,13 +1410,17 @@ export class YpLandingPage extends YpBaseElement {
                 <strong>${INTRO_CONTENT.attributionName}</strong>
                 &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
               </p>
-              <button
-                class="button yp-hard-shadow-box"
-                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                @click="${this._shareYourIdea}"
-              >
-                ${SHARE_IDEA_BUTTON_LABEL}
-              </button>
+              ${this.disableNewIdeaSubmission
+                ? ""
+                : html`
+                    <button
+                      class="button shareIdeaButton yp-hard-shadow-box"
+                      aria-label="${this.shareYourIdeaButtonLabel}"
+                      @click="${this._shareYourIdea}"
+                    >
+                      ${this.shareYourIdeaButtonLabel}
+                    </button>
+                  `}
             </div>
           </section>
         </div>
@@ -1391,13 +1433,17 @@ export class YpLandingPage extends YpBaseElement {
                           <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
                           <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                       </div>
-                      <button
-                              class="button yp-hard-shadow-box"
-                              aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+                      ${this.disableNewIdeaSubmission
+                        ? ""
+                        : html`
+                            <button
+                              class="button shareIdeaButton yp-hard-shadow-box"
+                              aria-label="${this.shareYourIdeaButtonLabel}"
                               @click="${this._shareYourIdea}"
-                      >
-                          ${SHARE_IDEA_BUTTON_LABEL}
-                      </button>
+                            >
+                              ${this.shareYourIdeaButtonLabel}
+                            </button>
+                          `}
                   </div>
                   <div class="criteriaGrid">
                       ${SMALL_IDEA_CONTENT.criteria.map(
@@ -1428,11 +1474,12 @@ export class YpLandingPage extends YpBaseElement {
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
               <button
-                class="button yp-hard-shadow-box"
-                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
+                class="button shareIdeaButton yp-hard-shadow-box"
+                aria-label="${this.shareYourIdeaButtonLabel}"
+                ?disabled="${this.disableNewIdeaSubmission}"
                 @click="${this._shareYourIdea}"
               >
-                ${SHARE_IDEA_BUTTON_LABEL}
+                ${this.shareYourIdeaButtonLabel}
               </button>
 
               <h2
@@ -1624,13 +1671,17 @@ export class YpLandingPage extends YpBaseElement {
 			    </div>
 			  </div>
 			  <div class="aboutUsActions">
-				<button
-				class="button yp-hard-shadow-box"
-				aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-				@click="${this._shareYourIdea}"
-				>
-				${SHARE_IDEA_BUTTON_LABEL}
-				</button>
+				${this.disableNewIdeaSubmission
+        ? ""
+        : html`
+            <button
+              class="button shareIdeaButton yp-hard-shadow-box"
+              aria-label="${this.shareYourIdeaButtonLabel}"
+              @click="${this._shareYourIdea}"
+            >
+              ${this.shareYourIdeaButtonLabel}
+            </button>
+          `}
 			  </div>
               </div>
             </div>
