@@ -27,6 +27,7 @@ import {
   CONSENT_TEXT,
   OPTIONAL_COOKIE_CONSENT_EVENT,
   OPTIONAL_COOKIE_CONSENT_KEY,
+  IDEAS_END_BANNER,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -139,6 +140,14 @@ export class YpLandingPage extends YpBaseElement {
 
         .skipLink:focus {
           top: 8px;
+        }
+
+		.banner {
+          background-color: var(--yp-landing-info-box-color, #8df6f9);
+          color: var(--yp-landing-heading-text-color, #191923);
+          padding: 16px 32px;
+          text-align: center;
+		  font-size: 1.2rem;
         }
 
         .nav {
@@ -1298,6 +1307,15 @@ export class YpLandingPage extends YpBaseElement {
     );
   }
 
+  renderIdeasEndBanner() {
+    return html`
+      <div class="banner">
+          <h2>${IDEAS_END_BANNER.heading}</h2>
+          <p>${IDEAS_END_BANNER.label}</p>
+      </div>
+    `;
+  }
+
   renderNav() {
     return html`
       <nav class="nav" aria-label="Landing page sections">
@@ -1366,6 +1384,7 @@ export class YpLandingPage extends YpBaseElement {
 
   override render() {
     return html`
+      ${this.renderIdeasEndBanner()}
       ${this.renderNav()}
 
       <main>

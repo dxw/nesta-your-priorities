@@ -7,6 +7,7 @@ import {
   KIND_OF_THING_CONTENT,
   OPTIONAL_COOKIE_CONSENT_KEY,
   SHARE_IDEA_BUTTON_LABEL,
+  IDEAS_END_BANNER,
 } from '../yp-landing-page-content.js';
 
 const SECTIONS = [
@@ -143,6 +144,15 @@ describe('YpLandingPage', () => {
     expect(shadowRoot.querySelector('.footerCopyright')?.textContent).to.contain(
       'The Small Ideas Initiative. All rights reserved.'
     );
+  });
+
+  describe('submission end banner', () => {
+    it('renders the ideas end banner', () => {
+      const banner = element.shadowRoot!.querySelector('.banner');
+      expect(banner).to.exist;
+      expect(banner?.querySelector('h2')?.textContent).to.contain(IDEAS_END_BANNER.heading);
+      expect(banner?.querySelector('p')?.textContent).to.contain(IDEAS_END_BANNER.label);
+    });
   });
 
   describe('idea submission buttons', () => {
