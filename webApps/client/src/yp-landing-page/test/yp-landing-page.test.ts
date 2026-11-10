@@ -3,8 +3,8 @@ import { html, fixture, expect, aTimeout } from '@open-wc/testing';
 import { YpLandingPage } from '../yp-landing-page.js';
 import '../yp-landing-page.js';
 import { YpTestHelpers } from '../../common/test/setup-app.js';
-import { YpNavHelpers } from '../../common/YpNavHelpers.js';
 import {
+  KIND_OF_THING_CONTENT,
   OPTIONAL_COOKIE_CONSENT_KEY,
   SHARE_IDEA_BUTTON_LABEL,
 } from '../yp-landing-page-content.js';
@@ -18,8 +18,6 @@ const SECTIONS = [
 describe('YpLandingPage', () => {
   let element: YpLandingPage;
   let fetchMock: any;
-  let redirectedTo: string[];
-  let originalRedirectTo: typeof YpNavHelpers.redirectTo;
 
   before(async () => {
     fetchMock = YpTestHelpers.getFetchMock();
@@ -28,11 +26,6 @@ describe('YpLandingPage', () => {
 
   beforeEach(async () => {
     localStorage.removeItem(OPTIONAL_COOKIE_CONSENT_KEY);
-    originalRedirectTo = YpNavHelpers.redirectTo;
-    redirectedTo = [];
-    YpNavHelpers.redirectTo = (path: string) => {
-      redirectedTo.push(path);
-    };
 
     // Avoid a real analytics/activity network call firing on every click.
     window.appGlobals.activity = () => {};
@@ -43,7 +36,6 @@ describe('YpLandingPage', () => {
   });
 
   afterEach(() => {
-    YpNavHelpers.redirectTo = originalRedirectTo;
     localStorage.removeItem(OPTIONAL_COOKIE_CONSENT_KEY);
   });
 
@@ -153,38 +145,33 @@ describe('YpLandingPage', () => {
     );
   });
 
-  describe('"Share your idea" button', () => {
-    [YpTestHelpers.getDomain(), undefined].forEach((domain) => {
-      it(`redirects to /group/1/new_post regardless of domain (domain ${
-        domain ? 'loaded' : 'not loaded'
-      })`, () => {
-        window.appGlobals.domain = domain;
+  describe('idea submission buttons', () => {
+    const buttonSelector =
+      `.shareIdeaButton, button[aria-label="${SHARE_IDEA_BUTTON_LABEL}"]`;
 
-        const button = element.shadowRoot!.querySelector(
-          `button[aria-label="${SHARE_IDEA_BUTTON_LABEL}"]`
-        ) as HTMLButtonElement;
-        expect(button, 'share idea button should exist').to.exist;
-
-        button.click();
-
-        expect(redirectedTo).to.deep.equal(['/group/1/new_post']);
-      });
-    });
-
-    it('redirects every "Share your idea" button on the page to the same place', () => {
+    function expectOnlyDisabledGetInvolvedButton() {
       const buttons = Array.from(
-        element.shadowRoot!.querySelectorAll(
-          `button[aria-label="${SHARE_IDEA_BUTTON_LABEL}"]`
-        )
+        element.shadowRoot!.querySelectorAll(buttonSelector)
       ) as HTMLButtonElement[];
+      const closedLabel = element.t('closedForNewPosts');
 
-      expect(buttons.length).to.be.greaterThan(1);
+      expect(buttons).to.have.length(1);
+      expect(buttons[0].closest('#get-involved')).to.exist;
+      expect(buttons[0].disabled).to.be.true;
+      expect(buttons[0].textContent?.trim()).to.equal(closedLabel);
+      expect(buttons[0].getAttribute('aria-label')).to.equal(closedLabel);
+    }
 
-      buttons.forEach((button) => {
-        redirectedTo.length = 0;
-        button.click();
-        expect(redirectedTo).to.deep.equal(['/group/1/new_post']);
-      });
+    it('renders only a disabled Get Involved button by default', () => {
+      expectOnlyDisabledGetInvolvedButton();
+    });
+  });
+
+  it('keeps existing idea examples visible', () => {
+    const cards = element.shadowRoot!.querySelectorAll('.carouselCard');
+    expect(cards).to.have.length(KIND_OF_THING_CONTENT.examples.length);
+    KIND_OF_THING_CONTENT.examples.forEach((idea, index) => {
+      expect(cards[index].querySelector('h3')?.textContent).to.contain(idea.title);
     });
   });
 

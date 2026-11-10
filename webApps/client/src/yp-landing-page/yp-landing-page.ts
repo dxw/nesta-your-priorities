@@ -292,6 +292,14 @@ export class YpLandingPage extends YpBaseElement {
           box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e144dc);
         }
 
+        .button:disabled,
+        .button:disabled:hover {
+          cursor: not-allowed;
+          opacity: 0.7;
+          transform: none;
+          box-shadow: none;
+        }
+
         .button:active {
           transform: translate(4px, 4px);
           box-shadow: 2px 2px 0 0 var(--yp-hard-shadow-color, #e144dc);
@@ -1372,13 +1380,6 @@ export class YpLandingPage extends YpBaseElement {
                 <strong>${INTRO_CONTENT.attributionName}</strong>
                 &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
               </p>
-              <button
-                class="button yp-hard-shadow-box"
-                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                @click="${this._shareYourIdea}"
-              >
-                ${SHARE_IDEA_BUTTON_LABEL}
-              </button>
             </div>
           </section>
         </div>
@@ -1391,13 +1392,6 @@ export class YpLandingPage extends YpBaseElement {
                           <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
                           <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                       </div>
-                      <button
-                              class="button yp-hard-shadow-box"
-                              aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                              @click="${this._shareYourIdea}"
-                      >
-                          ${SHARE_IDEA_BUTTON_LABEL}
-                      </button>
                   </div>
                   <div class="criteriaGrid">
                       ${SMALL_IDEA_CONTENT.criteria.map(
@@ -1428,11 +1422,11 @@ export class YpLandingPage extends YpBaseElement {
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
               <button
-                class="button yp-hard-shadow-box"
-                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                @click="${this._shareYourIdea}"
+                class="button shareIdeaButton yp-hard-shadow-box"
+                aria-label="${this.t("closedForNewPosts")}"
+                disabled
               >
-                ${SHARE_IDEA_BUTTON_LABEL}
+                ${this.t("closedForNewPosts")}
               </button>
 
               <h2
@@ -1624,13 +1618,6 @@ export class YpLandingPage extends YpBaseElement {
 			    </div>
 			  </div>
 			  <div class="aboutUsActions">
-				<button
-				class="button yp-hard-shadow-box"
-				aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-				@click="${this._shareYourIdea}"
-				>
-				${SHARE_IDEA_BUTTON_LABEL}
-				</button>
 			  </div>
               </div>
             </div>
