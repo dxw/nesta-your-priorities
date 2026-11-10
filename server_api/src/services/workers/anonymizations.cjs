@@ -152,7 +152,7 @@ const anonymizePostContent = (workPackage, callback) => {
         }
       },
       (seriesCallback) => {
-        models.Point.findAll({
+        models.Point.unscoped().findAll({
           attributes: ['id'],
           where: {
             post_id: postId
@@ -169,7 +169,7 @@ const anonymizePostContent = (workPackage, callback) => {
         });
       },
       (seriesCallback) => {
-        models.Point.update(
+        models.Point.unscoped().update(
           { user_id: workPackage.anonymousUserId, ip_address: '127.0.0.1' },
           { where: { post_id: postId } }
         ).then((spread) => {
@@ -290,7 +290,7 @@ const anonymizeGroupContent = (workPackage, callback) => {
         })
       },
       (seriesCallback) => {
-        models.Point.update(
+        models.Point.unscoped().update(
           { user_id: workPackage.anonymousUserId, ip_address: '127.0.0.1' },
           { where: { group_id: groupId }}
         ).then((spread) => {
@@ -301,7 +301,7 @@ const anonymizeGroupContent = (workPackage, callback) => {
         });
       },
       (seriesCallback) => {
-        models.Point.findAll({
+        models.Point.unscoped().findAll({
           where: { group_id: groupId },
           attributes: ['id', 'group_id'],
           include: [

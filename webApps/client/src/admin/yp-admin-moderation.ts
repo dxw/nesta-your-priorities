@@ -43,9 +43,9 @@ export class YpAdminModeration extends YpAdminPage {
   }
 
   get visiblePages(): YpAdminModerationPage[] {
-    return this.fraudAvailable
-      ? ["flagged", "all", "fraud"]
-      : ["flagged", "all"];
+    const pages: YpAdminModerationPage[] = ["flagged", "all"];
+    if (this.fraudAvailable) pages.push("fraud");
+    return pages;
   }
 
   get activeTabIndex() {

@@ -225,9 +225,10 @@ module.exports = (sequelize, DataTypes) => {
         audio.listenable = true;
         audio.createFormats(audio);
         audio.save().then(() => {
-          sequelize.models.Point.findOne({
+          sequelize.models.Point.unscoped().findOne({
             where: {
-              id: options.pointId
+              id: options.pointId,
+              deleted: false,
             }
           }).then((point) => {
             point.addPointAudio(audio).then(() => {

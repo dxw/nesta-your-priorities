@@ -747,7 +747,7 @@ const deletePostContent = (workPackage, callback) => {
         });
       },
       (seriesCallback) => {
-        models.Point.update(
+        models.Point.unscoped().update(
           { deleted: true },
           { where: { post_id: postId } }
         ).then((spread) => {
@@ -1145,7 +1145,7 @@ const deleteUserContent = (workPackage, callback) => {
         });
       },
       (seriesCallback) => {
-        models.Point.update(
+        models.Point.unscoped().update(
           { deleted: true },
           { where: { user_id: workPackage.userId } }
         ).then((spread) => {

@@ -7,6 +7,7 @@ const _ = require("lodash");
 const {
   getFingerprintDataFromBody,
 } = require("../utils/fingerprint_data.cjs");
+const { ADMIN_ONLY_COMMENT_STATUS } = require("../utils/privatePointComments.cjs");
 
 const findCommunityAndDomainForPointFromGroup = (sequelize, options, callback) => {
   sequelize.models.Group.findOne({
@@ -303,7 +304,7 @@ module.exports = (sequelize, DataTypes) => {
     options.user_id = req.user.id;
     options.content_type = sequelize.models.Point.CONTENT_COMMENT;
     options.value = 0;
-    options.status = 'published';
+    options.status = ADMIN_ONLY_COMMENT_STATUS;
     options.user_agent = req.useragent.source;
     options.ip_address = req.clientIp;
 
@@ -382,22 +383,9 @@ module.exports = (sequelize, DataTypes) => {
           options.point_id = point.id;
           const pointRevision = sequelize.models.PointRevision.build(options);
           pointRevision.save().then(() => {
-            log.info("process-moderation point toxicity on comment");
-            queue.add('process-moderation', { type: 'estimate-point-toxicity', pointId: point.id }, 'high');
-            sequelize.models.AcActivity.createActivity({
-              type: 'activity.point.comment.new',
-              userId: options.user_id,
-              pointId: options.point_id,
-              imageId: options.image_id,
-              domainId: options.domain_id,
-              groupId: options.group_id ? options.group_id : 1,
-              communityId: options.community_id,
-              postId: options.post_id,
-              access: sequelize.models.AcActivity.ACCESS_PUBLIC
-            }, (error) => {
-              seriesCallback(error);
-            });
-          })
+            log.info("Admin-only point comment created", { pointId: point.id });
+            seriesCallback();
+          }).catch(seriesCallback);
         }).catch((error) => {
           seriesCallback(error);
         });

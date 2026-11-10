@@ -457,9 +457,10 @@ module.exports = (sequelize, DataTypes) => {
             video
               .save()
               .then(() => {
-                sequelize.models.Point.findOne({
+                sequelize.models.Point.unscoped().findOne({
                   where: {
                     id: options.pointId,
+                    deleted: false,
                   },
                 })
                   .then((point) => {

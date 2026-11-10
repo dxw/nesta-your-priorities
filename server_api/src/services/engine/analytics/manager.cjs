@@ -6,6 +6,8 @@ const importGroup = require('./utils.cjs').importGroup;
 const importPost = require('./utils.cjs').importPost;
 const importPoint = require('./utils.cjs').importPoint;
 const request = require("../../../utils/requestCompat.cjs");
+const { Op } = require("sequelize");
+const { ADMIN_ONLY_COMMENT_STATUS } = require("../../../utils/privatePointComments.cjs");
 
 const updateDomain = (domainId, done) => {
   log.info('updateDomain');
@@ -112,6 +114,7 @@ const updatePost = (postId, done) => {
         {
           model: models.Point.unscoped(),
           required: false,
+          where: { status: "published" },
           attributes: ['id','content'],
         },
         {
@@ -195,7 +198,8 @@ const updatePoint = (pointId, done) => {
 
   models.Point.unscoped().findOne({
     where: {
-      id: pointId
+      id: pointId,
+      status: { [Op.ne]: ADMIN_ONLY_COMMENT_STATUS },
     },
     attributes: ['id', 'name', 'content', 'user_id', 'post_id', 'value', 'status', 'counter_quality_up', 'counter_quality_down', 'language','created_at', 'updated_at'],
     order: [

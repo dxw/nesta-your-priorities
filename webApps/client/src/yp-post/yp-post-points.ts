@@ -1951,6 +1951,22 @@ export class YpPostPoints extends YpBaseElementWithLogin {
 
   _completeNewPointResponse(point: YpPointData) {
     this.addPointDisabled = false;
+    if (point.status === "admin_only") {
+      this.newPointTextCombined = this.t("point.sentToAdmins");
+      if (point.value > 0) {
+        this._clearTextValueUp();
+      } else {
+        this._clearTextValueDown();
+      }
+      this._clearTextValueMobileUpOrDown();
+      this._clearVideo();
+      this._clearAudio();
+      window.appDialogs.getDialogAsync("masterToast", (toast: any) => {
+        toast.labelText = this.newPointTextCombined;
+        toast.open = true;
+      });
+      return;
+    }
     point = this._preProcessPoints([point])[0];
     if (!point.checkTranscriptFor && window.appGlobals.hasTranscriptSupport === true) {
       if (this.currentVideoId || (point.PointVideos && point.PointVideos.length > 0)) {
