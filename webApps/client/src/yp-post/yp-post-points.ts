@@ -1952,6 +1952,15 @@ export class YpPostPoints extends YpBaseElementWithLogin {
   _completeNewPointResponse(point: YpPointData) {
     this.addPointDisabled = false;
     point = this._preProcessPoints([point])[0];
+    if (point.status !== "published") {
+      this._clearTextValueUp();
+      this._clearTextValueDown();
+      this._clearTextValueMobileUpOrDown();
+      this._clearVideo();
+      this._clearAudio();
+	  window.appGlobals.notifyUserViaToast("Comment submitted successfully");
+      return;
+    }
     if (!point.checkTranscriptFor && window.appGlobals.hasTranscriptSupport === true) {
       if (this.currentVideoId || (point.PointVideos && point.PointVideos.length > 0)) {
         point.checkTranscriptFor = "video";

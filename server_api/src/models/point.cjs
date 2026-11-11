@@ -303,7 +303,7 @@ module.exports = (sequelize, DataTypes) => {
     options.user_id = req.user.id;
     options.content_type = sequelize.models.Point.CONTENT_COMMENT;
     options.value = 0;
-    options.status = 'published';
+    options.status = 'in_moderation_queue';
     options.user_agent = req.useragent.source;
     options.ip_address = req.clientIp;
 
