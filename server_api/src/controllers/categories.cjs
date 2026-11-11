@@ -82,7 +82,7 @@ router.get('/:id/translatedText', auth.can('view category'), function(req, res) 
 router.post('/:groupId', auth.can('create category'), function(req, res) {
   var category = models.Category.build({
     name: req.body.name,
-    description: req.body.description,
+    description: req.body.description ?? "",
     user_id: req.user.id,
     group_id: req.params.groupId
   });
@@ -131,7 +131,9 @@ router.put('/:id', auth.can('edit category'), function(req, res) {
   }).then(function(category) {
     if (category) {
       category.name = req.body.name;
-      category.description = req.body.description;
+      if (req.body.description !== undefined && req.body.description !== null) {
+        category.description = req.body.description;
+      }
       category.save().then(function () {
         log.info('Category Updated', { category: toJson(category), context: 'update', user: toJson(req.user) });
         category.setupImages(req.body, function(error) {

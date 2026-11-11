@@ -2104,7 +2104,7 @@ export class YpAdminConfigGroup extends YpAdminConfigBase {
           this._categoryDeleted.bind(this),
           category
         );
-        (dialog as any).open();
+        (dialog as any).open(!category, {});
       }
     );
   }
