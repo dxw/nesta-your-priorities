@@ -5,6 +5,7 @@ import { YpBaseElement } from "../common/yp-base-element.js";
 
 import "@material/web/iconbutton/outlined-icon-button.js";
 import "@material/web/iconbutton/filled-tonal-icon-button.js";
+import "@material/web/iconbutton/filled-icon-button.js";
 import "@material/web/labs/badge/badge.js";
 
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -64,11 +65,14 @@ export class YpPostActions extends YpBaseElement {
   @property({ type: Boolean })
   compact = false;
 
+  private readonly _boundUpdateEndorsementsFromSignal =
+    this._updateEndorsementsFromSignal.bind(this);
+
   override connectedCallback() {
     super.connectedCallback();
     this.addGlobalListener(
       "yp-got-endorsements-and-qualities",
-      this._updateEndorsementsFromSignal.bind(this)
+      this._boundUpdateEndorsementsFromSignal
     );
     this.setStaticThemeFromConfig();
   }
@@ -77,7 +81,7 @@ export class YpPostActions extends YpBaseElement {
     super.disconnectedCallback();
     this.removeGlobalListener(
       "yp-got-endorsements-and-qualities",
-      this._updateEndorsementsFromSignal.bind(this)
+      this._boundUpdateEndorsementsFromSignal
     );
   }
 
@@ -401,7 +405,7 @@ export class YpPostActions extends YpBaseElement {
               ?is-static-theme="${this.hasStaticTheme}"
               ?selected="${this.isOpposed}"
               smaller-icons="${this.smallerIcons}"
-              ?disabled="${this.votingStateDisabled}"
+              ?disabled="${this.allDisabled}"
               title="${this.customVoteDownHoverText}"
               aria-label="${this.customVoteDownHoverText}"
               class="action-icon down-vote-icon mainIcons ${this
@@ -437,18 +441,14 @@ export class YpPostActions extends YpBaseElement {
     return this.endorseValue < 0;
   }
 
+  get hasReachedVoteLimit() {
+    const limit = Number(this.post.Group.configuration?.maxNumberOfGroupVotes);
+    return Number.isFinite(limit) && limit > 0 &&
+      window.appUser.getGroupVoteCount(this.post.Group.id) >= limit;
+  }
+
   get votingStateDisabled() {
-    if (this.allDisabled) {
-      return true;
-    } else if (
-      !this.isEndorsed &&
-      this.maxNumberOfGroupVotes &&
-      this.numberOfGroupVotes
-    ) {
-      return this.maxNumberOfGroupVotes <= this.numberOfGroupVotes;
-    } else {
-      return false;
-    }
+    return this.allDisabled || (!this.isEndorsed && this.hasReachedVoteLimit);
   }
 
   get onlyUpVoteShowing() {
@@ -744,6 +744,10 @@ export class YpPostActions extends YpBaseElement {
     }
 
     if (canVote) {
+      if (value > 0 && !this.isEndorsed && this.hasReachedVoteLimit) {
+        this._enableVoting();
+        return;
+      }
       let method: string;
 
       if (this.endorseValue === value) {
@@ -754,6 +758,10 @@ export class YpPostActions extends YpBaseElement {
 
       const fingerprintData =
         await window.appUser.getBrowserFingerprintData("endorsement");
+      if (value > 0 && !this.isEndorsed && this.hasReachedVoteLimit) {
+        this._enableVoting();
+        return;
+      }
       const endorseResponse = (await window.serverApi.endorsePost(
         this.post.id,
         method,
