@@ -47,7 +47,7 @@ export const OPTIONAL_COOKIE_CONSENT_EVENT = "yp-optional-cookie-consent";
 export const CAROUSEL_REGION_LABEL = "Examples of small ideas";
 
 export const IDEAS_END_BANNER = {
-	heading: "You sent in over 50,000 ideas. Thank you!",
+	heading: "You sent in over 69,000 ideas. Thank you!",
 	label: "Submissions are now closed. We’re overwhelmed by the response and want to do your ideas justice, so we’ll now review, analyse and shortlist them - which will take time. In February, we’ll publish the shortlist for you to look at. We’ll also share what your submissions reveal about the changes people most want to see, so watch this space."
 }
 
