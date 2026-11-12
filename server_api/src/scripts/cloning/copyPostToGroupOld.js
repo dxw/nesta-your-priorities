@@ -330,7 +330,7 @@ var copyOnePost = function (groupId, postId, categoryId, done) {
     function (callback) {
       models.Point.createNewsStory({
         useragent: { source: 'copyPostScript' },
-        clientIp: '127.0.0.1',
+        ip: '127.0.0.1',
         user: { id: userIdToPostNewsStory }
       }, {
         subType: 'bulkOperation',
@@ -344,7 +344,7 @@ var copyOnePost = function (groupId, postId, categoryId, done) {
     function (callback) {
       models.Point.createNewsStory({
         useragent: { source: 'copyPostScript' },
-        clientIp: '127.0.0.1',
+        ip: '127.0.0.1',
         user: { id: userIdToPostNewsStory }
       }, {
         subType: 'bulkOperation',

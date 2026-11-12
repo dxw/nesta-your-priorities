@@ -539,7 +539,7 @@ router.put("/:pointId", auth.can("edit point"), function (req, res) {
           value: point.value,
           point_id: point.id,
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
         });
         pointRevision.save().then(function () {
           log.info("PointRevision Created", {
@@ -733,7 +733,7 @@ router.get(
                     value: savedPoint.value,
                     point_id: savedPoint.id,
                     user_agent: req.useragent.source,
-                    ip_address: req.clientIp,
+                    ip_address: req.ip,
                   });
                   pointRevision
                     .save()
@@ -896,7 +896,7 @@ router.get(
                     value: savedPoint.value,
                     point_id: savedPoint.id,
                     user_agent: req.useragent.source,
-                    ip_address: req.clientIp,
+                    ip_address: req.ip,
                   });
                   pointRevision
                     .save()
@@ -990,7 +990,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
     status: "published",
     language: getTranscriptAppLanguage(req),
     user_agent: req.useragent.source,
-    ip_address: req.clientIp,
+    ip_address: req.ip,
     data: {
       ...getFingerprintDataFromBody(req.body, "point"),
       originalQueryString: req.body.originalQueryString,
@@ -1021,7 +1021,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
               value: point.value,
               point_id: point.id,
               user_agent: req.useragent.source,
-              ip_address: req.clientIp,
+              ip_address: req.ip,
             });
             pointRevision.save().then(function () {
               log.info("PointRevision Created", {
@@ -1326,7 +1326,7 @@ router.post(
           },
           status: "active",
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
         });
       }
       pointQuality.save().then(function () {

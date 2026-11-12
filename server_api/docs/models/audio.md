@@ -81,7 +81,7 @@ Creates a new audio record and returns a signed S3 upload URL to the client.
 
 | Name | Type     | Description                |
 |------|----------|----------------------------|
-| req  | Request  | Express request object (expects `user`, `useragent`, `clientIp`) |
+| req  | Request  | Express request object (expects `user`, `useragent`, `ip`) |
 | res  | Response | Express response object    |
 
 **Response**

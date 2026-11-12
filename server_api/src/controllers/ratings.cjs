@@ -46,7 +46,7 @@ router.post('/:post_id/:type_index', auth.can('rate post'), function(req, res) {
           ...getFingerprintDataFromBody(req.body, "rating"),
         },
         user_agent: req.useragent.source,
-        ip_address: req.clientIp
+        ip_address: req.ip
       })
     }
     rating.save().then(function() {

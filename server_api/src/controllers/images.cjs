@@ -364,7 +364,7 @@ router.post("/", isAuthenticated, async function (req, res) {
           original_filename: req.file.originalname,
           formats,
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
         });
 
         await image.save();

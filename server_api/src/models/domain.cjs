@@ -374,7 +374,7 @@ module.exports = (sequelize, DataTypes) => {
           name: "New Domain",
           configuration: {},
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
         },
       })
         .then((results) => {

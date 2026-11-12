@@ -121,7 +121,7 @@ const template = getTemplate(update.templates, post.selectedTemplateName);
 
 | Name    | Type   | Description                                 |
 |---------|--------|---------------------------------------------|
-| context | Object | Context object (useragent, clientIp, user)  |
+| context | Object | Context object (useragent, ip, user)        |
 | data    | Object | News story data (subType, post_id, etc.)    |
 | callback| Function | Callback for completion/error             |
 
