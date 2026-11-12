@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var models = require("../models/index.cjs");
 var auth = require("../authorization.cjs");
+const { isPostingClosed } = require("../utils/postingClosed.cjs");
 var log = require("../utils/logger.cjs");
 var toJson = require("../utils/to_json.cjs");
 var async = require("async");
@@ -1761,6 +1762,14 @@ router.post("/:groupId", auth.can("create post"), async function (req, res) {
     ],
   })
     .then((group) => {
+      if (isPostingClosed(group)) {
+        log.info("Post rejected, group closed to new posts", {
+          groupId: req.params.groupId,
+          userId: req.user ? req.user.id : -1,
+        });
+        res.sendStatus(403);
+        return;
+      }
       var post = models.Post.build({
         name: req.body.name,
         description: req.body.description || "",
