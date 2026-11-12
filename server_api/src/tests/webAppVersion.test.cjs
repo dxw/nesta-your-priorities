@@ -38,7 +38,7 @@ test("a request without a session is tolerated", () => {
 const { landingPageCacheControl } = require("../utils/webAppVersion.cjs");
 
 test("the landing page is publicly cacheable by default", () => {
-  assert.equal(landingPageCacheControl({ query: {} }), "public, max-age=300, s-maxage=60, stale-while-revalidate=60");
+  assert.equal(landingPageCacheControl({ query: {} }), "public, max-age=300, s-maxage=300, stale-while-revalidate=60");
 });
 
 test("a landing page that records an explicit version choice is never publicly cached", () => {

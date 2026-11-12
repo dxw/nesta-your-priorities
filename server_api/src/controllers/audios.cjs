@@ -4,11 +4,12 @@ var models = require("../models/index.cjs");
 var multer  = require('multer');
 var multerMultipartResolver = multer({ dest: 'uploads/' }).single('file');
 var auth = require('../authorization.cjs');
+const { cacheForAnonymous } = require('../utils/anonymousCache.cjs');
 var log = require('../utils/logger.cjs');
 var toJson = require('../utils/to_json.cjs');
 var queue = require('../services/workers/queue.cjs');
 
-router.get('/hasAudioUploadSupport', (req, res) => {
+router.get('/hasAudioUploadSupport', cacheForAnonymous(3600), (req, res) => {
   res.send({
     hasAudioUploadSupport: (process.env.S3_AUDIO_UPLOAD_BUCKET!=null &&
                             process.env.S3_AUDIO_PUBLIC_BUCKET!=null)

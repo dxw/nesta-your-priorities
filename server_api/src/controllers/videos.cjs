@@ -4,6 +4,7 @@ var models = require("../models/index.cjs");
 var multer = require("multer");
 var multerMultipartResolver = multer({ dest: "uploads/" }).single("file");
 var auth = require("../authorization.cjs");
+const { cacheForAnonymous } = require("../utils/anonymousCache.cjs");
 var log = require("../utils/logger.cjs");
 var toJson = require("../utils/to_json.cjs");
 var queue = require("../services/workers/queue.cjs");
@@ -13,7 +14,7 @@ const {
   hasSpeechToTextSupport,
 } = require("../utils/speechToTextSupport.cjs");
 
-router.get("/hasVideoUploadSupport", (req, res) => {
+router.get("/hasVideoUploadSupport", cacheForAnonymous(3600), (req, res) => {
   const speechToTextConfig = getSpeechToTextSupportConfig();
   log.info("hasVideoUploadSupport", {
     hasTranscriptSupport: hasSpeechToTextSupport(),
