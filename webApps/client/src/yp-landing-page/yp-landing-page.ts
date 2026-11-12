@@ -27,6 +27,7 @@ import {
   CONSENT_TEXT,
   OPTIONAL_COOKIE_CONSENT_EVENT,
   OPTIONAL_COOKIE_CONSENT_KEY,
+  IDEAS_END_BANNER,
 } from "./yp-landing-page-content.js";
 
 import "@material/web/button/text-button.js";
@@ -139,6 +140,14 @@ export class YpLandingPage extends YpBaseElement {
 
         .skipLink:focus {
           top: 8px;
+        }
+
+		.banner {
+          background-color: var(--yp-landing-info-box-color, #8df6f9);
+          color: var(--yp-landing-heading-text-color, #191923);
+          padding: 16px 32px;
+          text-align: center;
+		  font-size: 1.2rem;
         }
 
         .nav {
@@ -290,6 +299,14 @@ export class YpLandingPage extends YpBaseElement {
         .button:hover {
           transform: translate(2px, 2px);
           box-shadow: 4px 4px 0 0 var(--yp-hard-shadow-color, #e144dc);
+        }
+
+        .button:disabled,
+        .button:disabled:hover {
+          cursor: not-allowed;
+          opacity: 0.7;
+          transform: none;
+          box-shadow: none;
         }
 
         .button:active {
@@ -1290,6 +1307,15 @@ export class YpLandingPage extends YpBaseElement {
     );
   }
 
+  renderIdeasEndBanner() {
+    return html`
+      <div class="banner">
+          <h2>${IDEAS_END_BANNER.heading}</h2>
+          <p>${IDEAS_END_BANNER.label}</p>
+      </div>
+    `;
+  }
+
   renderNav() {
     return html`
       <nav class="nav" aria-label="Landing page sections">
@@ -1358,6 +1384,7 @@ export class YpLandingPage extends YpBaseElement {
 
   override render() {
     return html`
+      ${this.renderIdeasEndBanner()}
       ${this.renderNav()}
 
       <main>
@@ -1372,13 +1399,6 @@ export class YpLandingPage extends YpBaseElement {
                 <strong>${INTRO_CONTENT.attributionName}</strong>
                 &nbsp;|&nbsp; ${INTRO_CONTENT.attributionRole}
               </p>
-              <button
-                class="button yp-hard-shadow-box"
-                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                @click="${this._shareYourIdea}"
-              >
-                ${SHARE_IDEA_BUTTON_LABEL}
-              </button>
             </div>
           </section>
         </div>
@@ -1391,13 +1411,6 @@ export class YpLandingPage extends YpBaseElement {
                           <h2 class="bigHeading" aria-label="${SMALL_IDEA_CONTENT.heading}">${SMALL_IDEA_CONTENT.heading}</h2>
                           <p class="leadIn">${SMALL_IDEA_CONTENT.leadIn}</p>
                       </div>
-                      <button
-                              class="button yp-hard-shadow-box"
-                              aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                              @click="${this._shareYourIdea}"
-                      >
-                          ${SHARE_IDEA_BUTTON_LABEL}
-                      </button>
                   </div>
                   <div class="criteriaGrid">
                       ${SMALL_IDEA_CONTENT.criteria.map(
@@ -1428,11 +1441,11 @@ export class YpLandingPage extends YpBaseElement {
                 (paragraph) => html`<p>${paragraph}</p>`
               )}
               <button
-                class="button yp-hard-shadow-box"
-                aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-                @click="${this._shareYourIdea}"
+                class="button shareIdeaButton yp-hard-shadow-box"
+                aria-label="${this.t("closedForNewPosts")}"
+                disabled
               >
-                ${SHARE_IDEA_BUTTON_LABEL}
+                ${this.t("closedForNewPosts")}
               </button>
 
               <h2
@@ -1624,13 +1637,6 @@ export class YpLandingPage extends YpBaseElement {
 			    </div>
 			  </div>
 			  <div class="aboutUsActions">
-				<button
-				class="button yp-hard-shadow-box"
-				aria-label="${SHARE_IDEA_BUTTON_LABEL}"
-				@click="${this._shareYourIdea}"
-				>
-				${SHARE_IDEA_BUTTON_LABEL}
-				</button>
 			  </div>
               </div>
             </div>

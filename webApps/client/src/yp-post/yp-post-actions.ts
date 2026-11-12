@@ -738,7 +738,12 @@ export class YpPostActions extends YpBaseElement {
   }
 
   async generateEndorsement(value: number) {
-    if (window.appUser.loggedIn() === true) {
+    let canVote = await window.appUser.ensureLoginChecked();
+    if (!canVote) {
+      canVote = await window.appUser.silentAnonymousLoginIfAllowed(this.post.Group);
+    }
+
+    if (canVote) {
       let method: string;
 
       if (this.endorseValue === value) {
