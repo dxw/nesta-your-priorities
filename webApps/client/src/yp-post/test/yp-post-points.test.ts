@@ -81,4 +81,56 @@ describe('YpPostPoints', () => {
     debugger;
     await expect(element).shadowDom.to.be.accessible();
   });
+
+  it('tries anonymous login before adding a point', async () => {
+    const calls: string[] = [];
+    const appUser = window.appUser as any;
+    const serverApi = window.serverApi as any;
+    const originalEnsureLoginChecked = appUser.ensureLoginChecked;
+    const originalSilentAnonymousLogin = appUser.silentAnonymousLoginIfAllowed;
+    const originalLoggedIn = appUser.loggedIn;
+    const originalLoginForNewPoint = appUser.loginForNewPoint;
+    const originalFingerprintData = appUser.getBrowserFingerprintData;
+    const originalAddPoint = serverApi.addPoint;
+    const originalPreProcessPoints = element._preProcessPoints;
+    const originalCompleteNewPointResponse = element._completeNewPointResponse;
+
+    try {
+      appUser.ensureLoginChecked = async () => {
+        calls.push('ensureLoginChecked');
+        return false;
+      };
+      appUser.silentAnonymousLoginIfAllowed = async (group: YpGroupData) => {
+        calls.push('silentAnonymousLoginIfAllowed');
+        expect(group).to.equal(element.post.Group);
+        return true;
+      };
+      appUser.loggedIn = () => false;
+      appUser.loginForNewPoint = () => calls.push('loginForNewPoint');
+      appUser.getBrowserFingerprintData = async () => ({});
+      serverApi.addPoint = async () => {
+        calls.push('addPoint');
+        return { id: 4, status: 'in_moderation_queue' } as YpPointData;
+      };
+      element._preProcessPoints = (points) => points;
+      element._completeNewPointResponse = () => {};
+
+      await element.addPoint('test point', 1, undefined, undefined);
+
+      expect(calls).to.deep.equal([
+        'ensureLoginChecked',
+        'silentAnonymousLoginIfAllowed',
+        'addPoint',
+      ]);
+    } finally {
+      appUser.ensureLoginChecked = originalEnsureLoginChecked;
+      appUser.silentAnonymousLoginIfAllowed = originalSilentAnonymousLogin;
+      appUser.loggedIn = originalLoggedIn;
+      appUser.loginForNewPoint = originalLoginForNewPoint;
+      appUser.getBrowserFingerprintData = originalFingerprintData;
+      serverApi.addPoint = originalAddPoint;
+      element._preProcessPoints = originalPreProcessPoints;
+      element._completeNewPointResponse = originalCompleteNewPointResponse;
+    }
+  });
 });
