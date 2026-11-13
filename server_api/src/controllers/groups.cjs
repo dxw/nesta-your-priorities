@@ -1,5 +1,6 @@
 var express = require("express");
 const { hasNonOpenPosts } = require("../utils/groupPosts.cjs");
+const { cacheForAnonymous } = require("../utils/anonymousCache.cjs");
 var router = express.Router();
 var models = require("../models/index.cjs");
 var auth = require("../authorization.cjs");
@@ -2247,7 +2248,7 @@ router.post(
   }
 );
 
-router.get("/:groupId/pages", auth.can("view group"), function (req, res) {
+router.get("/:groupId/pages", cacheForAnonymous(300), auth.can("view group"), function (req, res) {
   const redisKey = "cache:groupPages:" + req.params.groupId;
   req.redisClient
     .get(redisKey)
@@ -3747,7 +3748,7 @@ router.get("/:id/checkNonOpenPosts", auth.can("view group posts"), (req, res) =>
     });
 });
 
-router.get("/:id/configuration", auth.can("view group"), (req, res) => {
+router.get("/:id/configuration", cacheForAnonymous(300), auth.can("view group"), (req, res) => {
   models.Group.findOne({
     where: {
       id: req.params.id,
@@ -3822,7 +3823,7 @@ router.get(
   }
 );
 
-router.get("/:id", auth.can("view group"), function (req, res) {
+router.get("/:id", cacheForAnonymous(300), auth.can("view group"), function (req, res) {
   if (isValidDbId(req.params.id)) {
     models.Group.findOne({
       where: { id: req.params.id },

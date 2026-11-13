@@ -5,6 +5,7 @@ var router = express.Router();
 var models = require("../models/index.cjs");
 var passport = require('passport');
 var auth = require('../authorization.cjs');
+const { cacheForAnonymous } = require('../utils/anonymousCache.cjs');
 var log = require('../utils/logger.cjs');
 var toJson = require('../utils/to_json.cjs');
 var _ = require('lodash');
@@ -2095,7 +2096,7 @@ router.get('/available/groups', function(req, res, next) {
 });
 
 
-router.get('/has/AutoTranslation', function(req, res) {
+router.get('/has/AutoTranslation', cacheForAnonymous(3600), function(req, res) {
   const hasAutoTranslation = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON ? true : false;
   if (typeof hasAutoTranslation==="boolean") {
     res.send({ hasAutoTranslation: hasAutoTranslation });
