@@ -23,7 +23,7 @@ function rememberVersionChoice(req, useNewVersion) {
 // a session cookie. A request with an explicit version choice is the one
 // case that writes the session (and so gets a Set-Cookie); that response
 // stays private.
-const PUBLIC_LANDING_CACHE = "public, max-age=300, s-maxage=60, stale-while-revalidate=60";
+const PUBLIC_LANDING_CACHE = "public, max-age=300, s-maxage=300, stale-while-revalidate=60";
 
 function landingPageCacheControl(req) {
   const explicit = req.query && (req.query.useNewVersion === "true" || req.query.useNewVersion === "false");

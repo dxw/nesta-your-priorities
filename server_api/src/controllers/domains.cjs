@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var models = require("../models/index.cjs");
 var auth = require('../authorization.cjs');
+const { cacheForAnonymous } = require('../utils/anonymousCache.cjs');
 var log = require('../utils/logger.cjs');
 var toJson = require('../utils/to_json.cjs');
 var _ = require('lodash');
@@ -711,7 +712,7 @@ router.get('/oldBoot', function(req, res) {
   });
 });
 
-router.get('/', function(req, res) {
+router.get('/', cacheForAnonymous(300), function(req, res) {
   if (req.ypDomain.secret_api_keys &&
     req.ypDomain.secret_api_keys.saml && req.ypDomain.secret_api_keys.saml.entryPoint &&
     req.ypDomain.secret_api_keys.saml.entryPoint.length > 6) {

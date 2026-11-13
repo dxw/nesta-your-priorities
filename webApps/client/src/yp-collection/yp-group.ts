@@ -93,7 +93,9 @@ export class YpGroup extends YpCollection {
   tabCountersLoadingForGroupId: number | undefined;
   hasAutoSelectedDefaultPostStatusTab = false;
   userSelectedPostStatusTab = false;
-  configCheckTTL = 45000;
+  // The server lets the edge hold /configuration for five minutes, so a
+  // shorter interval only adds requests without seeing changes any sooner.
+  configCheckTTL = 300000;
 
   constructor() {
     super("group", "post", "lightbulb_outline", "post.create");
