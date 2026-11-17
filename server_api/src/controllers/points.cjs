@@ -187,9 +187,10 @@ var validateEmbedUrl = function (urlIn) {
   return urls != null && urls.length > 0;
 };
 
-var loadPointWithAll = function (pointId, callback) {
+var loadPointWithAll = function (pointId, callback, includeUnpublished = false) {
   let outPoint;
-  models.Point.findOne({
+  const pointModel = includeUnpublished ? models.Point.unscoped() : models.Point;
+  pointModel.findOne({
     where: {
       id: pointId,
     },
@@ -987,7 +988,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
     content: req.body.content,
     value: req.body.value,
     user_id: req.user.id,
-    status: "published",
+    status: "in_moderation_queue",
     language: getTranscriptAppLanguage(req),
     user_agent: req.useragent.source,
     ip_address: req.clientIp,
@@ -1223,7 +1224,7 @@ router.post("/:groupId", auth.can("create point"), function (req, res) {
                 req.redisClient.setEx(newPointRedisKey, 30, JSON.stringify({}));
                 res.send(loadedPoint);
               }
-            });
+            }, point.status !== "published");
           }
         }
       );

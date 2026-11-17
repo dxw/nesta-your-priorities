@@ -1952,6 +1952,15 @@ export class YpPostPoints extends YpBaseElementWithLogin {
   _completeNewPointResponse(point: YpPointData) {
     this.addPointDisabled = false;
     point = this._preProcessPoints([point])[0];
+    if (point.status !== "published") {
+      this._clearTextValueUp();
+      this._clearTextValueDown();
+      this._clearTextValueMobileUpOrDown();
+      this._clearVideo();
+      this._clearAudio();
+	  window.appGlobals.notifyUserViaToast("Comment submitted successfully");
+      return;
+    }
     if (!point.checkTranscriptFor && window.appGlobals.hasTranscriptSupport === true) {
       if (this.currentVideoId || (point.PointVideos && point.PointVideos.length > 0)) {
         point.checkTranscriptFor = "video";
@@ -2044,7 +2053,14 @@ export class YpPostPoints extends YpBaseElementWithLogin {
     videoId: number | undefined,
     audioId: number | undefined
   ) {
-    if (window.appUser.loggedIn() === true) {
+    let canAddPoint = await window.appUser.ensureLoginChecked();
+    if (!canAddPoint) {
+      canAddPoint = await window.appUser.silentAnonymousLoginIfAllowed(
+        this.post.Group
+      );
+    }
+
+    if (canAddPoint) {
       if (videoId) this.currentVideoId = videoId;
       else if (audioId) this.currentAudioId = audioId;
       this.addPointDisabled = true;
