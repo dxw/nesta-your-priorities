@@ -216,7 +216,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize.models.Video.build({
       user_id: userId,
       user_agent: req.useragent.source,
-      ip_address: req.clientIp,
+      ip_address: req.ip,
     })
       .save()
       .then((video) => {
@@ -569,7 +569,7 @@ module.exports = (sequelize, DataTypes) => {
         const video = await sequelize.models.Video.create({
           user_id: req.user.id,
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
           formats: [req.body.videoId],
           viewable: true,
           public_meta: {

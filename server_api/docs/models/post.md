@@ -336,6 +336,6 @@ const results = await Post.search("climate change", 1, null);
 
 **Note:**  
 - This model is tightly coupled with the rest of the Sequelize models in the application.  
-- Many methods assume the presence of related models and certain request properties (e.g., `req.user`, `req.useragent`, `req.clientIp`).  
+- Many methods assume the presence of related models and certain request properties (e.g., `req.user`, `req.useragent`, `req.ip`).  
 - Full-text search and some features are only available when using PostgreSQL as the database backend.  
 - The model includes both static and instance methods for advanced business logic and data manipulation.

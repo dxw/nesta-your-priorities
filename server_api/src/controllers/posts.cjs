@@ -587,7 +587,7 @@ router.post(
           user_id: req.user.id,
           status: "active",
           user_agent: req.useragent.source,
-          ip_address: req.clientIp,
+          ip_address: req.ip,
         })
           .save()
           .then(function (post_status_change) {
@@ -1788,7 +1788,7 @@ router.post("/:groupId", auth.can("create post"), async function (req, res) {
         counter_endorsements_up: 1,
         content_type: models.Post.CONTENT_IDEA,
         user_agent: req.useragent.source,
-        ip_address: req.clientIp,
+        ip_address: req.ip,
       });
 
       updatePostData(req, post);
@@ -1823,7 +1823,7 @@ router.post("/:groupId", auth.can("create post"), async function (req, res) {
                         user_id: req.user.id,
                         status: "active",
                         user_agent: req.useragent.source,
-                        ip_address: req.clientIp,
+                        ip_address: req.ip,
                         data: {
                           ...getFingerprintDataFromBody(req.body, "post"),
                         },
@@ -2619,7 +2619,7 @@ router.post(
                     },
                     status: "active",
                     user_agent: req.useragent.source,
-                    ip_address: req.clientIp,
+                    ip_address: req.ip,
                   });
                 }
                 endorsement.save().then(function () {

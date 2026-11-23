@@ -126,7 +126,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize.models.Audio.build({
       user_id: userId,
       user_agent: req.useragent.source,
-      ip_address: req.clientIp,
+      ip_address: req.ip,
     }).save().then((audio) => {
       audio.getPreSignedUploadUrl({}, (error, presignedUrl) => {
         if (error) {

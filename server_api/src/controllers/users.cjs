@@ -526,8 +526,8 @@ router.get('/:id', auth.can('edit user'), function (req, res) {
 
 const getDomainAdminAndUserIncludes = (req) => {
   let groupAdminsOrUsersInclude, communityAdminsOrUsersInclude, domainAdminsOrUsersWhere;
-  domainAdminsOrUsersWhere = (req.clientIp.includes("::1") ||
-                              req.clientIp.includes("127.0.0.1")) ? {} : {
+  domainAdminsOrUsersWhere = (req.ip.includes("::1") ||
+                              req.ip.includes("127.0.0.1")) ? {} : {
 
   };
 
@@ -1609,7 +1609,7 @@ router.post('/createActivityFromApp', function(req, res) {
       originalQueryString: req.body.originalQueryString,
       referrer: req.body.referrer,
       url: req.body.url,
-      ipAddress: req.clientIp,
+      ipAddress: req.ip,
       server_timestamp: Date.now()
     },
 
